@@ -1,10 +1,32 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 const Register = () => {
+    const [formData, setFormData] = useState({
+        username: "",
+        email: "",
+        password: "",
+    })
+    const navigate = useNavigate()
+
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value,
+        })
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        console.log(formData);
+        navigate("/")
+        
+    }
   return (
     <div className="h-screen flex justify-center items-center bg-gradient-to-br from-[#020617] to-[#0f172a]">
-      <form className="bg-[#020617] text-white p-6 rounded-2xl shadow-xl w-[340px] flex flex-col gap-4 border border-gray-800">
+      <form 
+      onSubmit={handleSubmit}
+      className="bg-[#020617] text-white p-6 rounded-2xl shadow-xl w-[340px] flex flex-col gap-4 border border-gray-800">
         
         <h2 className="text-2xl font-bold text-center">Create Account</h2>
         <p className="text-sm text-gray-400 text-center">
@@ -13,19 +35,28 @@ const Register = () => {
 
         <input
           type="text"
+          name="username"
           placeholder="Username"
+          value={formData.username}
+          onChange={handleChange}
           className="bg-[#020617] border border-gray-700 px-4 py-3 rounded-xl outline-none focus:border-blue-500"
         />
 
         <input
           type="email"
           placeholder="Email"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
           className="bg-[#020617] border border-gray-700 px-4 py-3 rounded-xl outline-none focus:border-blue-500"
         />
 
         <input
           type="password"
           placeholder="Password"
+          name="password"
+          value={formData.password}
+          onChange={handleChange}
           className="bg-[#020617] border border-gray-700 px-4 py-3 rounded-xl outline-none focus:border-blue-500"
         />
 

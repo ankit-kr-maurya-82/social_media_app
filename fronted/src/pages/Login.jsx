@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import UserContext from "../context/UserContext";
 
 const Login = () => {
@@ -27,7 +27,7 @@ const Login = () => {
       >
         <h2 className="text-2xl font-bold text-center">Login</h2>
         <p className="text-sm text-gray-400 text-center">
-          Welcome back 👋
+          Welcome back
         </p>
 
         <input
@@ -54,6 +54,12 @@ const Login = () => {
         >
           Login
         </button>
+        <p className="text-sm text-center text-gray-400">
+           Have not an account?{" "}
+          <Link to="/register" className="text-blue-400 hover:underline">
+            Register
+          </Link>
+        </p>  
       </form>
     </div>
   );
