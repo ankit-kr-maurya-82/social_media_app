@@ -1,2 +1,3 @@
 backend <br>
-└─$ npm i -D nodemon<br>
+└─ npm i -D nodemon <br>
+└─ npm i -D prettier <br>
