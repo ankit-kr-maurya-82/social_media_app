@@ -1,30 +1,62 @@
-import React, { useState , useContext} from 'react'
-import UserContext from '../context/UserContext'
+import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import UserContext from "../context/UserContext";
 
 const Login = () => {
-    const [username, setUsername] = useState('')
-    const [password, setPassword] = useState('')
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-    const {setUser} = useContext(UserContext)
+  const { setUser } = useContext(UserContext);
+  const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        setUser({username, password})
-    }
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // yaha normally API call hogi
+    setUser({ email });
+
+    // 🔀 redirect after login
+    navigate("/");
+  };
+
   return (
-    <div>
-      <h2>Login</h2>
-      <input type="text"
-      value={username}
-      onChange={(e)=> setUsername(e.target.value)}
-       placeholder='username' />
-      <input type="text"
-      value={password}
-      onChange={(e)=> setPassword(e.target.value)}
-       placeholder='password' />
-      <button onClick={handleSubmit}>Submit</button>
-    </div>
-  )
-}
+    <div className="h-screen flex justify-center items-center bg-gradient-to-br from-[#020617] to-[#0f172a]">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-[#020617] text-white p-6 rounded-2xl shadow-xl w-[340px] flex flex-col gap-4 border border-gray-800"
+      >
+        <h2 className="text-2xl font-bold text-center">Login</h2>
+        <p className="text-sm text-gray-400 text-center">
+          Welcome back 👋
+        </p>
 
-export default Login
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)} 
+          className="bg-[#020617] border border-gray-700 px-4 py-3 rounded-xl outline-none focus:border-blue-500"
+          required
+        />
+
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="bg-[#020617] border border-gray-700 px-4 py-3 rounded-xl outline-none focus:border-blue-500"
+          required
+        />
+
+        <button
+          type="submit"
+          className="mt-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:opacity-90 transition py-3 rounded-xl font-semibold"
+        >
+          Login
+        </button>
+      </form>
+    </div>
+  );
+};
+
+export default Login;

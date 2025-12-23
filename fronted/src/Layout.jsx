@@ -5,6 +5,7 @@ import { Outlet } from 'react-router-dom'
 import UserContextProvider from './context/UserContextProvider'
 import Login from './pages/Login'
 import { ThemeProvider } from './context/theme'
+import Register from './pages/Register'
 
 const Layout = () => {
   const [themeMode, setThemeMode] = useState("light")
@@ -28,10 +29,11 @@ const Layout = () => {
     <div>
       <ThemeProvider value={{themeMode, lightTheme, darkTheme}}>
         <UserContextProvider>
-        <Header/>
-        <Login/>
+        {/* <Header/> */}
+        {/* <Login/> */}
+        {/* <Register/> */}
         <Outlet/>
-        <Footer/>
+        {/* <Footer/> */}
       </UserContextProvider>
       </ThemeProvider>
     </div>
