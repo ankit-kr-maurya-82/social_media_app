@@ -1,0 +1,16 @@
+{
+  "name": "social_backend",
+  "version": "1.0.0",
+  "description": "a backend of social",
+  "keywords": [
+    "javascript",
+    "backend"
+  ],
+  "license": "ISC",
+  "author": "Ankit Kumar Maurya",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
