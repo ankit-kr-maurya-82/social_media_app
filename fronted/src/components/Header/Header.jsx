@@ -4,8 +4,8 @@ const Header = () => {
   return (
     <header>
      
-      <nav>
-        <div className="text-2xl bg-amber-900 text-amber-100 p-3 text-center">
+      <nav className="text-[15px] bg-gray-900 text-amber-100 p-3 text-center">
+        
             
             <NavLink
             to="/"
@@ -19,7 +19,8 @@ const Header = () => {
             >
             About
             </NavLink>
-        </div>
+          
+              <input type="text" className="bg-[#515151] rounded px-4 py-[1px]" name="" id="" />
       </nav>
     </header>
   );

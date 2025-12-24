@@ -29,7 +29,7 @@ const Layout = () => {
     <div>
       <ThemeProvider value={{themeMode, lightTheme, darkTheme}}>
         <UserContextProvider>
-        {/* <Header/> */}
+        <Header/>
         {/* <Login/> */}
         {/* <Register/> */}
         <Outlet/>
