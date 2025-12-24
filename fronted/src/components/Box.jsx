@@ -17,7 +17,11 @@ const Box = () => {
             className="w-full outline-none resize-none text-sm"
             rows={3}/>
             <div className="text-right">
-                <button className="bg-blue-500 text-white px-4 py-1 rounded-full">Post</button>
+                <button
+                disabled={!text.trim()}
+                 className={`bg-blue-500 text-white px-4 py-1 rounded-full ${
+                    text.trim() ? "bg-blue-500 hover:bg-blue-600 cursor-pointer": "bg-gray-300 cursor-not-allowed"
+                 }`}>Post</button>
             </div>
         </div>
     )

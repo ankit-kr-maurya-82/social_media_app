@@ -12,7 +12,7 @@ const Card = ({username, fullName, firstName, lastName, post, onLike, onRepost})
     
   return (
     <>
-    <div className='border-b border-gray-200 bg-gray-400 mt-10 rounded-2xl p-4 hover:bg-gray-500 transition ' >
+    <div className='border-b border-gray-200 mt-10 rounded-2xl p-4 hover:bg-gray-500 transition ' >
         {/* User Info */}
       <div className='flex flex-col  items-left  gap-3 mb-2'>
         <div className='flex'>
