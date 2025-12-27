@@ -13,28 +13,13 @@ import Login from './pages/Login.jsx'
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Layout/>,
+    element: <Layout />,
     children: [
-      {
-        path: "",
-        element: <Home/>
-      },
-      {
-        path: "about",
-        element: <About/>
-      },
-      {
-        path: "profile",
-        element: <Profile/>
-      },
-      {
-        path: "register",
-        element: <Register/>
-      },
-      {
-        path: "login",
-        element: <Login/>
-      },
+      { path: "", element: <Home /> },
+      { path: "about", element: <About /> },
+      { path: "profile", element: <Profile /> },
+      { path: "register", element: <Register /> },
+      { path: "login", element: <Login /> },
     ]
   }
 ])

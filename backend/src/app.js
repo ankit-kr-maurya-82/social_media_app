@@ -22,11 +22,7 @@ app.get('/', (req, res)=> {
     res.send("Social Media App")
     res.send("Home Page")
 })
-app.use("/api/v1/users", userRouter, (req, res)=> {
-    res.send("users register")
-})
-app.get("/api/v1/", userRouter, (req, res)=> {
-    res.send("users")
-})
+app.use("/api/v1/users", userRouter)
+
 
 export  { app }

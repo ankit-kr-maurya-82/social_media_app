@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import UserContext from "../context/UserContext";
 
 const Login = () => {
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -11,18 +12,13 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // yaha normally API call hogi
-    setUser({ email });
-
-    // 🔀 redirect after login
-    navigate("/");
+    setUser
+    // navigate("/");
   };
 
   return (
     <div className="h-screen flex justify-center items-center bg-gradient-to-br from-[#020617] to-[#0f172a]">
       <form
-        onSubmit={handleSubmit}
         className="bg-[#020617] text-white p-6 rounded-2xl shadow-xl w-[340px] flex flex-col gap-4 border border-gray-800"
       >
         <h2 className="text-2xl font-bold text-center">Login</h2>
@@ -50,6 +46,7 @@ const Login = () => {
 
         <button
           type="submit"
+          onClick={handleSubmit}
           className="mt-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:opacity-90 transition py-3 rounded-xl font-semibold"
         >
           Login

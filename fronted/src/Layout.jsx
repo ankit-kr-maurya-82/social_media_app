@@ -1,43 +1,36 @@
-import React, { useEffect, useState } from 'react'
-import Header from './components/Header/Header'
-import Footer from './components/Footer/Footer'
-import { Outlet } from 'react-router-dom'
-import UserContextProvider from './context/UserContextProvider'
-import Login from './pages/Login'
-import { ThemeProvider } from './context/theme'
-import Register from './pages/Register'
+import React, { useEffect, useState } from "react";
+import { Outlet, useLocation } from "react-router-dom";
+import Header from "./components/Header/Header";
+import Footer from "./components/Footer/Footer";
+import UserContextProvider from "./context/UserContextProvider";
+import { ThemeProvider } from "./context/theme";
 
 const Layout = () => {
-  const [themeMode, setThemeMode] = useState("light")
-  
-  const lightTheme = () => {
-    setThemeMode("light")
-  }
-  
-  const darkTheme = () => {
-    setThemeMode("dark")
-  }
+  const [themeMode, setThemeMode] = useState("dark");
+  const location = useLocation();
 
-  // actual change in theme
+  const hideHeaderFooter =
+    location.pathname === "/login" ||
+    location.pathname === "/register";
 
   useEffect(() => {
-    document.querySelector('html').classList.remove("light", "dark")
-    document.querySelector('html').classList.add(themeMode)
-  }, [themeMode])
+    document.documentElement.classList.remove("light", "dark");
+    document.documentElement.classList.add(themeMode);
+  }, [themeMode]);
 
   return (
-    <div>
-      <ThemeProvider value={{themeMode, lightTheme, darkTheme}}>
-        <UserContextProvider>
-        <Header/>
-        {/* <Login/> */}
-        {/* <Register/> */}
-        <Outlet/>
-        {/* <Footer/> */}
-      </UserContextProvider>
-      </ThemeProvider>
-    </div>
-  )
-}
+    <ThemeProvider value={{ themeMode }}>
+      <UserContextProvider>
 
-export default Layout
+        {!hideHeaderFooter && <Header />}
+
+        <Outlet />
+
+        {!hideHeaderFooter && <Footer />}
+
+      </UserContextProvider>
+    </ThemeProvider>
+  );
+};
+
+export default Layout;
