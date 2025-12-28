@@ -4,8 +4,16 @@ import {User} from "../models/user.model.js"
 import {uploadOnCloudinary} from "../utils/cloudinary.js"
 import { ApiResponse } from "../utils/ApiResponse.js"
 
+// const generateAccessAndRefreshTokens = async(userId){
+//     try {
+        
+//     } catch (error) {
+        
+//     }
+// }
+
 const registerUser = asyncHandler(async (req, res) => {
-    // res.status({,
+   try{ // res.status({,
     //     message: "ankit"
     // })
 
@@ -16,7 +24,10 @@ const registerUser = asyncHandler(async (req, res) => {
     // 2. validation - not empty
     if([fullName, email, username, password].some((field) => field?.trim()==="")
     ){
-        throw new ApiError(400, "All fields  are required")
+        return res.status(400).json({
+            success: false,
+            message: "All fields are required"
+        })
     }
     // if(fullName===""){
     //     throw new ApiError(400, "fullName is required")
@@ -28,7 +39,10 @@ const registerUser = asyncHandler(async (req, res) => {
     })
 
     if(existedUser){
-        throw new ApiError(409, "User with email or username already exists")
+        return res.status(409).json({
+            success: false,
+            message: "User with email or username already exists"
+        }) 
     }
 
     // console.log(req.files);
@@ -71,12 +85,25 @@ const registerUser = asyncHandler(async (req, res) => {
     )
 
     if(!createdUser){
-        throw new ApiError(500, "Something went wrong while registering the user")
+        // throw new ApiError(500, "Something went wrong while registering the user")
+        return res.status(500).json({
+            success: false,
+            message: "Something went wrong while registering the user"
+        })
     }
 
     return res.status(201).json(
         new ApiResponse(200, createdUser, "User registered successfully")
     )
+
+    }catch(error){
+        return res.status(500).json({
+            success: false,
+            message: "Registered Falied",
+            error: error.message
+        }
+    )
+    }
 
 
 
@@ -99,13 +126,19 @@ const loginUser = asyncHandler(async (req, res) => {
     })
 
     if(!user){
-        throw new ApiError(404, "User does not exist")
+        return res.status(404).json({
+            success: false,
+            message: "User not found"
+        })
     }
     // password check
     const isPasswordValid = await user.isPasswordCorrect(password)
     
     if(!isPasswordValid){
-        throw new ApiError(401, "Password incorrect")
+        return res.status(401).json({
+            success: false,
+            message: "Invalid Password"
+        })
     }
     // access and refresh token
     // send cookie
