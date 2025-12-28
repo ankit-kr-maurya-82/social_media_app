@@ -1,13 +1,25 @@
-import React from 'react'
-import UserContext from './UserContext'
+import React, { useContext, useEffect, useState } from "react";
+import UserContext from "./UserContext";
 
-const UserContextProvider = ({children}) => {
-    const [user, setUser] = React.useState(null)
+const UserContextProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+    setLoading(false);
+  }, []);
+
   return (
-        <UserContext.Provider value={{user, setUser}}>
-            {children}
-        </UserContext.Provider>
-  )
-}
+    <UserContext.Provider value={{ user, setUser, loading }}>
+      {children}
+    </UserContext.Provider>
+  );
+};
 
-export default UserContextProvider
+export const useUser = () => useContext(UserContext);
+
+export default UserContextProvider;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
@@ -10,24 +10,32 @@ const Layout = () => {
   const location = useLocation();
 
   const hideHeaderFooter =
-    location.pathname === "/login" ||
-    location.pathname === "/register";
+    location.pathname.startsWith("/login") ||
+    location.pathname.startsWith("/register");
+
+  const toggleTheme = () => {
+    setThemeMode((prev) => (prev === "dark" ? "light" : "dark"));
+  };
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "light" || savedTheme === "dark") {
+      setThemeMode(savedTheme);
+    }
+  }, []);
 
   useEffect(() => {
     document.documentElement.classList.remove("light", "dark");
     document.documentElement.classList.add(themeMode);
+    localStorage.setItem("theme", themeMode);
   }, [themeMode]);
 
   return (
-    <ThemeProvider value={{ themeMode }}>
+    <ThemeProvider value={{ themeMode, toggleTheme }}>
       <UserContextProvider>
-
         {!hideHeaderFooter && <Header />}
-
         <Outlet />
-
         {!hideHeaderFooter && <Footer />}
-
       </UserContextProvider>
     </ThemeProvider>
   );

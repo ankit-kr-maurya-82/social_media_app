@@ -9,20 +9,33 @@ import About from './components/About/About.jsx'
 import Profile from './pages/Profile.jsx'
 import Register from './pages/Register.jsx'
 import Login from './pages/Login.jsx'
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
+
+
 
 const router = createBrowserRouter([
-  {
-    path: '/',
+   {
+    path: "/",
     element: <Layout />,
     children: [
-      { path: "", element: <Home /> },
-      { path: "about", element: <About /> },
-      { path: "profile", element: <Profile /> },
-      { path: "register", element: <Register /> },
+
+      // 🔓 Public routes
       { path: "login", element: <Login /> },
-    ]
-  }
-])
+      { path: "register", element: <Register /> },
+
+      // 🔐 Protected routes
+      {
+        element: <ProtectedRoute />,
+        children: [
+          { index: true, element: <Home /> },
+          { path: "about", element: <About /> },
+          { path: "profile", element: <Profile /> },
+        ],
+      },
+    ],
+  },
+]);
+
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
