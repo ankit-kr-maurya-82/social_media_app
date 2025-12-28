@@ -14,7 +14,7 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-gray-900 border-b border-gray-800">
+    <header className="bg-gray-900 fixed w-[100%] z-50 border-b border-gray-800">
       <nav className="max-w-6xl mx-auto flex items-center justify-between px-6 py-3 text-sm">
 
         {/* Left: Logo */}

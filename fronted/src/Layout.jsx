@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
+import Sidebar from "./components/Sidebar";
 import UserContextProvider from "./context/UserContextProvider";
+import UserContext from "./context/UserContext";
 import { ThemeProvider } from "./context/theme";
 
 const Layout = () => {
@@ -34,8 +36,15 @@ const Layout = () => {
     <ThemeProvider value={{ themeMode, toggleTheme }}>
       <UserContextProvider>
         {!hideHeaderFooter && <Header />}
-        <Outlet />
-        {!hideHeaderFooter && <Footer />}
+
+        <div className="flex">
+          {!hideHeaderFooter && <Sidebar />}
+          <main className="flex-1">
+            <Outlet />
+          </main>
+        </div>
+
+        {/* {!hideHeaderFooter && <Footer />} */}
       </UserContextProvider>
     </ThemeProvider>
   );
