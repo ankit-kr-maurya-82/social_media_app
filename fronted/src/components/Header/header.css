@@ -1,0 +1,127 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Header */
+.header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background-color: black;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 100;
+}
+
+/* Left section */
+.leftSection {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Logo */
+.logo {
+  color: #f59e0b;
+  font-weight: bold;
+  font-size: 18px;
+  text-decoration: none;
+}
+
+/* Search box */
+.searchBox {
+  display: flex;
+  align-items: center;
+  background-color: black;
+  border: 1px solid white;
+  border-radius: 20px;
+  padding: 4px 10px;
+}
+
+.searchIcon {
+  color: white;
+  font-size: 14px;
+  margin-right: 6px;
+}
+
+.searchInput {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: white;
+  width: 160px;
+}
+
+/* Navigation */
+.navLinks {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.navLinks a {
+  color: white;
+  text-decoration: none;
+}
+
+/* Button */
+.btn {
+  background-color: #f59e0b;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* Hamburger */
+.hamburger {
+  font-size: 22px;
+  color: white;
+  cursor: pointer;
+}
+
+/* Mobile Menu */
+.mobileMenu {
+  position: fixed;
+  top: 60px;
+  width: 100%;
+  background-color: black;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  z-index: 99;
+}
+
+.mobileMenu a {
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+/* Responsive */
+.desktopOnly {
+  display: flex;
+}
+
+.mobileOnly {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .desktopOnly {
+    display: none;
+  }
+
+  .mobileOnly {
+    display: block;
+  }
+
+  .searchInput {
+    width: 110px;
+  }
+}

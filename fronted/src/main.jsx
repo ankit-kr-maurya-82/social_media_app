@@ -10,6 +10,7 @@ import Profile from './pages/Profile.jsx'
 import Register from './pages/Register.jsx'
 import Login from './pages/Login.jsx'
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import Post from './pages/Post.jsx'
 
 
 
@@ -30,6 +31,7 @@ const router = createBrowserRouter([
           { index: true, element: <Home /> },
           { path: "about", element: <About /> },
           { path: "profile", element: <Profile /> },
+          { path: "post", element: <Post /> },
         ],
       },
     ],

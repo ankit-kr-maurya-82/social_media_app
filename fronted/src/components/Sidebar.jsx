@@ -3,70 +3,91 @@ import { NavLink } from "react-router-dom";
 import UserContext from "../context/UserContext";
 
 const Sidebar = () => {
-  const { user } = useContext(UserContext);
+   const { user, setUser } = useContext(UserContext);
+  // const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // Remove from localStorage
+    localStorage.removeItem("user");
+    setUser(null);
+    navigate("/login");
+  };
 
   return (
-    <aside className="w-64 fixed bg-gray-900 text-gray-200 h-screen p-4 border-r border-gray-800">
-      {/* User Info */}
-      {user && (
-        <div className="flex items-center gap-3 mb-6">
-          <img
-            src={user.avatar || "https://via.placeholder.com/40"}
-            alt="avatar"
-            className="w-10 h-10 rounded-full"
-          />
-          <div>
-            <h4 className="font-semibold text-white">{user.fullName}</h4>
-            <p className="text-sm text-gray-400">@{user.username}</p>
-          </div>
-        </div>
-      )}
+    <aside className="w-64 fixed top-14 left-0 bg-gray-900 text-gray-200 h-[calc(100vh-4rem)] p-4 border-r border-gray-800 relative">
 
       {/* Navigation */}
       <nav className="flex flex-col gap-3">
         <NavLink
           to="/"
           className={({ isActive }) =>
-            isActive
-              ? "text-amber-500 font-medium"
-              : "hover:text-white transition"
+            isActive ? "text-amber-500 font-medium" : "hover:text-white transition"
           }
         >
           Home
         </NavLink>
+
         {user && (
           <NavLink
             to="/profile"
             className={({ isActive }) =>
-              isActive
-                ? "text-amber-500 font-medium"
-                : "hover:text-white transition"
+              isActive ? "text-amber-500 font-medium" : "hover:text-white transition"
             }
           >
             Profile
           </NavLink>
         )}
+
         <NavLink
-          to="/about"
+          to="/post"
           className={({ isActive }) =>
-            isActive
-              ? "text-amber-500 font-medium"
-              : "hover:text-white transition"
+            isActive ? "text-amber-500 font-medium" : "hover:text-white transition"
           }
         >
-          About
+          Post
         </NavLink>
       </nav>
 
-      {/* Suggestions or extra links */}
-      <div className="mt-6">
-        <h5 className="text-gray-400 text-sm mb-2">Suggestions</h5>
-        <ul className="flex flex-col gap-1 text-gray-300 text-sm">
-          <li>Friend 1</li>
-          <li>Friend 2</li>
-          <li>Trending Topic</li>
-        </ul>
-      </div>
+     
+      {/* User Info (Bottom) */}
+      {user && (
+        <div className="absolute bottom-5 left-4 right-4 flex items-center gap-3 border-t border-gray-800 pt-3">
+          <img
+            src={user.avatar || "/default-avatar.png"}
+            alt="avatar"
+            className="w-10 h-10 rounded-full"
+          />
+          <div>
+            <h4 className="font-semibold text-white">{user?.fullName || "Guest"}</h4>
+            <p className="text-sm text-gray-400">@{user?.username || "guest"}</p>
+          </div>
+        </div>
+        
+      )}
+      
+          {user ? (
+            <button
+              onClick={handleLogout}
+              className="bg-red-600 px-3 py-1.5 rounded-lg text-white hover:bg-red-700 transition"
+            >
+              Logout
+            </button>
+          ) : (
+            <>
+              <NavLink
+                to="/login"
+                className="text-gray-300 hover:text-white"
+              >
+                Login
+              </NavLink>
+              <NavLink
+                to="/register"
+                className="text-gray-300 hover:text-white"
+              >
+                Register
+              </NavLink>
+            </>
+          )}
     </aside>
   );
 };

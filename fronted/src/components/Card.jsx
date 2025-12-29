@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const Card = ({ post }) => {
+const  Card = ({ post }) => {
   const [liked, setLiked] = useState(post.isLiked);
   const [likes, setLikes] = useState(post.likesCount);
 
