@@ -1,94 +1,85 @@
-import React, { useContext } from "react";
-import { NavLink } from "react-router-dom";
+import React, { useContext, useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { FaBars } from "react-icons/fa";
 import UserContext from "../context/UserContext";
+import "./sidebar.css";
 
 const Sidebar = () => {
-   const { user, setUser } = useContext(UserContext);
-  // const navigate = useNavigate();
+  const { user, setUser } = useContext(UserContext);
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
 
   const handleLogout = () => {
-    // Remove from localStorage
     localStorage.removeItem("user");
     setUser(null);
     navigate("/login");
   };
 
   return (
-    <aside className="w-64 fixed top-14 left-0 bg-gray-900 text-gray-200 h-[calc(100vh-4rem)] p-4 border-r border-gray-800 relative">
+    <>
+      {/* Mobile Toggle */}
+      <button className="sidebar-toggle" onClick={() => setOpen(!open)}>
+        <FaBars />
+      </button>
 
-      {/* Navigation */}
-      <nav className="flex flex-col gap-3">
-        <NavLink
-          to="/"
-          className={({ isActive }) =>
-            isActive ? "text-amber-500 font-medium" : "hover:text-white transition"
-          }
-        >
-          Home
-        </NavLink>
-
-        {user && (
+      {/* Sidebar */}
+      <aside className={`sidebar ${open ? "open" : ""}`}>
+        {/* Navigation */}
+        <nav className="sidebar-nav">
           <NavLink
-            to="/profile"
-            className={({ isActive }) =>
-              isActive ? "text-amber-500 font-medium" : "hover:text-white transition"
-            }
+            to="/"
+            onClick={() => setOpen(false)}
+            className={({ isActive }) => (isActive ? "active" : "")}
           >
-            Profile
+            Home
           </NavLink>
-        )}
 
-        <NavLink
-          to="/post"
-          className={({ isActive }) =>
-            isActive ? "text-amber-500 font-medium" : "hover:text-white transition"
-          }
-        >
-          Post
-        </NavLink>
-      </nav>
-
-     
-      {/* User Info (Bottom) */}
-      {user && (
-        <div className="absolute bottom-5 left-4 right-4 flex items-center gap-3 border-t border-gray-800 pt-3">
-          <img
-            src={user.avatar || "/default-avatar.png"}
-            alt="avatar"
-            className="w-10 h-10 rounded-full"
-          />
-          <div>
-            <h4 className="font-semibold text-white">{user?.fullName || "Guest"}</h4>
-            <p className="text-sm text-gray-400">@{user?.username || "guest"}</p>
-          </div>
-        </div>
-        
-      )}
-      
-          {user ? (
-            <button
-              onClick={handleLogout}
-              className="bg-red-600 px-3 py-1.5 rounded-lg text-white hover:bg-red-700 transition"
+          {user && (
+            <NavLink
+              to="/profile"
+              onClick={() => setOpen(false)}
+              className={({ isActive }) => (isActive ? "active" : "")}
             >
-              Logout
-            </button>
-          ) : (
-            <>
-              <NavLink
-                to="/login"
-                className="text-gray-300 hover:text-white"
-              >
-                Login
-              </NavLink>
-              <NavLink
-                to="/register"
-                className="text-gray-300 hover:text-white"
-              >
-                Register
-              </NavLink>
-            </>
+              Profile
+            </NavLink>
           )}
-    </aside>
+
+          <button
+            onClick={() => setOpen(false)}
+            className={({ isActive }) => (isActive ? "active" : "")}
+          >
+            Post
+          </button>
+        </nav>
+
+        {/* Bottom Section */}
+        <div className="sidebar-bottom">
+          {user ? (
+            <>
+              <div className="user-info">
+                <img
+                  src={user.avatar || "/default-avatar.png"}
+                  alt="avatar"
+                />
+                <div>
+                  <h4>{user.fullName || "Guest"}</h4>
+                  <p>@{user.username || "guest"}</p>
+                </div>
+              </div>
+
+              <button className="logout-btn" onClick={handleLogout}>
+                Logout
+              </button>
+            </>
+          ) : (
+            <div className="auth-links">
+              <NavLink to="/login">Login</NavLink>
+              <NavLink to="/register">Register</NavLink>
+            </div>
+          )}
+        </div>
+      </aside>
+    </>
   );
 };
 

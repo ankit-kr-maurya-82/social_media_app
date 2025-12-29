@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Card from "../components/Card";
-import Box from "../components/Box";
-// import { fetchPosts } from "../../api/post.api.js";
+import "./post.css";
+import SkeletonCard from "../components/SkeletonCard";
 
 const Post = () => {
   const [posts, setPosts] = useState([]);
@@ -10,10 +10,9 @@ const Post = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const res = await getAllPosts();
-        setPosts(res.data.data); // ApiResponse.data
-      } catch (error) {
-        console.error("Error fetching posts", error);
+        setPosts([]); // temp
+      } catch (err) {
+        console.error(err);
       } finally {
         setLoading(false);
       }
@@ -22,23 +21,24 @@ const Post = () => {
     fetchPosts();
   }, []);
 
-  if (loading) {
-    return <p className="text-center text-gray-400 mt-10">Loading posts...</p>;
-  }
-
   return (
-    <div className="max-w-xl mx-auto">
-      <Box />
+    <div className="feed-page">
+      <div className="feed-container">
 
-      {posts.length === 0 ? (
-        <p className="text-center text-gray-500 mt-6">
-          No posts available
-        </p>
-      ) : (
-        posts.map((post) => (
-          <Card key={post._id} post={post} />
-        ))
-      )}
+        {/* Feed only */}
+        <div className="feed-posts">
+          {loading ? (
+            <SkeletonCard />
+          ) : posts.length === 0 ? (
+            <p className="feed-empty">No posts yet</p>
+          ) : (
+            posts.map((post) => (
+              <Card key={post._id} post={post} />
+            ))
+          )}
+        </div>
+
+      </div>
     </div>
   );
 };

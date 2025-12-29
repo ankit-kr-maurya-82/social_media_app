@@ -1,0 +1,50 @@
+/* Page */
+.feed-page {
+  min-height: 100vh;
+  background-color: #020617;
+  display: flex;
+  justify-content: center;
+  color: white;
+}
+
+/* Main container */
+.feed-container {
+  width: 100%;
+  max-width: 620px;
+  padding: 16px;
+}
+
+/* Create post box wrapper */
+.feed-box {
+  position: sticky;
+  top: 70px;
+  z-index: 5;
+  margin-bottom: 16px;
+  background-color: #020617;
+}
+
+/* Posts */
+.feed-posts {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Loading / Empty */
+.feed-loading,
+.feed-empty {
+  text-align: center;
+  color: #94a3b8;
+  margin-top: 40px;
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .feed-container {
+    padding: 10px;
+  }
+
+  .feed-box {
+    top: 60px;
+  }
+}

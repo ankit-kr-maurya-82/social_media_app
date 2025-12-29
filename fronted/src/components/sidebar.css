@@ -1,0 +1,137 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Toggle button (mobile) */
+.sidebar-toggle {
+  display: none;
+  position: fixed;
+  top: 70px;
+  left: 15px;
+  z-index: 200;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  top: 56px;
+  left: 0;
+  width: 260px;
+  height: calc(100vh - 56px);
+  background-color: #111827;
+  color: #e5e7eb;
+  border-right: 1px solid #1f2933;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transform: translateX(0);
+  transition: transform 0.3s ease;
+  z-index: 150;
+}
+
+/* Nav */
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.sidebar-nav a {
+  text-decoration: none;
+  color: #9ca3af;
+  transition: color 0.2s;
+}
+
+.sidebar-nav a:hover {
+  color: white;
+}
+
+.sidebar-nav a.active {
+  color: #f59e0b;
+  font-weight: 500;
+}
+
+/* Bottom section */
+.sidebar-bottom {
+  border-top: 1px solid #1f2933;
+  padding-top: 12px;
+}
+
+/* User info */
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.user-info img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.user-info h4 {
+  color: white;
+  font-size: 14px;
+}
+
+.user-info p {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+/* Buttons */
+.logout-btn {
+  width: 100%;
+  background-color: #dc2626;
+  color: white;
+  border: none;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background-color: #b91c1c;
+}
+
+/* Auth links */
+.auth-links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.auth-links a {
+  color: #9ca3af;
+  text-decoration: none;
+}
+
+.auth-links a:hover {
+  color: white;
+}
+
+/* 📱 Mobile */
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .sidebar-toggle {
+    display: block;
+  }
+}

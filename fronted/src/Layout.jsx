@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Header from "./components/Header/Header";
-import Footer from "./components/Footer/Footer";
 import Sidebar from "./components/Sidebar";
 import UserContextProvider from "./context/UserContextProvider";
-import UserContext from "./context/UserContext";
 import { ThemeProvider } from "./context/theme";
+import PostModal from "./components/Post/PostModal";
 
 const Layout = () => {
   const [themeMode, setThemeMode] = useState("dark");
+  const [openPost, setOpenPost] = useState(false);
   const location = useLocation();
 
   const hideHeaderFooter =
@@ -35,16 +35,25 @@ const Layout = () => {
   return (
     <ThemeProvider value={{ themeMode, toggleTheme }}>
       <UserContextProvider>
-        {!hideHeaderFooter && <Header />}
 
-        <div className="flex">
-          {!hideHeaderFooter && <Sidebar />}
-          <main className="flex-1">
-            <Outlet />
-          </main>
-        </div>
+        {!hideHeaderFooter && (
+          <Header onPostClick={() => setOpenPost(true)} />
+        )}
 
-        {/* {!hideHeaderFooter && <Footer />} */}
+        {!hideHeaderFooter && (
+          <Sidebar onPostClick={() => setOpenPost(true)} />
+        )}
+
+        {/* 🔥 Post Popup */}
+        <PostModal
+          open={openPost}
+          onClose={() => setOpenPost(false)}
+        />
+
+        <main className="flex-1 pt-14">
+          <Outlet />
+        </main>
+
       </UserContextProvider>
     </ThemeProvider>
   );
