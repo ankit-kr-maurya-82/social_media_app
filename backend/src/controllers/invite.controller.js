@@ -3,6 +3,12 @@ import { Server } from "../models/server.model.js";
 import { generateInviteCode } from "../utils/generateInviteCode.js"
 
 
+/**
+ * @desc    Create invite link
+ * @route   POST /api/invites
+ * @access  Private (ADMIN / OWNER)
+ */
+
 const createInvite = async(req,res,next)=> {
     try {
 
@@ -48,9 +54,78 @@ const createInvite = async(req,res,next)=> {
 }
 
 
+/**
+ * @desc    Join server via invite
+ * @route   POST /api/invites/:code
+ * @access  Private
+ */
+
+
 const joinViaInvite = async(req,res,next)=> {
     try {
-        
+        const invite = await Invite.findOne({
+            code: req.params.code
+        })
+
+
+        if(!invite){
+            return res.status(404).json({ message: "Invalid invite link" });
+         }
+
+         if(invite.expiresAt && invite.expiresAt < new Date()){
+            return res.status(400).json(
+                {
+                    message: "Invite expired"
+                }
+            )
+         }
+
+         if(invite.maxUses > 0 && invite.uses >= invite.maxUses){
+            return res.status(400).json(
+                {
+                    message: "Invite limit reached"
+                }
+            )
+         }
+
+         const server = await Server.findById(invite.serverId)
+
+         if(!server){
+            return res.status(404).json({ message: "Server not found" });
+
+         }
+
+          const exists = server.members.find((m) => m.userId.toString() === req.user.id
+    );
+
+    if(exists){
+        return res.status(400).json(
+            {
+                message: "Already a member"
+            }
+        )
+    }
+
+    server.members.push(
+        {
+            userId: req.user.id,
+            role: "MEMBER",
+        }
+    )
+
+    invite.uses +=1;
+
+    await server.save();
+    await invite.save();
+
+    res.json(
+        {
+            message: "Joined server successfully",
+            serverId: server._id
+        }
+    )
+
+
     } catch (error) {
         next(error)
     }
