@@ -9,7 +9,9 @@ export const initSocket = (httpServer) => {
     },
   });
 
-  // 🔐 Socket Auth Middleware
+  // ===============================
+  // 🔐 SOCKET AUTH (JWT)
+  // ===============================
   io.use((socket, next) => {
     try {
       const token = socket.handshake.auth?.token;
@@ -19,27 +21,36 @@ export const initSocket = (httpServer) => {
       socket.user = { id: decoded.id };
 
       next();
-    } catch (err) {
+    } catch (error) {
       next(new Error("Invalid token"));
     }
   });
 
+  // ===============================
+  // 🔌 CONNECTION
+  // ===============================
   io.on("connection", (socket) => {
-    console.log("User connected:", socket.user.id);
+    console.log("✅ User connected:", socket.user.id);
 
-    // 📥 Join Channel
+    // ===============================
+    // 📥 JOIN CHANNEL
+    // ===============================
     socket.on("join-channel", (channelId) => {
       socket.join(channelId);
-      console.log(`User ${socket.user.id} joined channel ${channelId}`);
+      console.log(`➡ User ${socket.user.id} joined channel ${channelId}`);
     });
 
-    // ❌ Leave Channel
+    // ===============================
+    // ❌ LEAVE CHANNEL
+    // ===============================
     socket.on("leave-channel", (channelId) => {
       socket.leave(channelId);
-      console.log(`User ${socket.user.id} left channel ${channelId}`);
+      console.log(`⬅ User ${socket.user.id} left channel ${channelId}`);
     });
 
-    // 📤 Send Message
+    // ===============================
+    // 📤 SEND MESSAGE
+    // ===============================
     socket.on("send-message", async ({ channelId, content }) => {
       try {
         if (!content?.trim()) return;
@@ -55,32 +66,76 @@ export const initSocket = (httpServer) => {
           channelId,
           senderId: socket.user.id,
           content,
+          reactions: [],
           createdAt: message.createdAt,
         });
       } catch (error) {
-        socket.emit("error-message", {
-          message: "Message not sent",
-        });
+        socket.emit("error-message", "Message send failed");
       }
     });
 
-    // ⌨️ Typing Start
+    // ===============================
+    // ⌨️ TYPING INDICATOR
+    // ===============================
     socket.on("typing", ({ channelId }) => {
       socket.to(channelId).emit("user-typing", {
         userId: socket.user.id,
       });
     });
 
-    // 🛑 Typing Stop
     socket.on("stop-typing", ({ channelId }) => {
       socket.to(channelId).emit("user-stop-typing", {
         userId: socket.user.id,
       });
     });
 
-    // 🔌 Disconnect
+    // ===============================
+    // ❤️ MESSAGE REACTIONS
+    // ===============================
+    socket.on("react-message", async ({ messageId, emoji, channelId }) => {
+      try {
+        const message = await Message.findById(messageId);
+        if (!message) return;
+
+        let reaction = message.reactions.find((r) => r.emoji === emoji);
+
+        if (!reaction) {
+          message.reactions.push({
+            emoji,
+            users: [socket.user.id],
+          });
+        } else {
+          const index = reaction.users.indexOf(socket.user.id);
+
+          if (index > -1) {
+            reaction.users.splice(index, 1);
+
+            if (reaction.users.length === 0) {
+              message.reactions = message.reactions.filter(
+                (r) => r.emoji !== emoji
+              );
+            }
+          } else {
+            reaction.users.push(socket.user.id);
+          }
+        }
+
+        await message.save();
+
+        io.to(channelId).emit("reaction-updated", {
+          messageId,
+          reactions: message.reactions,
+        });
+      } catch (error) {
+        socket.emit("error-message", "Reaction failed");
+      }
+    });
+
+    // ===============================
+    // 🔌 DISCONNECT
+    // ===============================
     socket.on("disconnect", () => {
-      console.log("User disconnected:", socket.user.id);
+      console.log("❌ User disconnected:", socket.user.id);
     });
   });
 };

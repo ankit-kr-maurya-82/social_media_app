@@ -1,5 +1,20 @@
 import mongoose, { Schema } from "mongoose";
 
+const reactionSchema  = new Schema(
+  {
+    emoji: String,
+    users: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+    }
+    ]
+  },
+  {
+    _id: false
+  }
+)
+
 const messageSchema = new Schema(
   {
     channelId: {
@@ -19,6 +34,7 @@ const messageSchema = new Schema(
       required: true,
       trim: true,
     },
+    reactions: [reactionSchema]
   },
   {
     timestamps: true,
