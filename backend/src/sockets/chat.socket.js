@@ -1,6 +1,7 @@
 import { Server } from "socket.io";
 import jwt from "jsonwebtoken";
 import { Message } from "../models/Message.js";
+import { setUserOffline, setUserOnline } from "../utils/presence.js";
 
 export const initSocket = (httpServer) => {
   const io = new Server(httpServer, {
@@ -29,8 +30,30 @@ export const initSocket = (httpServer) => {
   // ===============================
   // 🔌 CONNECTION
   // ===============================
-  io.on("connection", (socket) => {
+  io.on("connection", async (socket) => {
     console.log("✅ User connected:", socket.user.id);
+
+      // 🟢 ONLINE
+    await setUserOnline(socket.user.id);
+
+    io.emit("presence-update", {
+      userId: socket.user.id,
+      status: "ONLINE"
+    });
+
+    socket.on("disconnect", async () => {
+      console.log("User disconnected:", socket.user.id);
+      
+    });
+
+        // 🔴 OFFLINE
+      await setUserOffline(socket.user.id);
+
+      io.emit("presence-update", {
+        userId: socket.user.id,
+        status: "OFFLINE"
+      });
+
 
     // ===============================
     // 📥 JOIN CHANNEL
