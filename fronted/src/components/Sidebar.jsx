@@ -2,17 +2,17 @@ import React, { useContext, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { FaBars } from "react-icons/fa";
 import UserContext from "../context/UserContext";
-import "./sidebar.css";
+import "./CSS/Sidebar.css";
 
 const Sidebar = () => {
-  const { user, setUser } = useContext(UserContext);
+  const { user, logout } = useContext(UserContext);
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    setUser(null);
+    logout();
     navigate("/login");
+    setOpen(false);
   };
 
   return (
@@ -26,30 +26,27 @@ const Sidebar = () => {
       <aside className={`sidebar ${open ? "open" : ""}`}>
         {/* Navigation */}
         <nav className="sidebar-nav">
-          <NavLink
-            to="/"
-            onClick={() => setOpen(false)}
-            className={({ isActive }) => (isActive ? "active" : "")}
-          >
+          <NavLink to="/" onClick={() => setOpen(false)}>
             Home
           </NavLink>
 
           {user && (
-            <NavLink
-              to="/profile"
-              onClick={() => setOpen(false)}
-              className={({ isActive }) => (isActive ? "active" : "")}
-            >
+            <NavLink to="/profile" onClick={() => setOpen(false)}>
               Profile
             </NavLink>
           )}
 
-          <button
-            onClick={() => setOpen(false)}
-            className={({ isActive }) => (isActive ? "active" : "")}
-          >
-            Post
-          </button>
+          {user && (
+            <button
+              className="sidebar-btn"
+              onClick={() => {
+                setOpen(false);
+                navigate("/create-post");
+              }}
+            >
+              Create Post
+            </button>
+          )}
         </nav>
 
         {/* Bottom Section */}
@@ -62,8 +59,8 @@ const Sidebar = () => {
                   alt="avatar"
                 />
                 <div>
-                  <h4>{user.fullName || "Guest"}</h4>
-                  <p>@{user.username || "guest"}</p>
+                  <h4>{user.fullName}</h4>
+                  <p>@{user.username}</p>
                 </div>
               </div>
 
@@ -73,8 +70,12 @@ const Sidebar = () => {
             </>
           ) : (
             <div className="auth-links">
-              <NavLink to="/login">Login</NavLink>
-              <NavLink to="/register">Register</NavLink>
+              <NavLink to="/login" onClick={() => setOpen(false)}>
+                Login
+              </NavLink>
+              <NavLink to="/register" onClick={() => setOpen(false)}>
+                Register
+              </NavLink>
             </div>
           )}
         </div>

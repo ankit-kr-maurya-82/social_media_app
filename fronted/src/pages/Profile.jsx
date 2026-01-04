@@ -1,11 +1,12 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import UserContext from "../context/UserContext";
 import Card from "../components/Card";
 import dummyPosts from "../components/dummyPosts";
-import "./profile.css";
+import "./CSS/Profile.css";
 
 const Profile = () => {
   const { user } = useContext(UserContext);
+  const [activeTab, setActiveTab] = useState("posts");
 
   if (!user) {
     return (
@@ -23,29 +24,32 @@ const Profile = () => {
         <div className="profile-cover">
           <img
             src={
-              dummyPosts.cover ||
+              user.coverImage ||
               "https://images.pexels.com/photos/10948946/pexels-photo-10948946.jpeg"
             }
             alt="cover"
           />
 
           {/* Avatar */}
-          <img
-            src={
-              dummyPosts.avatar ||
-              "https://images.pexels.com/photos/10948946/pexels-photo-10948946.jpeg"
-            }
-            alt="avatar"
-            className="profile-avatar"
-          />
+          <div className="avatar-wrapper">
+            <img
+              src={
+                user.avatar ||
+                "https://images.pexels.com/photos/10948946/pexels-photo-10948946.jpeg"
+              }
+              alt="avatar"
+              className="profile-avatar"
+            />
+            <div className="avatar-overlay">Edit</div>
+          </div>
         </div>
 
         {/* Info */}
         <div className="profile-info">
           <div className="profile-header">
             <div>
-              <h2>{user.username}</h2>
-              <p>@{dummyPosts.username}</p>
+              <h2>{user.fullName || user.username}</h2>
+              <p>@{user.username}</p>
             </div>
 
             <button className="edit-profile-btn">
@@ -54,34 +58,56 @@ const Profile = () => {
           </div>
 
           <p className="profile-bio">
-            {dummyPosts.bio || "No bio added yet."}
+            {user.bio || "No bio added yet."}
           </p>
 
           {/* Stats */}
           <div className="profile-stats">
             <span>
-              <b>{dummyPosts.following || 0}</b> Following
+              <b>{user.following?.length || 0}</b> Following
             </span>
             <span>
-              <b>{dummyPosts.followers || 0}</b> Followers
+              <b>{user.followers?.length || 0}</b> Followers
             </span>
           </div>
         </div>
 
         {/* Tabs */}
         <div className="profile-tabs">
-          <button className="active">Posts</button>
-          <button>Replies</button>
-          <button>Media</button>
+          <button
+            className={activeTab === "posts" ? "active" : ""}
+            onClick={() => setActiveTab("posts")}
+          >
+            Posts
+          </button>
+
+          <button
+            className={activeTab === "replies" ? "active" : ""}
+            onClick={() => setActiveTab("replies")}
+          >
+            Replies
+          </button>
+
+          <button
+            className={activeTab === "media" ? "active" : ""}
+            onClick={() => setActiveTab("media")}
+          >
+            Media
+          </button>
         </div>
 
         {/* Posts */}
-        <div className="profile-posts">
-          {dummyPosts.map((post) => (
-            <Card key={post._id} post={post} />
-          ))}
-        </div>
-
+        {activeTab === "posts" && (
+          <div className="profile-posts">
+            {dummyPosts.length === 0 ? (
+              <p className="no-posts">No posts yet</p>
+            ) : (
+              dummyPosts.map((post) => (
+                <Card key={post._id || post.id} post={post} />
+              ))
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
