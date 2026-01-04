@@ -1,0 +1,145 @@
+/* Layout */
+.home-container {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  padding: 24px;
+  background: #020617;
+  min-height: calc(100vh - 60px);
+}
+
+/* Feed */
+.feed {
+  width: 100%;
+  max-width: 620px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Create Post */
+.create-post {
+  background: #020617;
+  border: 1px solid #1f2937;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.create-post input {
+  width: 100%;
+  background: #020617;
+  border: 1px solid #374151;
+  padding: 10px 14px;
+  border-radius: 999px;
+  color: white;
+  outline: none;
+}
+
+.create-post input::placeholder {
+  color: #9ca3af;
+}
+
+/* Post Card */
+.post-card {
+  display: flex;
+  background: #020617;
+  border: 1px solid #1f2937;
+  border-radius: 14px;
+  padding: 12px;
+  gap: 12px;
+}
+
+/* Votes */
+.vote-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+.vote-section button {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.vote-section button:hover {
+  color: #3b82f6;
+}
+
+/* Post Content */
+.post-content h3 {
+  color: white;
+  font-size: 16px;
+  margin-bottom: 6px;
+}
+
+.post-content p {
+  color: #d1d5db;
+  font-size: 14px;
+}
+
+/* Footer */
+.post-footer {
+  margin-top: 8px;
+  display: flex;
+  gap: 16px;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 280px;
+  background: #020617;
+  border: 1px solid #1f2937;
+  border-radius: 14px;
+  padding: 16px;
+  height: fit-content;
+}
+
+.sidebar h4 {
+  color: white;
+  margin-bottom: 8px;
+}
+
+.sidebar p {
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+.create-btn {
+  margin-top: 12px;
+  width: 100%;
+  padding: 10px;
+  border-radius: 999px;
+  border: none;
+  background: #2563eb;
+  color: white;
+  cursor: pointer;
+}
+
+.create-btn:hover {
+  background: #1d4ed8;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .sidebar {
+    display: none;
+  }
+}
+.post-content {
+  cursor: pointer;
+}
+
+.create-post {
+  cursor: pointer;
+}
+
+.create-post:hover {
+  border-color: #3b82f6;
+}

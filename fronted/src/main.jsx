@@ -4,7 +4,7 @@ import './index.css'
 import App from './App.jsx'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Layout from './Layout.jsx'
-import Home from './pages/Home/Home.jsx'
+import Home from './pages/Home.jsx'
 import About from './components/About/About.jsx'
 import Profile from './pages/Profile.jsx'
 import Register from './pages/Register.jsx'
@@ -28,7 +28,8 @@ const router = createBrowserRouter([
       {
         element: <ProtectedRoute />,
         children: [
-          { index: true, element: <Home /> },
+          // { index: true, element: <Home /> },
+          { path: "/", element: <Home /> },
           { path: "about", element: <About /> },
           { path: "profile", element: <Profile /> },
           { path: "post", element: <Post /> },

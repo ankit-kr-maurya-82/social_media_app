@@ -18,13 +18,16 @@ const Header = () => {
   return (
     <>
       <header className="header">
-        {/* Left: Logo + Search */}
+        {/* Left: Logo */}
         <div className="leftSection">
           <NavLink to="/" className="logo">
             SocialApp
           </NavLink>
 
-          {/* Search */}
+          
+        </div>
+
+        {/* Search */}
           <div className="searchBox">
             <FaSearch className="searchIcon" />
             <input
@@ -33,7 +36,6 @@ const Header = () => {
               className="searchInput"
             />
           </div>
-        </div>
 
         {/* Desktop Navigation */}
         <nav className="navLinks desktopOnly">
