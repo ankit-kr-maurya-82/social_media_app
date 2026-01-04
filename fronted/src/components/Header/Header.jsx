@@ -18,30 +18,29 @@ const Header = () => {
   return (
     <>
       <header className="header">
-        {/* Left: Logo */}
+        {/* Left */}
         <div className="leftSection">
           <NavLink to="/" className="logo">
             SocialApp
           </NavLink>
-
-          
         </div>
 
-        {/* Search */}
-          <div className="searchBox">
-            <FaSearch className="searchIcon" />
-            <input
-              type="text"
-              placeholder="Search..."
-              className="searchInput"
-            />
-          </div>
+        {/* Center Search */}
+        <div className="searchBox desktopOnly">
+          <FaSearch className="searchIcon" />
+          <input
+            type="text"
+            placeholder="Search..."
+            className="searchInput"
+          />
+        </div>
 
-        {/* Desktop Navigation */}
+        {/* Right */}
         <nav className="navLinks desktopOnly">
           <NavLink to="/">Home</NavLink>
           <NavLink to="/explore">Explore</NavLink>
           {user && <NavLink to="/profile">Profile</NavLink>}
+
           {user ? (
             <button onClick={handleLogout} className="btn">
               Logout
@@ -65,12 +64,23 @@ const Header = () => {
       {/* Mobile Menu */}
       {menuOpen && (
         <div className="mobileMenu">
+          <div className="searchBox">
+            <FaSearch className="searchIcon" />
+            <input
+              type="text"
+              placeholder="Search..."
+              className="searchInput"
+            />
+          </div>
+
           <NavLink to="/" onClick={() => setMenuOpen(false)}>
             Home
           </NavLink>
+
           <NavLink to="/explore" onClick={() => setMenuOpen(false)}>
             Explore
           </NavLink>
+
           {user && (
             <NavLink to="/profile" onClick={() => setMenuOpen(false)}>
               Profile

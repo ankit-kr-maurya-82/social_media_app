@@ -50,7 +50,7 @@ const Layout = () => {
           onClose={() => setOpenPost(false)}
         />
 
-        <main className="flex-1 pt-14">
+        <main className="flex-1">
           <Outlet />
         </main>
 

@@ -63,12 +63,21 @@ const Profile = () => {
 
           {/* Stats */}
           <div className="profile-stats">
-            <span>
-              <b>{user.following?.length || 0}</b> Following
-            </span>
-            <span>
-              <b>{user.followers?.length || 0}</b> Followers
-            </span>
+            <button
+              className={activeTab === "following" ? "active" : ""}
+              onClick={() => setActiveTab("following")}
+            >
+              <b>{user.following?.length || 0}</b>
+              <span>Following</span>
+            </button>
+
+            <button
+              className={activeTab === "followers" ? "active" : ""}
+              onClick={() => setActiveTab("followers")}
+            >
+              <b>{user.followers?.length || 0}</b>
+              <span>Followers</span>
+            </button>
           </div>
         </div>
 
@@ -96,7 +105,7 @@ const Profile = () => {
           </button>
         </div>
 
-        {/* Posts */}
+        {/* Content */}
         {activeTab === "posts" && (
           <div className="profile-posts">
             {dummyPosts.length === 0 ? (
@@ -107,6 +116,22 @@ const Profile = () => {
               ))
             )}
           </div>
+        )}
+
+        {activeTab === "followers" && (
+          <div className="empty-state">Followers list coming soon</div>
+        )}
+
+        {activeTab === "following" && (
+          <div className="empty-state">Following list coming soon</div>
+        )}
+
+        {activeTab === "replies" && (
+          <div className="empty-state">Replies coming soon</div>
+        )}
+
+        {activeTab === "media" && (
+          <div className="empty-state">Media coming soon</div>
         )}
       </div>
     </div>

@@ -1,0 +1,109 @@
+.post-card {
+  display: flex;
+  gap: 14px;
+  background: #020617;
+  border: 1px solid #1e293b;
+  border-radius: 14px;
+  padding: 14px;
+  transition: 0.2s;
+}
+
+.post-card:hover {
+  border-color: #334155;
+  background: #020617;
+}
+
+/* Vote */
+.post-vote {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: #94a3b8;
+}
+
+.post-vote button {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.post-vote button:hover {
+  color: white;
+}
+
+.post-vote span {
+  font-weight: 600;
+  color: white;
+}
+
+/* Body */
+.post-body {
+  flex: 1;
+}
+
+/* Header */
+.post-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #94a3b8;
+  margin-bottom: 6px;
+}
+
+.post-author {
+  font-weight: 600;
+  color: #cbd5f5;
+}
+
+.post-dot {
+  font-size: 10px;
+}
+
+/* Title */
+.post-title {
+  margin: 0;
+  font-size: 16px;
+  color: white;
+}
+
+/* Text */
+.post-text {
+  margin-top: 6px;
+  font-size: 14px;
+  color: #cbd5f5;
+  line-height: 1.5;
+}
+
+/* Footer */
+.post-footer {
+  display: flex;
+  gap: 14px;
+  margin-top: 10px;
+}
+
+.post-footer button {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.post-footer button:hover {
+  color: white;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .post-card {
+    padding: 12px;
+  }
+
+  .post-title {
+    font-size: 15px;
+  }
+}

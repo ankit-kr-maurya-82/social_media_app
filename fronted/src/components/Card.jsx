@@ -1,40 +1,38 @@
 import React from "react";
-import "./card.css";
+import "./CSS/Card.css";
 
 const Card = ({ post }) => {
   return (
     <div className="post-card">
-      {/* Header */}
-      <div className="post-header">
-        <img
-          src={post.avatar || "/default-avatar.png"}
-          alt="avatar"
-          className="post-avatar"
-        />
-        <div>
-          <h4 className="post-username">{post.username}</h4>
-          <span className="post-time">2h ago</span>
-        </div>
+      {/* Vote */}
+      <div className="post-vote">
+        <button>▲</button>
+        <span>{post.votes || 0}</span>
+        <button>▼</button>
       </div>
 
       {/* Content */}
-      <div className="post-content">
-        <p>{post.content}</p>
+      <div className="post-body">
+        <div className="post-header">
+          <span className="post-author">
+            u/{post.author || "anonymous"}
+          </span>
+          <span className="post-dot">•</span>
+          <span className="post-time">2h ago</span>
+        </div>
 
-        {post.image && (
-          <img
-            src={post.image}
-            alt="post"
-            className="post-image"
-          />
+        <h3 className="post-title">{post.title}</h3>
+
+        {post.content && (
+          <p className="post-text">{post.content}</p>
         )}
-      </div>
 
-      {/* Actions */}
-      <div className="post-actions">
-        <button>❤️ Like</button>
-        <button>💬 Comment</button>
-        <button>↗ Share</button>
+        {/* Footer */}
+        <div className="post-footer">
+          <button>💬 {post.comments || 0} Comments</button>
+          <button>🔗 Share</button>
+          <button>⭐ Save</button>
+        </div>
       </div>
     </div>
   );
