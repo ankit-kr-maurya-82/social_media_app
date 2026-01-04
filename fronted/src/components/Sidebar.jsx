@@ -21,9 +21,7 @@ const Sidebar = () => {
       {open && <div className="overlay" onClick={() => setOpen(false)} />}
 
       {/* Mobile Toggle Button */}
-      <button className="sidebar-toggle" onClick={() => setOpen(!open)}>
-        <FaBars />
-      </button>
+      
 
       {/* Sidebar */}
       <aside className={`sidebar ${open ? "open" : ""}`}>
