@@ -17,7 +17,10 @@ const Sidebar = () => {
 
   return (
     <>
-      {/* Mobile Toggle */}
+      {/* Overlay for mobile */}
+      {open && <div className="overlay" onClick={() => setOpen(false)} />}
+
+      {/* Mobile Toggle Button */}
       <button className="sidebar-toggle" onClick={() => setOpen(!open)}>
         <FaBars />
       </button>
