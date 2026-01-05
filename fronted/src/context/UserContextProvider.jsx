@@ -13,8 +13,15 @@ const UserContextProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
+  // ✅ LOGOUT FUNCTION (ADD THIS)
+  const logout = () => {
+    setUser(null);
+    localStorage.removeItem("user");
+    localStorage.removeItem("token"); // if using JWT
+  };
+
   return (
-    <UserContext.Provider value={{ user, setUser, loading }}>
+    <UserContext.Provider value={{ user, setUser, logout, loading }}>
       {children}
     </UserContext.Provider>
   );
