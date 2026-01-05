@@ -20,64 +20,48 @@ const Profile = () => {
     <div className="profile-page">
       <div className="profile-container">
 
-        {/* Cover */}
-        <div className="profile-cover">
-          <img
-            src={
-              user.coverImage ||
-              "https://images.pexels.com/photos/10948946/pexels-photo-10948946.jpeg"
-            }
-            alt="cover"
-          />
-
-          {/* Avatar */}
+        {/* Avatar + Info */}
+        <div className="profile-top">
           <div className="avatar-wrapper">
-            <img
-              src={
-                user.avatar ||
-                "https://images.pexels.com/photos/10948946/pexels-photo-10948946.jpeg"
-              }
-              alt="avatar"
-              className="profile-avatar"
-            />
+            {user.avatar ? (
+              <img
+                src={user.avatar}
+                alt="avatar"
+                className="profile-avatar"
+              />
+            ) : (
+              <div className="profile-avatar fallback-avatar">
+                {user.username?.charAt(0).toUpperCase()}
+              </div>
+            )}
             <div className="avatar-overlay">Edit</div>
           </div>
-        </div>
 
-        {/* Info */}
-        <div className="profile-info">
-          <div className="profile-header">
-            <div>
-              <h2>{user.fullName || user.username}</h2>
-              <p>@{user.username}</p>
+          <div className="profile-info">
+            <h2>{user.fullName || user.username}</h2>
+            <p>@{user.username}</p>
+
+            <p className="profile-bio">
+              {user.bio || "No bio added yet."}
+            </p>
+
+            <div className="profile-stats">
+              <button
+                className={activeTab === "followers" ? "active" : ""}
+                onClick={() => setActiveTab("followers")}
+              >
+                <b>{user.followers?.length || 0}</b>
+                <span>Followers</span>
+              </button>
+
+              <button
+                className={activeTab === "following" ? "active" : ""}
+                onClick={() => setActiveTab("following")}
+              >
+                <b>{user.following?.length || 0}</b>
+                <span>Following</span>
+              </button>
             </div>
-
-            <button className="edit-profile-btn">
-              Edit Profile
-            </button>
-          </div>
-
-          <p className="profile-bio">
-            {user.bio || "No bio added yet."}
-          </p>
-
-          {/* Stats */}
-          <div className="profile-stats">
-            <button
-              className={activeTab === "following" ? "active" : ""}
-              onClick={() => setActiveTab("following")}
-            >
-              <b>{user.following?.length || 0}</b>
-              <span>Following</span>
-            </button>
-
-            <button
-              className={activeTab === "followers" ? "active" : ""}
-              onClick={() => setActiveTab("followers")}
-            >
-              <b>{user.followers?.length || 0}</b>
-              <span>Followers</span>
-            </button>
           </div>
         </div>
 
@@ -89,14 +73,12 @@ const Profile = () => {
           >
             Posts
           </button>
-
           <button
             className={activeTab === "replies" ? "active" : ""}
             onClick={() => setActiveTab("replies")}
           >
             Replies
           </button>
-
           <button
             className={activeTab === "media" ? "active" : ""}
             onClick={() => setActiveTab("media")}
@@ -118,20 +100,8 @@ const Profile = () => {
           </div>
         )}
 
-        {activeTab === "followers" && (
-          <div className="empty-state">Followers list coming soon</div>
-        )}
-
-        {activeTab === "following" && (
-          <div className="empty-state">Following list coming soon</div>
-        )}
-
-        {activeTab === "replies" && (
-          <div className="empty-state">Replies coming soon</div>
-        )}
-
-        {activeTab === "media" && (
-          <div className="empty-state">Media coming soon</div>
+        {activeTab !== "posts" && (
+          <div className="empty-state">Coming soon</div>
         )}
       </div>
     </div>
