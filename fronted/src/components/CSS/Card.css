@@ -76,3 +76,8 @@
   color: white;
   border-color: #3b82f6;
 }
+
+.post-body{
+  padding: 12px;
+  text-align: justify;
+}

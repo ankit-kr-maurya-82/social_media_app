@@ -7,6 +7,7 @@ import Profile from './pages/Profile';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import "./index.css"
+import Explore from './pages/Explore';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="profile" element={<Profile />} />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
+        <Route path="explore" element={<Explore />} />
       </Route>
     </Routes>
     </div>

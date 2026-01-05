@@ -1,9 +1,9 @@
 /* Base */
 .sidebar {
   position: fixed;
-  top: 0;
+  top: 10vh;
   left: 0;
-  height: 100vh;
+  height: 80vh;
   width: 260px;
   display: flex;
   flex-direction: column;

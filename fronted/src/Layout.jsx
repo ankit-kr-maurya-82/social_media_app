@@ -7,7 +7,7 @@ import { ThemeProvider } from "./context/theme";
 import "./index.css"
 
 const Layout = () => {
-  const [themeMode, setThemeMode] = useState("dark");
+  const [themeMode, setThemeMode] = useState("light");
   const location = useLocation();
 
   const hideHeader =

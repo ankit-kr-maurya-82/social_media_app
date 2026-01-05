@@ -31,6 +31,7 @@ const Box = ({ onPostCreated }) => {
         value={title}
         onChange={(e) => setTitle(e.target.value)}
       />
+      
 
       <textarea
         className="w-full bg-gray-800 resize-none h-62 text-white p-2 rounded"

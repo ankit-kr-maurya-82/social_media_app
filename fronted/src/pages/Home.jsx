@@ -2,27 +2,8 @@ import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import UserContext from "../context/UserContext";
 import "./CSS/Home.css";
+import dummyPosts from "./dummyPosts.js";
 
-const dummyPosts = [
-  {
-    id: 1,
-    title: "How to learn backend properly?",
-    content: "I am learning Node.js, any roadmap suggestions?",
-    author: "ankit_dev",
-    avatar: "",
-    votes: 12,
-    comments: 4,
-  },
-  {
-    id: 2,
-    title: "React vs Vue in 2026",
-    content: "Which one should I pick for long term?",
-    author: "frontend_guy",
-    avatar: "",
-    votes: 8,
-    comments: 2,
-  },
-];
 
 const Home = () => {
   const { user } = useContext(UserContext);
@@ -37,30 +18,12 @@ const Home = () => {
     navigate("/create-post");
   };
 
-  const handleVote = (id, type) => {
-    setPosts((prev) =>
-      prev.map((post) =>
-        post.id === id
-          ? {
-              ...post,
-              votes: type === "up" ? post.votes + 1 : post.votes - 1,
-            }
-          : post
-      )
-    );
-  };
+ 
 
   return (
     <div className="home-container">
       <div className="feed">
-        {/* Create Post */}
-        <div className="create-post" onClick={handleCreatePost}>
-          <input
-            type="text"
-            placeholder={user ? "Create a post..." : "Login to create a post"}
-            disabled
-          />
-        </div>
+        
 
         {/* Posts */}
         {posts.map((post) => (
