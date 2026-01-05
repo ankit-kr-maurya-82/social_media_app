@@ -1,39 +1,51 @@
 import React, { useContext, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { FaBars } from "react-icons/fa";
+import { FaBars, FaPlus, FaHome, FaUser, FaCompass } from "react-icons/fa";
 import UserContext from "../context/UserContext";
 import "./CSS/Sidebar.css";
 
 const Sidebar = () => {
-  const { user, logout } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
   const handleLogout = () => {
-    logout();
+    localStorage.removeItem("user");
+    setUser(null);
     navigate("/login");
     setOpen(false);
   };
 
   return (
     <>
-      {/* Overlay for mobile */}
-      {open && <div className="overlay" onClick={() => setOpen(false)} />}
+      {/* Mobile Overlay */}
+      {open && <div className="sidebar-overlay" onClick={() => setOpen(false)} />}
 
-      {/* Mobile Toggle Button */}
-      
+      {/* Mobile Toggle */}
+      <button className="sidebar-toggle mobileOnly" onClick={() => setOpen(!open)}>
+        <FaBars />
+      </button>
 
       {/* Sidebar */}
       <aside className={`sidebar ${open ? "open" : ""}`}>
-        {/* Navigation */}
+        {/* Top */}
+        <div className="sidebar-top">
+          <h2 className="sidebar-logo">Sintax</h2>
+        </div>
+
+        {/* Nav */}
         <nav className="sidebar-nav">
           <NavLink to="/" onClick={() => setOpen(false)}>
-            Home
+            <FaHome /> Home
+          </NavLink>
+
+          <NavLink to="/explore" onClick={() => setOpen(false)}>
+            <FaCompass /> Explore
           </NavLink>
 
           {user && (
             <NavLink to="/profile" onClick={() => setOpen(false)}>
-              Profile
+              <FaUser /> Profile
             </NavLink>
           )}
 
@@ -45,20 +57,17 @@ const Sidebar = () => {
                 navigate("/create-post");
               }}
             >
-              Create Post
+              <FaPlus /> Create Post
             </button>
           )}
         </nav>
 
-        {/* Bottom Section */}
+        {/* Bottom */}
         <div className="sidebar-bottom">
           {user ? (
             <>
               <div className="user-info">
-                <img
-                  src={user.avatar || "/default-avatar.png"}
-                  alt="avatar"
-                />
+                <img src={user.avatar || "/default-avatar.png"} alt="avatar" />
                 <div>
                   <h4>{user.fullName}</h4>
                   <p>@{user.username}</p>

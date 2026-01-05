@@ -4,14 +4,13 @@ import Header from "./components/Header/Header";
 import Sidebar from "./components/Sidebar";
 import UserContextProvider from "./context/UserContextProvider";
 import { ThemeProvider } from "./context/theme";
-import PostModal from "./components/Post/PostModal";
+import "./index.css"
 
 const Layout = () => {
   const [themeMode, setThemeMode] = useState("dark");
-  const [openPost, setOpenPost] = useState(false);
   const location = useLocation();
 
-  const hideHeaderFooter =
+  const hideHeader =
     location.pathname.startsWith("/login") ||
     location.pathname.startsWith("/register");
 
@@ -20,14 +19,12 @@ const Layout = () => {
   };
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme === "light" || savedTheme === "dark") {
-      setThemeMode(savedTheme);
-    }
+    const saved = localStorage.getItem("theme");
+    if (saved) setThemeMode(saved);
   }, []);
 
   useEffect(() => {
-    document.documentElement.classList.remove("light", "dark");
+    document.documentElement.classList.remove("dark", "light");
     document.documentElement.classList.add(themeMode);
     localStorage.setItem("theme", themeMode);
   }, [themeMode]);
@@ -35,25 +32,12 @@ const Layout = () => {
   return (
     <ThemeProvider value={{ themeMode, toggleTheme }}>
       <UserContextProvider>
+        {!hideHeader && <Header />}
+        {!hideHeader && <Sidebar />}
 
-        {!hideHeaderFooter && (
-          <Header onPostClick={() => setOpenPost(true)} />
-        )}
-
-        {!hideHeaderFooter && (
-          <Sidebar onPostClick={() => setOpenPost(true)} />
-        )}
-
-        {/* 🔥 Post Popup */}
-        <PostModal
-          open={openPost}
-          onClose={() => setOpenPost(false)}
-        />
-
-        <main className="flex-1">
+        <main>
           <Outlet />
         </main>
-
       </UserContextProvider>
     </ThemeProvider>
   );

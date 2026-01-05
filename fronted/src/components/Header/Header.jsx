@@ -21,7 +21,7 @@ const Header = () => {
         {/* Left */}
         <div className="leftSection">
           <NavLink to="/" className="logo">
-            SocialApp
+            Sintax
           </NavLink>
         </div>
 

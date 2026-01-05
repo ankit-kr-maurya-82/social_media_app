@@ -4,7 +4,6 @@
   justify-content: center;
   gap: 24px;
   padding: 24px;
-  background: #020617;
   min-height: calc(100vh - 60px);
 }
 
@@ -19,31 +18,23 @@
 
 /* Create Post */
 .create-post {
-  background: #020617;
-  border: 1px solid #1f2937;
   border-radius: 12px;
   padding: 12px;
+  cursor: pointer;
+  transition: border 0.2s;
 }
 
 .create-post input {
   width: 100%;
-  background: #020617;
-  border: 1px solid #374151;
   padding: 10px 14px;
   border-radius: 999px;
-  color: white;
   outline: none;
-}
-
-.create-post input::placeholder {
-  color: #9ca3af;
+  border: none;
 }
 
 /* Post Card */
 .post-card {
   display: flex;
-  background: #020617;
-  border: 1px solid #1f2937;
   border-radius: 14px;
   padding: 12px;
   gap: 12px;
@@ -54,31 +45,27 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: #9ca3af;
   font-size: 14px;
 }
 
 .vote-section button {
   background: none;
   border: none;
-  color: #9ca3af;
   cursor: pointer;
   font-size: 16px;
 }
 
-.vote-section button:hover {
-  color: #3b82f6;
+/* Post Content */
+.post-content {
+  cursor: pointer;
 }
 
-/* Post Content */
 .post-content h3 {
-  color: white;
   font-size: 16px;
   margin-bottom: 6px;
 }
 
 .post-content p {
-  color: #d1d5db;
   font-size: 14px;
 }
 
@@ -88,42 +75,94 @@
   display: flex;
   gap: 16px;
   font-size: 12px;
-  color: #9ca3af;
 }
 
-/* Sidebar */
-.sidebar {
-  width: 280px;
+/* ---------------- DARK MODE ---------------- */
+
+.dark .home-container {
+  background: #020617;
+  color: white;
+}
+
+.dark .create-post {
   background: #020617;
   border: 1px solid #1f2937;
-  border-radius: 14px;
-  padding: 16px;
-  height: fit-content;
 }
 
-.sidebar h4 {
+.dark .create-post input {
+  background: #020617;
+  border: 1px solid #374151;
   color: white;
-  margin-bottom: 8px;
 }
 
-.sidebar p {
+.dark .post-card {
+  background: #020617;
+  border: 1px solid #1f2937;
+}
+
+.dark .vote-section,
+.dark .post-footer {
   color: #9ca3af;
-  font-size: 14px;
 }
 
-.create-btn {
-  margin-top: 12px;
-  width: 100%;
-  padding: 10px;
-  border-radius: 999px;
-  border: none;
-  background: #2563eb;
+.dark .vote-section button {
+  color: #9ca3af;
+}
+
+.dark .vote-section button:hover {
+  color: #3b82f6;
+}
+
+.dark .post-content h3 {
   color: white;
-  cursor: pointer;
 }
 
-.create-btn:hover {
-  background: #1d4ed8;
+.dark .post-content p {
+  color: #d1d5db;
+}
+
+/* ---------------- LIGHT MODE ---------------- */
+
+.light .home-container {
+  background: #f8fafc;
+  color: #020617;
+}
+
+.light .create-post {
+  background: white;
+  border: 1px solid #e2e8f0;
+}
+
+.light .create-post input {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  color: #020617;
+}
+
+.light .post-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+}
+
+.light .vote-section,
+.light .post-footer {
+  color: #64748b;
+}
+
+.light .vote-section button {
+  color: #64748b;
+}
+
+.light .vote-section button:hover {
+  color: #2563eb;
+}
+
+.light .post-content h3 {
+  color: #020617;
+}
+
+.light .post-content p {
+  color: #334155;
 }
 
 /* Responsive */
@@ -131,15 +170,4 @@
   .sidebar {
     display: none;
   }
-}
-.post-content {
-  cursor: pointer;
-}
-
-.create-post {
-  cursor: pointer;
-}
-
-.create-post:hover {
-  border-color: #3b82f6;
 }
