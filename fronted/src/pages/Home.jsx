@@ -46,7 +46,8 @@ const Home = () => {
                   <img src={post.avatar} alt="avatar" />
                 ) : (
                   <div className="avatar-fallback">
-                    {post.author.charAt(0).toUpperCase()}
+                    {/* {post.author.charAt(0).toUpperCase()} */}
+                    {post.author}
                   </div>
                 )}
                 <span>u/{post.author}</span>
