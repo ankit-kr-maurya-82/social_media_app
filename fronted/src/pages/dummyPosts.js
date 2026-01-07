@@ -62,7 +62,7 @@ const dummyPosts = [
     },
     username: "kavita_03",
     content: "idk i was bored",
-    video: "https://images.pexels.com/photos/10948946/pexels-photo-10948946.jpeghttps://www.pexels.com/download/video/2436088/",
+    video: "https://www.pexels.com/download/video/2835528/",
     likesCount: 12,
     isLiked: false,
     userVote: 0, // 🔥 -1 = downvote | 0 = none | 1 = upvote

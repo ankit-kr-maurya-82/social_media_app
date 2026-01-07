@@ -1,32 +1,42 @@
-import React, { useContext, useState } from "react";
+import React, { act, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import UserContext from "../context/UserContext";
 import "./CSS/Home.css";
 import dummyPosts from "./dummyPosts.js";
-import {FaArrowDown, FaArrowUp, FaHeart, FaRegComment, FaRegCommentDots, FaRegHeart, FaShare, FaTimes} from "react-icons/fa"
+import {
+  FaArrowDown,
+  FaArrowUp,
+  FaHeart,
+  FaRegComment,
+  FaRegCommentDots,
+  FaRegHeart,
+  FaShare,
+  FaTimes,
+} from "react-icons/fa";
 
 const Home = () => {
   const { user } = useContext(UserContext);
   const navigate = useNavigate();
   const [posts, setPosts] = useState(dummyPosts);
 
- const [activeMedia, setActiveMedia] = useState(null)  // image or video
-
+  const [activeMedia, setActiveMedia] = useState(null); // image or video
 
   const handleVote = (id, vote) => {
-    setPosts((prev) => prev.map((post) => {
-      if(post._id !== id) return post;
+    setPosts((prev) =>
+      prev.map((post) => {
+        if (post._id !== id) return post;
 
-      const newVote = post.userVote === vote? 0: vote;
-      const diff = newVote - post.userVote;
+        const newVote = post.userVote === vote ? 0 : vote;
+        const diff = newVote - post.userVote;
 
-      return{
-        ...post,
-        userVote: newVote,
-        userVote: post.userVote + diff,
-      }
-    }))
-  }
+        return {
+          ...post,
+          userVote: newVote,
+          userVote: post.userVote + diff,
+        };
+      })
+    );
+  };
 
   return (
     <div className="home-container">
@@ -51,31 +61,36 @@ const Home = () => {
 
             {/* Image */}
             {post.image && (
-              <div className="post-image-wrapper"
-              onClick={() => setActiveMedia({type: "image", src: post.image})}>
-                <img
-                  src={post.image}
-                  alt="post"
-                  className="post-image"
-                />
+              <div
+                className="post-image-wrapper"
+                onClick={() =>
+                  setActiveMedia({ type: "image", src: post.image })
+                }
+              >
+                <img src={post.image} alt="post" className="post-image" />
               </div>
             )}
 
             {/* Video */}
             {post.video && (
-              <div className="post-image-wrapper"
-              onClick={() =>
+              <div
+                className="post-image-wrapper"
+                onClick={() =>
                   setActiveMedia({ type: "video", src: post.video })
                 }
-                >
-                <video 
-                src={post.video}
-                className="post-image"
-                muted
-                playsInline/>
+              >
+                <video
+                  src={post.video}
+                  className="post-image"
+                  playsInline
+                  controls
+                  autoPlay
+                  muted={false}
+                  preload="metadata"
+                />
               </div>
             )}
-      
+
             {/* Footer */}
             <div className="post-footer reddit-vote">
               <button
@@ -93,38 +108,50 @@ const Home = () => {
               >
                 <FaArrowDown />
               </button>
-              
 
               <button onClick={() => navigate(`/post/${post._id}`)}>
-                 <FaRegComment/>
+                <FaRegComment />
                 {/* <span>Comment</span> */}
               </button>
 
               <button>
-                <FaShare/>
-                 {/* <span>Share</span> */}
-                 </button>
+                <FaShare />
+                {/* <span>Share</span> */}
+              </button>
             </div>
           </div>
-        ))} 
+        ))}
       </div>
 
-      {activeMedia   && (
-        <div className="image-modal-overlay"
-                  onClick={() => setActiveMedia(null)}
->
-          <button className="image-modal-close"
-                      onClick={() => setActiveMedia(null)}
->
-            <FaTimes/>
+      {activeMedia && (
+        <div
+          className="image-modal-overlay"
+          onClick={() => setActiveMedia(null)}
+        >
+          <button
+            className="image-modal-close"
+            onClick={() => setActiveMedia(null)}
+          >
+            <FaTimes />
           </button>
+          {activeMedia.type === "image" ? (
             <img
-            src={activeMedia.src}
-            alt="fullscreen"
-            className="image-modal-img"
-            onClick={(e) => e.stopPropagation()}
-          />
-          
+              src={activeMedia.src}
+              className="image-modal-img"
+              alt="fullscreen"
+              onClick={(e) => e.stopPropagation()}
+            />
+          ) : (
+            <video
+              src={activeMedia.src}
+              className="image-modal-img"
+              controls
+              autoPlay
+              muted={false}
+              playsInline
+              onClick={(e) => e.stopPropagation()}
+            />
+          )}
         </div>
       )}
     </div>

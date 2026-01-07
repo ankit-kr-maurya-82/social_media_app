@@ -2,6 +2,7 @@
   display: flex;
   justify-content: center;
   padding-top: 24px;
+  padding-bottom: 22px;
 }
 
 .feed {
@@ -73,6 +74,7 @@
   align-items: center;
   gap: 12px;
   margin-top: 12px;
+  padding: 12px;
 }
 
 .reddit-vote button {
