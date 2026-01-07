@@ -7,7 +7,7 @@ const dummyPosts = [
     },
     username: "ankit_dev",
     content: "idk i was bored",
-    image: "https://images.pexels.com/photos/10948946/pexels-photo-10948946.jpeg",
+    image: "https://images.pexels.com/photos/1097456/pexels-photo-1097456.jpeg",
     likesCount: 12,
     isLiked: false,
         userVote: 0, // 🔥 -1 = downvote | 0 = none | 1 = upvote
@@ -48,7 +48,7 @@ const dummyPosts = [
     },
     username: "uttaran_shaan",
     content: "idk i was bored",
-    image: "https://images.pexels.com/photos/10948946/pexels-photo-10948946.jpeg",
+    image: "https://images.pexels.com/photos/35243235/pexels-photo-35243235.jpeg",
     likesCount: 12,
     isLiked: false,
         userVote: 0, // 🔥 -1 = downvote | 0 = none | 1 = upvote
@@ -62,7 +62,7 @@ const dummyPosts = [
     },
     username: "kavita_03",
     content: "idk i was bored",
-    image: "https://images.pexels.com/photos/10948946/pexels-photo-10948946.jpeg",
+    video: "https://images.pexels.com/photos/10948946/pexels-photo-10948946.jpeghttps://www.pexels.com/download/video/2436088/",
     likesCount: 12,
     isLiked: false,
     userVote: 0, // 🔥 -1 = downvote | 0 = none | 1 = upvote
