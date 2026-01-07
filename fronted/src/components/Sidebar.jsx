@@ -3,6 +3,8 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { FaBars, FaPlus, FaHome, FaUser, FaCompass, FaSignOutAlt } from "react-icons/fa";
 import UserContext from "../context/UserContext";
 import "./CSS/Sidebar.css";
+import { IoMdSettings } from "react-icons/io";
+
 
 const Sidebar = () => {
   const { user, setUser } = useContext(UserContext);
@@ -45,6 +47,11 @@ const Sidebar = () => {
         <NavLink to="/create" className="sidebarItem">
           <FaPlus />
           <span>Create</span>
+        </NavLink>
+
+        <NavLink to="/setting" className="sidebarItem">
+          <IoMdSettings />
+          <span>Setting</span>
         </NavLink>
       </nav>
 
