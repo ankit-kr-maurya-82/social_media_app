@@ -17,87 +17,24 @@ const Header = () => {
 
   return (
     <>
-      <header className="header">
-        {/* Left */}
-        <div className="leftSection">
-          <NavLink to="/" className="logo">
-            Sintax
-          </NavLink>
-        </div>
+       <header className="headerWrapper">
+      <div className="header">
+        {/* <NavLink to="/" className="logo">Sintax</NavLink> */}
 
-        {/* Center Search */}
-        <div className="searchBox desktopOnly">
-          <FaSearch className="searchIcon" />
-          <input
-            type="text"
-            placeholder="Search..."
-            className="searchInput"
-          />
-        </div>
-
-        {/* Right */}
-        <nav className="navLinks desktopOnly">
+        <nav className="navLinks">
           <NavLink to="/">Home</NavLink>
           <NavLink to="/explore">Explore</NavLink>
           {user && <NavLink to="/profile">Profile</NavLink>}
-
-          {user ? (
-            <button onClick={handleLogout} className="btn">
-              Logout
-            </button>
-          ) : (
-            <NavLink to="/login" className="btn">
-              Login
-            </NavLink>
-          )}
         </nav>
 
-        {/* Mobile Hamburger */}
-        <div
-          className="hamburger mobileOnly"
-          onClick={() => setMenuOpen(!menuOpen)}
-        >
-          <FaBars />
-        </div>
-      </header>
-
-      {/* Mobile Menu */}
-      {menuOpen && (
-        <div className="mobileMenu">
-          <div className="searchBox">
-            <FaSearch className="searchIcon" />
-            <input
-              type="text"
-              placeholder="Search..."
-              className="searchInput"
-            />
-          </div>
-
-          <NavLink to="/" onClick={() => setMenuOpen(false)}>
-            Home
-          </NavLink>
-
-          <NavLink to="/explore" onClick={() => setMenuOpen(false)}>
-            Explore
-          </NavLink>
-
-          {user && (
-            <NavLink to="/profile" onClick={() => setMenuOpen(false)}>
-              Profile
-            </NavLink>
-          )}
-
-          {user ? (
-            <button onClick={handleLogout} className="btn">
-              Logout
-            </button>
-          ) : (
-            <NavLink to="/login" onClick={() => setMenuOpen(false)}>
-              Login
-            </NavLink>
-          )}
-        </div>
-      )}
+        {user ? (
+          <button className="btn" onClick={logout}>Logout</button>
+        ) : (
+          <NavLink to="/login" className="btn">Login</NavLink>
+        )}
+      </div>
+    </header>
+    
     </>
   );
 };
