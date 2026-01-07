@@ -27,12 +27,12 @@ const dummyPosts = [
 
   },
   {
-    _id: 1,
+    _id: 4,
     fullName: {
-      firstName: "Ankit",
-      lastName: "Kumar"
+      firstName: "Rohit",
+      lastName: "Sharma"
     },
-    username: "ankit_dev",
+    username: "rohit_sharma",
     content: "idk i was bored",
     image: "https://images.pexels.com/photos/10948946/pexels-photo-10948946.jpeg",
     likesCount: 12,
@@ -41,12 +41,12 @@ const dummyPosts = [
 
   },
   {
-    _id: 1,
+    _id: 5,
     fullName: {
-      firstName: "Ankit",
-      lastName: "Kumar"
+      firstName: "Uttaran",
+      lastName: "Bose"
     },
-    username: "ankit_dev",
+    username: "uttaran_shaan",
     content: "idk i was bored",
     image: "https://images.pexels.com/photos/10948946/pexels-photo-10948946.jpeg",
     likesCount: 12,
@@ -55,12 +55,12 @@ const dummyPosts = [
 
   },
   {
-    _id: 1,
+    _id: 6,
     fullName: {
-      firstName: "Ankit",
-      lastName: "Kumar"
+      firstName: "kavita",
+      lastName: "Rawat"
     },
-    username: "ankit_dev",
+    username: "kavita_03",
     content: "idk i was bored",
     image: "https://images.pexels.com/photos/10948946/pexels-photo-10948946.jpeg",
     likesCount: 12,

@@ -86,6 +86,7 @@
   align-items: center;
   gap: 16px;
   margin-top: 12px;
+  padding: 12px;
 }
 
 .post-footer button {
@@ -150,11 +151,11 @@
 }
 
 .reddit-vote .upvoted {
-  color: #ff4500;
+  color: #7193ff;
 }
 
 .reddit-vote .downvoted {
-  color: #7193ff;
+  color: #ff4500;
 }
 
 .vote-count {
