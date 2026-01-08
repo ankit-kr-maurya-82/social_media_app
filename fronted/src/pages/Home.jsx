@@ -31,7 +31,7 @@ const Home = () => {
 
         return {
           ...post,
-          userVote: newVote,
+          // userVote: newVote,
           userVote: post.userVote + diff,
         };
       })
