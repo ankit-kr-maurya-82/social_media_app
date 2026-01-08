@@ -6,6 +6,7 @@ const dummyPosts = [
       lastName: "Kumar"
     },
     username: "ankit_dev",
+    avatar: "https://i.pravatar.cc/150?img=3", // 🔥 avatar
     content: "idk i was bored",
     image: "https://images.pexels.com/photos/1097456/pexels-photo-1097456.jpeg",
     likesCount: 12,

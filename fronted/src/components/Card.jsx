@@ -45,9 +45,17 @@ const Card = () => {
           <div className="post-card" key={post._id}>
             {/* Author */}
             <div className="post-author">
-              <div className="avatar-fallback">
+              {post.avatar? (
+                <img
+                src={post.avatar}
+                alt="avatar"
+                className="post-avatar"/>
+              ): (
+                <div className="avatar-fallback">
                 {post.fullName.firstName.charAt(0)}
               </div>
+                
+              )}
               <div>
                 <strong>
                   {post.fullName.firstName} {post.fullName.lastName}

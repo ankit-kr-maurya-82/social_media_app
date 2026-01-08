@@ -139,4 +139,44 @@
 
 .post-footer button{
   font-size: 24px;
+}.post-author {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.post-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatar-fallback {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #1e293b;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.author-info {
+  display: flex;
+  flex-direction: column;
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+.author-info strong {
+  color: white;
+  font-size: 14px;
+}
+
+.username {
+  font-size: 12px;
 }
