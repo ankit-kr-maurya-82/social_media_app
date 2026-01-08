@@ -1,74 +1,159 @@
-import React, { useState, useContext } from "react";
-import { FaHeart, FaRegHeart, FaComment, FaShare, FaCommentDots, FaUserPlus, FaUserCheck } from "react-icons/fa";
+import React, { act, useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import UserContext from "../context/UserContext";
 import "./CSS/Card.css";
+import dummyPosts from "./dummyPosts.js";
+import {
+  FaArrowDown,
+  FaArrowUp,
+  FaHeart,
+  FaRegComment,
+  FaRegCommentDots,
+  FaRegHeart,
+  FaShare,
+  FaTimes,
+} from "react-icons/fa";
 
-const Card = ({ post }) => {
+const Card = () => {
   const { user } = useContext(UserContext);
-  const [liked, setLiked] = useState(false);
-  const [following, setFollowing] = useState(false);
+  const navigate = useNavigate();
+  const [posts, setPosts] = useState(dummyPosts);
 
-  const toggleLike = () => setLiked(prev => !prev);
-  const toggleFollow = () => {
-    if (!user) {
-      alert("Login to follow authors");
-      return;
-    }
-    setFollowing(prev => !prev);
-  };
+  const [activeMedia, setActiveMedia] = useState(null); // image or video
 
-  const handleComment = () => alert("Open comments section");
-  const handleChat = () => {
-    if (!user) {
-      alert("Login to chat with author");
-      return;
-    }
-    alert("Open chat with author");
-  };
-  const handleShare = () => {
-    navigator.clipboard.writeText(window.location.href);
-    alert("Post link copied!");
+  const handleVote = (id, vote) => {
+    setPosts((prev) =>
+      prev.map((post) => {
+        if (post._id !== id) return post;
+
+        const newVote = post.userVote === vote ? 0 : vote;
+        const diff = newVote - post.userVote;
+
+        return {
+          ...post,
+          // userVote: newVote,
+          userVote: post.userVote + diff,
+        };
+      })
+    );
   };
 
   return (
-    <div className="post-card">
-      <div className="post-body">
-        <div className="post-header">
-          <span className="post-author">u/{post.author || "anonymous"}</span>
-          <span className="post-dot">•</span>
-          <span className="post-time">2h ago</span>
-        </div>
+    <div className="home-container">
+      <div className="feed">
+        {posts.map((post) => (
+          <div className="post-card" key={post._id}>
+            {/* Author */}
+            <div className="post-author">
+              <div className="avatar-fallback">
+                {post.fullName.firstName.charAt(0)}
+              </div>
+              <div>
+                <strong>
+                  {post.fullName.firstName} {post.fullName.lastName}
+                </strong>
+                <span className="username">@{post.username}</span>
+              </div>
+            </div>
 
-        <h3 className="post-title">{post.title}</h3>
-        {post.content && <p className="post-text">{post.content}</p>}
+            {/* Content */}
+            <p className="post-text">{post.content}</p>
 
-        <div className="post-footer">
-          {/* Like */}
-          <button className={`footer-btn ${liked ? "liked" : ""}`} onClick={toggleLike}>
-            {liked ? <FaHeart /> : <FaRegHeart />} Like
-          </button>
+            {/* Image */}
+            {post.image && (
+              <div
+                className="post-image-wrapper"
+                onClick={() =>
+                  setActiveMedia({ type: "image", src: post.image })
+                }
+              >
+                <img src={post.image} alt="post" className="post-image" />
+              </div>
+            )}
 
-          {/* Comment */}
-          <button className="footer-btn" onClick={handleComment}>
-            <FaComment /> Comment
-          </button>
+            {/* Video */}
+            {post.video && (
+              <div
+                className="post-image-wrapper"
+                onClick={() =>
+                  setActiveMedia({ type: "video", src: post.video })
+                }
+              >
+                <video
+                  src={post.video}
+                  className="post-image"
+                  playsInline
+                  controls
+                  autoPlay
+                  muted={false}
+                  preload="metadata"
+                />
+              </div>
+            )}
 
-          {/* Share */}
-          <button className="footer-btn" onClick={handleShare}>
-            <FaShare /> Share
-          </button>
+            {/* Footer */}
+            <div className="post-footer reddit-vote">
+              <button
+                className={post.userVote === 1 ? "upvoted" : ""}
+                onClick={() => handleVote(post._id, 1)}
+              >
+                <FaArrowUp />
+              </button>
 
-          {/* Chat */}
-          <button className="footer-btn" onClick={handleChat}>
-            <FaCommentDots /> Chat
-          </button>
+              <span className="vote-count">{post.userVote}</span>
 
-          {/* Follow */}
-          <button className={`footer-btn follow-btn ${following ? "following" : ""}`} onClick={toggleFollow}>
-            {following ? <FaUserCheck /> : <FaUserPlus />} {following ? "Following" : "Follow"}
-          </button>
-        </div>
+              <button
+                className={post.userVote === -1 ? "downvoted" : ""}
+                onClick={() => handleVote(post._id, -1)}
+              >
+                <FaArrowDown />
+              </button>
+
+              <button onClick={() => navigate(`/post/${post._id}`)}>
+                <FaRegComment />
+                {/* <span>Comment</span> */}
+              </button>
+
+              <button>
+                <FaShare />
+                {/* <span>Share</span> */}
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
+
+      {activeMedia && (
+        <div
+          className="image-modal-overlay"
+          onClick={() => setActiveMedia(null)}
+        >
+          <button
+            className="image-modal-close"
+            onClick={() => setActiveMedia(null)}
+          >
+            <FaTimes />
+          </button>
+          {activeMedia.type === "image" ? (
+            <img
+              src={activeMedia.src}
+              className="image-modal-img"
+              alt="fullscreen"
+              onClick={(e) => e.stopPropagation()}
+            />
+          ) : (
+            <video
+              src={activeMedia.src}
+              className="image-modal-img"
+              controls
+              autoPlay
+              muted={false}
+              playsInline
+              onClick={(e) => e.stopPropagation()}
+            />
+          )}
+        </div>
+      )}
     </div>
   );
 };

@@ -20,15 +20,11 @@ const Profile = () => {
     <div className="profile-page">
       <div className="profile-container">
 
-        {/* Avatar + Info */}
+        {/* Top */}
         <div className="profile-top">
           <div className="avatar-wrapper">
             {user.avatar ? (
-              <img
-                src={user.avatar}
-                alt="avatar"
-                className="profile-avatar"
-              />
+              <img src={user.avatar} alt="avatar" className="profile-avatar" />
             ) : (
               <div className="profile-avatar fallback-avatar">
                 {user.username?.charAt(0).toUpperCase()}
@@ -39,25 +35,18 @@ const Profile = () => {
 
           <div className="profile-info">
             <h2>{user.fullName || user.username}</h2>
-            <p>@{user.username}</p>
+            <p className="username">@{user.username}</p>
 
             <p className="profile-bio">
               {user.bio || "No bio added yet."}
             </p>
 
             <div className="profile-stats">
-              <button
-                className={activeTab === "followers" ? "active" : ""}
-                onClick={() => setActiveTab("followers")}
-              >
+              <button>
                 <b>{user.followers?.length || 0}</b>
                 <span>Followers</span>
               </button>
-
-              <button
-                className={activeTab === "following" ? "active" : ""}
-                onClick={() => setActiveTab("following")}
-              >
+              <button>
                 <b>{user.following?.length || 0}</b>
                 <span>Following</span>
               </button>
@@ -67,24 +56,15 @@ const Profile = () => {
 
         {/* Tabs */}
         <div className="profile-tabs">
-          <button
-            className={activeTab === "posts" ? "active" : ""}
-            onClick={() => setActiveTab("posts")}
-          >
-            Posts
-          </button>
-          <button
-            className={activeTab === "replies" ? "active" : ""}
-            onClick={() => setActiveTab("replies")}
-          >
-            Replies
-          </button>
-          <button
-            className={activeTab === "media" ? "active" : ""}
-            onClick={() => setActiveTab("media")}
-          >
-            Media
-          </button>
+          {["posts", "replies", "media"].map((tab) => (
+            <button
+              key={tab}
+              className={activeTab === tab ? "active" : ""}
+              onClick={() => setActiveTab(tab)}
+            >
+              {tab.toUpperCase()}
+            </button>
+          ))}
         </div>
 
         {/* Content */}
@@ -94,7 +74,7 @@ const Profile = () => {
               <p className="no-posts">No posts yet</p>
             ) : (
               dummyPosts.map((post) => (
-                <Card key={post._id || post.id} post={post} />
+                <Card key={post._id} post={post} />
               ))
             )}
           </div>
@@ -103,6 +83,7 @@ const Profile = () => {
         {activeTab !== "posts" && (
           <div className="empty-state">Coming soon</div>
         )}
+
       </div>
     </div>
   );

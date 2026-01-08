@@ -13,6 +13,7 @@ import {
   FaShare,
   FaTimes,
 } from "react-icons/fa";
+import Card from "../components/Card.jsx";
 
 const Home = () => {
   const { user } = useContext(UserContext);
@@ -39,122 +40,7 @@ const Home = () => {
   };
 
   return (
-    <div className="home-container">
-      <div className="feed">
-        {posts.map((post) => (
-          <div className="post-card" key={post._id}>
-            {/* Author */}
-            <div className="post-author">
-              <div className="avatar-fallback">
-                {post.fullName.firstName.charAt(0)}
-              </div>
-              <div>
-                <strong>
-                  {post.fullName.firstName} {post.fullName.lastName}
-                </strong>
-                <span className="username">@{post.username}</span>
-              </div>
-            </div>
-
-            {/* Content */}
-            <p className="post-text">{post.content}</p>
-
-            {/* Image */}
-            {post.image && (
-              <div
-                className="post-image-wrapper"
-                onClick={() =>
-                  setActiveMedia({ type: "image", src: post.image })
-                }
-              >
-                <img src={post.image} alt="post" className="post-image" />
-              </div>
-            )}
-
-            {/* Video */}
-            {post.video && (
-              <div
-                className="post-image-wrapper"
-                onClick={() =>
-                  setActiveMedia({ type: "video", src: post.video })
-                }
-              >
-                <video
-                  src={post.video}
-                  className="post-image"
-                  playsInline
-                  controls
-                  autoPlay
-                  muted={false}
-                  preload="metadata"
-                />
-              </div>
-            )}
-
-            {/* Footer */}
-            <div className="post-footer reddit-vote">
-              <button
-                className={post.userVote === 1 ? "upvoted" : ""}
-                onClick={() => handleVote(post._id, 1)}
-              >
-                <FaArrowUp />
-              </button>
-
-              <span className="vote-count">{post.userVote}</span>
-
-              <button
-                className={post.userVote === -1 ? "downvoted" : ""}
-                onClick={() => handleVote(post._id, -1)}
-              >
-                <FaArrowDown />
-              </button>
-
-              <button onClick={() => navigate(`/post/${post._id}`)}>
-                <FaRegComment />
-                {/* <span>Comment</span> */}
-              </button>
-
-              <button>
-                <FaShare />
-                {/* <span>Share</span> */}
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {activeMedia && (
-        <div
-          className="image-modal-overlay"
-          onClick={() => setActiveMedia(null)}
-        >
-          <button
-            className="image-modal-close"
-            onClick={() => setActiveMedia(null)}
-          >
-            <FaTimes />
-          </button>
-          {activeMedia.type === "image" ? (
-            <img
-              src={activeMedia.src}
-              className="image-modal-img"
-              alt="fullscreen"
-              onClick={(e) => e.stopPropagation()}
-            />
-          ) : (
-            <video
-              src={activeMedia.src}
-              className="image-modal-img"
-              controls
-              autoPlay
-              muted={false}
-              playsInline
-              onClick={(e) => e.stopPropagation()}
-            />
-          )}
-        </div>
-      )}
-    </div>
+    <Card/>
   );
 };
 
