@@ -3,10 +3,12 @@ import UserContext from "../context/UserContext";
 import Card from "../components/Card";
 import dummyPosts from "../components/dummyPosts";
 import "./CSS/Profile.css";
+import EditProfile from "../components/EditProfile";
 
 const Profile = () => {
   const { user } = useContext(UserContext);
   const [activeTab, setActiveTab] = useState("posts");
+  const [editOpen, setEditOpen] = useState(false);
 
   if (!user) {
     return (
@@ -30,11 +32,16 @@ const Profile = () => {
                 {user.username?.charAt(0).toUpperCase()}
               </div>
             )}
-            <div className="avatar-overlay">Edit</div>
+            <button 
+            className="avatar-overlay edit-profile-btn"
+            onClick={()=> setEditOpen(true)}>
+              Edit</button>
+              {editOpen && <EditProfile onClose={() => setEditOpen(false)} />}
+
           </div>
 
           <div className="profile-info">
-            <h2>{user.fullName || user.username}</h2>
+            <h2 className="fullName">{user.fullName || user.username}</h2>
             <p className="username">@{user.username}</p>
 
             <p className="profile-bio">

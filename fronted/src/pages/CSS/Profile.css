@@ -4,6 +4,8 @@
   padding: 24px 0;
 }
 
+
+
 .profile-container {
   width: 100%;
   max-width: 720px;
@@ -159,4 +161,12 @@
   text-align: center;
   padding: 40px;
   color: #94a3b8;
+}
+
+.fullName{
+  color: #1e293b !important;
+}
+
+.profile-stats button {
+  color: black;
 }

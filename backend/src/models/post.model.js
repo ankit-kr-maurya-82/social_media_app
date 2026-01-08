@@ -7,27 +7,23 @@ const postSchema = new Schema(
       required: true,
       trim: true,
     },
-
     content: {
       type: String,
       required: true,
       trim: true,
       maxlength: 500,
     },
-
     images: [
       {
         type: String, // Cloudinary URL
       },
     ],
-
     likes: [
       {
         type: Schema.Types.ObjectId,
         ref: "User",
       },
     ],
-
     commentsCount: {
       type: Number,
       default: 0,

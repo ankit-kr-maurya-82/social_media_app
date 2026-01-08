@@ -8,6 +8,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import "./index.css"
 import Explore from './pages/Explore';
+import CreatePost from './pages/CreatePost';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
         <Route path="explore" element={<Explore />} />
+        <Route path="create" element={<CreatePost />} />
       </Route>
     </Routes>
     </div>
