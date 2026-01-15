@@ -3,16 +3,14 @@
   left: 16px;
   top: 50%;
   transform: translateY(-50%);
-
   height: auto;
-  background: #020617;
+  /* background: #020617; */
+  background: #fdfdff;
   border-radius: 999px;
   padding: 14px 10px;
-
   display: flex;
   flex-direction: column;
   gap: 16px;
-
   box-shadow: 0 10px 30px rgba(0,0,0,0.25);
   transition: width 0.3s ease;
 }
@@ -33,7 +31,8 @@
   display: flex;
   justify-content: center;
   cursor: pointer;
-  color: white;
+  /* color: white; */
+  color: rgb(12, 12, 12);
   font-size: 16px;
 }
 
@@ -52,8 +51,8 @@
 
   padding: 10px 14px;
   border-radius: 999px;
-
-  color: #cbd5f5;
+  /* color: #cbd5f5; */
+  color: #0b0b0b;
   text-decoration: none;
   font-size: 14px;
   transition: background 0.2s ease;
@@ -77,6 +76,7 @@
 /* Hover */
 .sidebarItem:hover {
   background: #1e293b;
+  color:white;
 }
 
 /* Footer */

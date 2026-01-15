@@ -3,6 +3,7 @@
   display: flex;
   justify-content: center;
   margin-top: 16px;
+  
 }
 
 /* Header */
@@ -14,11 +15,10 @@
   width: 75%;
   max-width: 1200px;
   padding: 24px 28px;
-
-  background: #020617;
+  background: #fcfdfe;
+  /* background: #020617; */
   border-radius: 999px;
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
-
   transition: gap 0.3s ease;
 }
 
@@ -53,14 +53,14 @@
   display: flex;
   align-items: center;
   gap: 8px;
-
   width: 40px;
   height: 36px;
   padding: 0 10px;
 
   border-radius: 999px;
   border: 1px solid #1e293b;
-  background: #020617;
+  /* background: #020617; */
+  background: #fafafe;
 
   cursor: pointer;
   overflow: hidden;
@@ -73,7 +73,8 @@
 }
 
 .searchIcon {
-  color: #94a3b8;
+  /* color: #94a3b8; */
+  color: #1b1b1c;
   font-size: 14px;
   flex-shrink: 0;
 }
@@ -83,7 +84,8 @@
   border: none;
   outline: none;
   background: transparent;
-  color: white;
+  /* color: white; */
+  color: rgb(6, 6, 6);
   font-size: 14px;
   opacity: 0;
   transition: opacity 0.2s ease;
@@ -100,7 +102,8 @@
 }
 
 .navLinks a {
-  color: #cbd5f5;
+  /* color: #cbd5f5; */
+  color: #161616;
   text-decoration: none;
 }
 
@@ -110,7 +113,8 @@
   border-radius: 999px;
   border: 1px solid #334155;
   background: transparent;
-  color: white;
+  /* color: white; */
+  color: rgb(16, 15, 15);
   cursor: pointer;
 }
 
