@@ -1,5 +1,5 @@
 import React, { act, useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import UserContext from "../context/UserContext";
 import "./CSS/Card.css";
 import dummyPosts from "./dummyPosts.js";
@@ -44,7 +44,9 @@ const Card = () => {
         {posts.map((post) => (
           <div className="post-card" key={post._id}>
             {/* Author */}
-            <div className="post-author">
+            <Link
+            to={`/profile/${post.username}`}
+             className="post-author">
               {post.avatar? (
                 <img
                 src={post.avatar}
@@ -57,12 +59,12 @@ const Card = () => {
                 
               )}
               <div>
-                <strong>
+                <strong className="userfullname">
                   {post.fullName.firstName} {post.fullName.lastName}
                 </strong>
                 <span className="username">@{post.username}</span>
               </div>
-            </div>
+            </Link>
 
             {/* Content */}
             <p className="post-text">{post.content}</p>

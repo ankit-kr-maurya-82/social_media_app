@@ -38,7 +38,7 @@ const Sidebar = () => {
         </NavLink>
 
         {user && (
-          <NavLink to="/profile" className="sidebarItem">
+          <NavLink to={`/profile/${user.username}`} className="sidebarItem">
             <FaUser />
             <span>Profile</span>
           </NavLink>

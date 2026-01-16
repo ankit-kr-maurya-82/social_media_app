@@ -188,9 +188,22 @@
 
 .username {
   font-size: 12px;
+  cursor: pointer;
 }
 
 
 .post-image-wrapper .post-image{
   border-radius: 0px;
+}
+
+.post-avatar{
+  cursor: pointer;
+}
+
+.userfullname{
+  cursor: pointer;
+}
+
+.post-author{
+  cursor: pointer;
 }
