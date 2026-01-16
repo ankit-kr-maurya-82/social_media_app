@@ -44,6 +44,7 @@
   font-weight: 600;
   cursor: pointer;
   border: none;
+  background-color: #020617;
 }
 
 .login-btn:disabled {
@@ -96,11 +97,13 @@
 }
 
 .dark .login-btn {
-  background: #2563eb;
+  /* background: #2563eb; */
+  background: #0d0d0e;
   color: white;
 }
 
 .dark .login-btn:hover {
+  /* background: #131313; */
   background: #1d4ed8;
 }
 
@@ -141,12 +144,13 @@
 }
 
 .light .login-btn {
-  background: #2563eb;
+  background: #080808;
   color: white;
 }
 
 .light .login-btn:hover {
-  background: #1d4ed8;
+  background: #101010;
+  /* background: #1d4ed8; */
 }
 
 .light .error-msg {

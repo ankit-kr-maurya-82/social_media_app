@@ -146,12 +146,12 @@
 }
 
 .light .register-btn {
-  background: #2563eb;
+  background: #0c0c0c;
   color: white;
 }
 
 .light .register-btn:hover {
-  background: #1d4ed8;
+  background: #0d0d0d;
 }
 
 .light .register-error {
