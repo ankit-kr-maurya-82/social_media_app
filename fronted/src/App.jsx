@@ -9,6 +9,7 @@ import Register from './pages/Register';
 import "./index.css"
 import Explore from './pages/Explore';
 import CreatePost from './pages/CreatePost';
+import Chat from './pages/Chat';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="register" element={<Register />} />
         <Route path="explore" element={<Explore />} />
         <Route path="create" element={<CreatePost />} />
+        <Route path="chat" element={<Chat />} />
       </Route>
     </Routes>
     </div>
