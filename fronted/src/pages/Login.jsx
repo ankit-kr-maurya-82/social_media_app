@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import UserContext from "../context/UserContext";
 import api from "../api/axios.js";
-import "./CSS/Login.css"
+import "./CSS/Login.css";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -19,18 +19,22 @@ const Login = () => {
     setErrorMsg("");
 
     try {
-      const response = await api.post("/users/login", {
+      const res = await api.post("/users/login", {
         email,
         password,
       });
 
-      const loggedInUser = response.data.data.user;
+      const { user, accessToken } = res.data.data;
 
-      // Save user in context and localStorage
-      setUser(loggedInUser);
-      localStorage.setItem("user", JSON.stringify(loggedInUser));
+      // ✅ save token separately
+      localStorage.setItem("accessToken", accessToken);
 
-      navigate("/profile");
+      // ✅ save user only
+      setUser(user);
+      localStorage.setItem("user", JSON.stringify(user));
+
+      // ✅ correct navigation
+      navigate(`/profile/${user.username}`);
     } catch (error) {
       setErrorMsg(
         error.response?.data?.message || "Login failed, try again"
@@ -42,8 +46,9 @@ const Login = () => {
 
   return (
     <div className="login-container">
-      <form className="login-form">
-        <h2 className="">Login</h2>
+      <form className="login-form" onSubmit={handleSubmit}>
+        <h2>Login</h2>
+
         {errorMsg && <p className="error-msg">{errorMsg}</p>}
 
         <input
@@ -51,31 +56,24 @@ const Login = () => {
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className=""
           required
         />
+
         <input
           type="password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className=""
           required
         />
-        <button
-          type="submit"
-          onClick={handleSubmit}
-          disabled={loading}
-          className="login-btn"
-        >
+
+        <button type="submit" disabled={loading} className="login-btn">
           {loading ? "Logging in..." : "Login"}
         </button>
 
         <p className="login-footer">
           Don't have an account?{" "}
-          <Link to="/register" className="text-blue-400 hover:underline">
-            Register
-          </Link>
+          <Link to="/register">Register</Link>
         </p>
       </form>
     </div>

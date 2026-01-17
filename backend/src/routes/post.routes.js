@@ -1,27 +1,15 @@
 import { Router } from "express";
-import {
-  createPost,
-  getAllPosts,
-  getPostById,
-  deletePost,
-  toggleLikePost,
-} from "../controllers/post.controller.js";
-
 import { verifyJWT } from "../middlewares/auth.middleware.js";
+import { createPost } from "../controllers/post.controller.js";
+import { upload } from "../middlewares/multer.middleware.js";
 
 const router = Router();
 
-/**
- * 🔓 Public Routes
- */
-router.get("/", getAllPosts);
-router.get("/:postId", getPostById);
-
-/**
- * 🔐 Protected Routes
- */
-router.post("/", verifyJWT, createPost);
-router.delete("/:postId", verifyJWT, deletePost);
-router.post("/:postId/like", verifyJWT, toggleLikePost);
+router.post(
+  "/",
+  verifyJWT,
+  upload.single("media"),
+  createPost
+);
 
 export default router;

@@ -1,58 +1,96 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaImage, FaVideo } from "react-icons/fa";
+import UserContext from "../context/UserContext";
 import "./CSS/CreatePost.css";
 
 const CreatePost = () => {
   const navigate = useNavigate();
+  const { user } = useContext(UserContext);
+
   const [content, setContent] = useState("");
-  const [image, setImage] = useState(null);
-  const [video, setVideo] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [videoPreview, setVideoPreview] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
+  const [videoFile, setVideoFile] = useState(null);
+
+const token = localStorage.getItem("accessToken");
 
   const handleImageChange = (e) => {
-    setImage(URL.createObjectURL(e.target.files[0]));
-    setVideo(null);
+    const file = e.target.files[0];
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
+    setVideoFile(null);
+    setVideoPreview(null);
   };
 
   const handleVideoChange = (e) => {
-    setVideo(URL.createObjectURL(e.target.files[0]));
-    setImage(null);
+    const file = e.target.files[0];
+    setVideoFile(file);
+    setVideoPreview(URL.createObjectURL(file));
+    setImageFile(null);
+    setImagePreview(null);
   };
 
-  const handleSubmit = () => {
-    if (!content.trim() && !image && !video) return;
-    navigate("/");
+  const handleSubmit = async () => {
+    if (!token) {
+      alert("Login required");
+      return;
+    }
+
+    if (!content.trim() && !imageFile && !videoFile) return;
+
+    const formData = new FormData();
+    formData.append("content", content);
+
+    if (imageFile) formData.append("media", imageFile);
+    if (videoFile) formData.append("media", videoFile);
+
+    try {
+      const res = await fetch("http://localhost:8000/api/v1/posts", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      if (!res.ok) {
+        throw new Error("Post failed");
+      }
+
+      navigate("/");
+    } catch (err) {
+      console.error("Post failed:", err.message);
+    }
+    
   };
 
   return (
     <div className="create-wrapper">
       <div className="create-box">
 
-        {/* Header */}
         <div className="create-header">
           <button onClick={() => navigate(-1)}>Cancel</button>
           <span>Create Post</span>
           <button
             className="post-btn"
-            disabled={!content.trim() && !image && !video}
+            disabled={!content.trim() && !imageFile && !videoFile}
             onClick={handleSubmit}
           >
             Post
           </button>
         </div>
 
-        {/* Text */}
         <textarea
           placeholder="What do you want to share?"
           value={content}
           onChange={(e) => setContent(e.target.value)}
         />
 
-        {/* Media */}
-        {image && <img src={image} className="media-preview" />}
-        {video && <video src={video} className="media-preview" controls />}
+        {imagePreview && <img src={imagePreview} className="media-preview" />}
+        {videoPreview && <video src={videoPreview} className="media-preview" controls />}
 
-        {/* Bottom Actions */}
         <div className="create-toolbar">
           <label>
             <FaImage />
