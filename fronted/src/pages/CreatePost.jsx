@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { FaImage, FaVideo } from "react-icons/fa";
 import "./CSS/CreatePost.css";
 
 const CreatePost = () => {
@@ -20,57 +21,50 @@ const CreatePost = () => {
 
   const handleSubmit = () => {
     if (!content.trim() && !image && !video) return;
-
-    // 🔥 backend later
-    console.log({
-      content,
-      image,
-      video,
-    });
-
     navigate("/");
   };
 
   return (
-    <div className="create-post-page">
-      <div className="create-post-card">
+    <div className="create-wrapper">
+      <div className="create-box">
 
-        <h2>Create Post</h2>
+        {/* Header */}
+        <div className="create-header">
+          <button onClick={() => navigate(-1)}>Cancel</button>
+          <span>Create Post</span>
+          <button
+            className="post-btn"
+            disabled={!content.trim() && !image && !video}
+            onClick={handleSubmit}
+          >
+            Post
+          </button>
+        </div>
 
         {/* Text */}
         <textarea
-          placeholder="What's on your mind?"
+          placeholder="What do you want to share?"
           value={content}
           onChange={(e) => setContent(e.target.value)}
         />
 
-        {/* Preview */}
-        {image && (
-          <div className="preview">
-            <img src={image} alt="preview" />
-          </div>
-        )}
+        {/* Media */}
+        {image && <img src={image} className="media-preview" />}
+        {video && <video src={video} className="media-preview" controls />}
 
-        {video && (
-          <div className="preview">
-            <video src={video} controls />
-          </div>
-        )}
-
-        {/* Actions */}
-        <div className="create-actions">
+        {/* Bottom Actions */}
+        <div className="create-toolbar">
           <label>
-            📷 Image
-            <input type="file" accept="image/*" hidden onChange={handleImageChange} />
+            <FaImage />
+            <input hidden type="file" accept="image/*" onChange={handleImageChange} />
           </label>
 
           <label>
-            🎥 Video
-            <input type="file" accept="video/*" hidden onChange={handleVideoChange} />
+            <FaVideo />
+            <input hidden type="file" accept="video/*" onChange={handleVideoChange} />
           </label>
-
-          <button onClick={handleSubmit}>Post</button>
         </div>
+
       </div>
     </div>
   );
