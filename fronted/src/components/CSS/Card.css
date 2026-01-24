@@ -207,3 +207,9 @@
 .post-author{
   cursor: pointer;
 }
+
+
+.post-title{
+  font-size: 24px;
+  font-weight: 700;
+}

@@ -67,6 +67,8 @@ const Card = () => {
             </Link>
 
             {/* Content */}
+            <Link className="post-title"
+            to={`/post/${post.username}`}>{post.title}</Link><br />
             <Link className="post-text">{post.content}</Link>
             
           

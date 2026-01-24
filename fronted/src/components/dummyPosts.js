@@ -1,17 +1,16 @@
 const dummyPosts = [
-  {
+{
     _id: 1,
     fullName: {
       firstName: "Ankit",
       lastName: "Kumar"
     },
-    username: "ankit_dev",
-    avatar: "https://i.pravatar.cc/150?img=3", // 🔥 avatar
-    content: "idk i was bored",
-    image: "https://images.pexels.com/photos/1097456/pexels-photo-1097456.jpeg",
-    likesCount: 12,
-    isLiked: false,
-        userVote: 0, // 🔥 -1 = downvote | 0 = none | 1 = upvote
+    username: "ankit_kumar",
+    title: "7 Free & Open Source Tools I Use  Daily (And Why I Stopped Paying for Alternatives",
+    content: "Lorem ipsum, dolota?Lorem ipsum, dolor sit amet consectetur adipisicing elit. Asperiores quos, voluptates nisi similique praesentium impedit rem natus enim assumenda numquam iusto magnam quis cum obcaecati ",
+    image: "",
+    likesCount: 5,
+    isLiked: true,    userVote: 0, // 🔥 -1 = downvote | 0 = none | 1 = upvote
 
   },
   {
@@ -21,12 +20,14 @@ const dummyPosts = [
       lastName: "Shetty"
     },
     username: "rahul_shetty",
+    title: "As a Neuroscientist, I Quit These 5 Morning Habits That Destroy Your Brain",
     content: "Lorem ipsum, dolota?Lorem ipsum, dolor sit amet consectetur adipisicing elit. Asperiores quos, voluptates nisi similique praesentium impedit rem natus enim assumenda numquam iusto magnam quis cum obcaecati ",
     image: "",
     likesCount: 5,
     isLiked: true,    userVote: 0, // 🔥 -1 = downvote | 0 = none | 1 = upvote
 
   },
+  
   {
     _id: 4,
     fullName: {
