@@ -49,10 +49,10 @@ const Sidebar = () => {
           <span>Create</span>
         </NavLink>
 
-        <NavLink to="/setting" className="sidebarItem">
+        {/* <NavLink to="/setting" className="sidebarItem">
           <IoMdSettings />
           <span>Setting</span>
-        </NavLink>
+        </NavLink> */}
       </nav>
 
       {/* Footer */}

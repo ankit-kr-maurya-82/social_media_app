@@ -10,6 +10,7 @@ import "./index.css"
 import Explore from './pages/Explore';
 import CreatePost from './pages/CreatePost';
 import Chat from './pages/Chat';
+import PostPage from './pages/PostPage';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route path="explore" element={<Explore />} />
         <Route path="create" element={<CreatePost />} />
         <Route path="chat" element={<Chat />} />
+        <Route path="post/:username" element={<PostPage />} />
       </Route>
     </Routes>
     </div>
