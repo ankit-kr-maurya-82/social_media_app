@@ -44,10 +44,12 @@ const Sidebar = () => {
           </NavLink>
         )}
 
-        <NavLink to="/create" className="sidebarItem">
+        {user && (
+          <NavLink to={`/create/${user.username}`} className="sidebarItem">
           <FaPlus />
           <span>Create</span>
         </NavLink>
+        )}
 
         {/* <NavLink to="/setting" className="sidebarItem">
           <IoMdSettings />
