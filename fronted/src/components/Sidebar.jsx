@@ -37,8 +37,12 @@ const Sidebar = () => {
           <span>Explore</span>
         </NavLink>
         <NavLink to="/about" className="sidebarItem">
-          <FaCompass />
+          <FaCompass /> 
           <span>About</span>
+        </NavLink>
+        <NavLink to="/features" className="sidebarItem">
+          <FaCompass /> 
+          <span>Features</span>
         </NavLink>
 
         {user && (

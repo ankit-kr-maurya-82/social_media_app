@@ -12,6 +12,7 @@ import CreatePost from './pages/CreatePost';
 import Chat from './pages/Chat';
 import PostPage from './pages/PostPage';
 import About from './pages/About';
+import Features from './pages/Features';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
         <Route path="chat" element={<Chat />} />
         <Route path="post/:username" element={<PostPage />} />
         <Route path="about" element={<About />} />
+        <Route path="features" element={<Features />} />
       </Route>
     </Routes>
     </div>
