@@ -139,6 +139,7 @@ body {
 @media (max-width: 768px) {
   .header {
     padding: 12px 18px;
+    justify-content: space-between;
   }
 
   .navLinks {
@@ -160,7 +161,7 @@ body {
 /* Mobile Menu */
 .mobileMenu {
   position: fixed;
-  top: 70px;
+  top: 50px;
   left: 0;
   width: 100%;
   background: white;
@@ -168,7 +169,7 @@ body {
   flex-direction: column;
   gap: 16px;
   padding: 20px;
-
+  text-align: center;
   transform: translateY(-120%);
   transition: transform 0.3s ease;
   z-index: 999;
@@ -185,8 +186,14 @@ body {
   font-size: 16px;
   border: none;
   background: none;
-  text-align: left;
+  text-align: center;
   cursor: pointer;
+  padding: 12px;
+
+  &:hover{
+    background-color: #1e293b;
+    color: white;
+  }
 }
 
 /* Mobile Styles */
