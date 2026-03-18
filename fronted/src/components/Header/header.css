@@ -2,8 +2,6 @@
 .headerWrapper {
   display: flex;
   justify-content: center;
-  /* margin-top: 16px; */
-  
 }
 
 /* Header */
@@ -13,40 +11,34 @@
   gap: 20px;
   justify-content: center;
   width: 100%;
-  max-width: full;
-  padding: 24px 28px;
+  max-width: 1200px;
+  padding: 20px 28px;
   background: #fcfdfe;
-  /* background: #020617; */
-  /* border-radius: 9x; */
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
-  transition: gap 0.3s ease;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+
   position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+
+  transition: all 0.3s ease;
 }
 
-/* When search is open */
-.header.search-active {
-  justify-content: center;
+/* Prevent content overlap */
+body {
+  padding-top: 80px;
 }
 
 /* Hide elements */
 .hideOnSearch {
-  transition: opacity 0.2s ease, width 0.2s ease;
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .header.search-active .hideOnSearch {
   opacity: 0;
+  transform: scale(0.95);
   pointer-events: none;
-  width: 0;
-  overflow: hidden;
-}
-
-/* Logo */
-.logo {
-  color: white;
-  font-size: 18px;
-  font-weight: 700;
-  text-decoration: none;
-  white-space: nowrap;
 }
 
 /* Search */
@@ -60,21 +52,24 @@
 
   border-radius: 999px;
   border: 1px solid #1e293b;
-  /* background: #020617; */
   background: #fafafe;
 
   cursor: pointer;
   overflow: hidden;
-  transition: width 0.35s ease;
+
+  transition: width 0.35s ease, transform 0.2s ease;
 }
 
 .searchBox.open {
   width: 420px;
   cursor: text;
+
+  transform: scale(1.02);
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
 }
 
 .searchIcon {
-  /* color: #94a3b8; */
   color: #1b1b1c;
   font-size: 14px;
   flex-shrink: 0;
@@ -85,9 +80,9 @@
   border: none;
   outline: none;
   background: transparent;
-  /* color: white; */
-  color: rgb(6, 6, 6);
+  color: #060606;
   font-size: 14px;
+
   opacity: 0;
   transition: opacity 0.2s ease;
 }
@@ -103,9 +98,25 @@
 }
 
 .navLinks a {
-  /* color: #cbd5f5; */
   color: #161616;
   text-decoration: none;
+  position: relative;
+}
+
+/* Nav hover underline */
+.navLinks a::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background: #3b82f6;
+  transition: width 0.3s;
+}
+
+.navLinks a:hover::after {
+  width: 100%;
 }
 
 /* Button */
@@ -114,19 +125,81 @@
   border-radius: 999px;
   border: 1px solid #334155;
   background: transparent;
-  /* color: white; */
-  color: rgb(16, 15, 15);
+  color: #100f0f;
   cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn:hover {
+  background: #1e293b;
+  color: white;
 }
 
 /* Mobile */
 @media (max-width: 768px) {
   .header {
-    width: 92%;
     padding: 12px 18px;
   }
 
   .navLinks {
+    display: none;
+  }
+
+  .searchBox.open {
+    width: 100%;
+  }
+}
+
+/* Hamburger */
+.hamburger {
+  display: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* Mobile Menu */
+.mobileMenu {
+  position: fixed;
+  top: 70px;
+  left: 0;
+  width: 100%;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+
+  transform: translateY(-120%);
+  transition: transform 0.3s ease;
+  z-index: 999;
+}
+
+.mobileMenu.open {
+  transform: translateY(0);
+}
+
+.mobileMenu a,
+.mobileMenu button {
+  text-decoration: none;
+  color: #111;
+  font-size: 16px;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+  .navLinks {
+    display: none;
+  }
+
+  .hamburger {
+    display: block;
+  }
+
+  .hideOnSearch {
     display: none;
   }
 
