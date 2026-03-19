@@ -11,7 +11,7 @@
   gap: 20px;
   justify-content: center;
   width: 100%;
-  max-width: 1200px;
+  /* max-width: 1200px; */
   padding: 20px 28px;
   background: #fcfdfe;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
