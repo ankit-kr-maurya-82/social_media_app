@@ -9,17 +9,19 @@ import {
   FaHeart,
   FaRegComment,
   FaRegCommentDots,
+  FaRegComments,
   FaRegHeart,
   FaShare,
   FaTimes,
 } from "react-icons/fa";
 import FollowBtn from "../components/FollowBtn.jsx";
+import Comments from "../components/Comments/Comments.jsx";
 
 const PostPage = () => {
   const { user } = useContext(UserContext);
   const navigate = useNavigate();
   const [posts, setPosts] = useState(dummyPosts);
-
+  const [openComments, setOpenComments] = useState(null);
   const [activeMedia, setActiveMedia] = useState(null); // image or video
 
   const handleVote = (id, vote) => {
@@ -33,7 +35,7 @@ const PostPage = () => {
         return {
           ...post,
           // userVote: newVote,
-          userVote: post.userVote + diff,
+          userVote: newVote,
         };
       })
     );
@@ -45,19 +47,13 @@ const PostPage = () => {
         {posts.map((post) => (
           <div className="post-card" key={post._id}>
             {/* Author */}
-            <Link
-            to={`/profile/${post.username}`}
-             className="post-author">
-              {post.avatar? (
-                <img
-                src={post.avatar}
-                alt="avatar"
-                className="post-avatar"/>
-              ): (
+            <Link to={`/profile/${post.username}`} className="post-author">
+              {post.avatar ? (
+                <img src={post.avatar} alt="avatar" className="post-avatar" />
+              ) : (
                 <div className="avatar-fallback">
-                {post.fullName.firstName.charAt(0)}
-              </div>
-                
+                  {post.fullName.firstName.charAt(0)}
+                </div>
               )}
               <div>
                 <strong className="userfullname">
@@ -66,37 +62,40 @@ const PostPage = () => {
                 <span className="username">@{post.username}</span>
               </div>
             </Link>
-              <FollowBtn/>
+            <FollowBtn />
+            <Comments />
+            <div className="post-actions">
+              <button
+                onClick={() =>
+                  setOpenComments(openComments === post._id ? null : post._id)
+                }
+                className="comment-btn"
+              >
+                <FaRegComments size={20} />
+              </button>
+            </div>
 
             {/* Content */}
-            <h1 className="post-title">{post.title}</h1><br />
+            <h1 className="post-title">{post.title}</h1>
+            <br />
             <h2 className="post-text">{post.content}</h2>
-            <p>Boost Productivity with Free Open-Source Software | Developer Tools That Replace Paid Alternatives.
-
-I used to believe good software must be paid software.
-Monthly invoices. Annual renewals. “Pro” badges everywhere.
-
-Non members-LINK
-
-But somewhere between side projects, client work, and long nights debugging, I slowly replaced almost everything with free & open-source tools.
-Not as an experiment -but because they actually worked better.
-
-This is not a list from the internet.
-These are tools I open every single day.
-
-1. VS Code — My Daily Work Desk
-VS Code is a lightweight but powerful code editor that supports almost every programming language. It’s fast, extensible, and works the same on Windows, Linux, and macOS.
-
-</p>
-          
-
-           
-           
+            <p>
+              Boost Productivity with Free Open-Source Software | Developer
+              Tools That Replace Paid Alternatives. I used to believe good
+              software must be paid software. Monthly invoices. Annual renewals.
+              “Pro” badges everywhere. Non members-LINK But somewhere between
+              side projects, client work, and long nights debugging, I slowly
+              replaced almost everything with free & open-source tools. Not as
+              an experiment -but because they actually worked better. This is
+              not a list from the internet. These are tools I open every single
+              day. 1. VS Code — My Daily Work Desk VS Code is a lightweight but
+              powerful code editor that supports almost every programming
+              language. It’s fast, extensible, and works the same on Windows,
+              Linux, and macOS.
+            </p>
           </div>
         ))}
       </div>
-
-      
     </div>
   );
 };
