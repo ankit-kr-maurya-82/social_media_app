@@ -46,6 +46,10 @@ const PostPage = () => {
       <div className="feed">
         {posts.map((post) => (
           <div className="post-card" key={post._id}>
+            {/* Title Content */}
+            <h1 className="post-title">{post.title}</h1>
+            <h2 className="post-text">{post.content}</h2>
+
             {/* Author */}
             <Link to={`/profile/${post.username}`} className="post-author">
               {post.avatar ? (
@@ -63,7 +67,25 @@ const PostPage = () => {
               </div>
             </Link>
             <FollowBtn />
-            <Comments />
+{post.media && (
+  <div className="post-media">
+    {post.media.type === "image" ? (
+      <img
+        src={post.media.url}
+        alt="post"
+        className="post-image"
+        onClick={() => setActiveMedia(post.media)}
+      />
+    ) : (
+      <video
+        src={post.media.url}
+        controls
+        className="post-video"
+      />
+    )}
+  </div>
+)}
+            {/* Actions */}
             <div className="post-actions">
               <button
                 onClick={() =>
@@ -75,10 +97,11 @@ const PostPage = () => {
               </button>
             </div>
 
+            {/* Comments Toggle */}
+            {openComments === post._id && <Comments postId={post._id} />}
+
             {/* Content */}
-            <h1 className="post-title">{post.title}</h1>
-            <br />
-            <h2 className="post-text">{post.content}</h2>
+
             <p>
               Boost Productivity with Free Open-Source Software | Developer
               Tools That Replace Paid Alternatives. I used to believe good
