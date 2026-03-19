@@ -13,6 +13,7 @@ import {
   FaShare,
   FaTimes,
 } from "react-icons/fa";
+import FollowBtn from "../components/FollowBtn.jsx";
 
 const PostPage = () => {
   const { user } = useContext(UserContext);
@@ -65,6 +66,7 @@ const PostPage = () => {
                 <span className="username">@{post.username}</span>
               </div>
             </Link>
+              <FollowBtn/>
 
             {/* Content */}
             <h1 className="post-title">{post.title}</h1><br />

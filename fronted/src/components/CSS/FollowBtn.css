@@ -1,0 +1,31 @@
+button {
+  padding: 3px 56px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  margin: 10px 1px;
+  transition: all 0.3s ease; /* smooth animation */
+}
+
+/* Default (Follow) */
+.follow {
+  background-color: rgb(78, 78, 82);
+  color: white;
+}
+
+/* Hover effect */
+.follow:hover {
+  background-color: rgb(60, 60, 65);
+}
+
+/* When following */
+.following {
+  background-color: #ddd;
+  color: #333;
+}
+
+/* Hover when following */
+.following:hover {
+  background-color: #cfcfcf;
+}
