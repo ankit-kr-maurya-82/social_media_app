@@ -67,24 +67,10 @@ const PostPage = () => {
               </div>
             </Link>
             <FollowBtn />
-{post.media && (
-  <div className="post-media">
-    {post.media.type === "image" ? (
-      <img
-        src={post.media.url}
-        alt="post"
-        className="post-image"
-        onClick={() => setActiveMedia(post.media)}
-      />
-    ) : (
-      <video
-        src={post.media.url}
-        controls
-        className="post-video"
-      />
-    )}
-  </div>
-)}
+            
+            {/* Comments Toggle */}
+            {openComments === post._id && <Comments postId={post._id} />}
+            
             {/* Actions */}
             <div className="post-actions">
               <button
@@ -96,9 +82,20 @@ const PostPage = () => {
                 <FaRegComments size={20} />
               </button>
             </div>
-
-            {/* Comments Toggle */}
-            {openComments === post._id && <Comments postId={post._id} />}
+            {post.media && (
+              <div className="post-media">
+                {post.media.type === "image" ? (
+                  <img
+                    src={post.media.url}
+                    alt="post"
+                    className="post-image"
+                    onClick={() => setActiveMedia(post.media)}
+                  />
+                ) : (
+                  <video src={post.media.url} controls className="post-video" />
+                )}
+              </div>
+            )}
 
             {/* Content */}
 
