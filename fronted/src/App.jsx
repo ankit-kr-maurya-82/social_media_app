@@ -13,13 +13,15 @@ import Chat from './pages/Chat';
 import PostPage from './pages/PostPage';
 import About from './pages/About';
 import Features from './pages/Features';
+import VedHome from './pages/VedHome';
 
 function App() {
   return (
     <div className='main'>
       <Routes>
       <Route path="/" element={<Layout />}>
-        <Route index element={<Home />} />
+        <Route element={<Home />} />
+        <Route index element={<VedHome />} />
         <Route path="profile/:username" element={<Profile />} />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
