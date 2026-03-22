@@ -33,7 +33,7 @@ const Layout = () => {
     <ThemeProvider value={{ themeMode, toggleTheme }}>
       <UserContextProvider>
         {!hideHeader && <Header />}
-        {!hideHeader && <Sidebar />}
+        {/* {!hideHeader && <Sidebar />} */}
 
         <main>
           <Outlet />
