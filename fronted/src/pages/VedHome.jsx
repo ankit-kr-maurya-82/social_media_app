@@ -1,47 +1,27 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import "./CSS/VedHome.css";
+import "./CSS/VedHome.css"; 
+import "./CSS/Hero.css"
 
 const VedHome = () => {
   return (
-    <div className="ved_home_container">
-
-      {/* Hero Section */}
+     <div className="ved_home_container">
       <section className="hero">
-        <h1>Welcome to DevConnect</h1>
-        <p>Share posts, explore videos, connect with developers</p>
 
-        <div className="hero-buttons">
-          <Link to="/posts" className="btn">Explore Posts</Link>
-          <Link to="/videos" className="btn secondary">Watch Videos</Link>
-        </div>
-      </section>
+        <h1 className="hero-title">
+          Write, Share & Grow
+        </h1>
 
-      {/* Feed Preview */}
-      <section className="home-preview">
-        <h2>Trending Posts</h2>
+        <p className="hero-subtitle">
+          Publish articles, explore ideas, and connect with developers around the world.
+        </p>
 
-        <div className="preview-cards">
-          <div className="preview-card">Post 1</div>
-          <div className="preview-card">Post 2</div>
-          <div className="preview-card">Post 3</div>
+        <div className="hero-actions">
+          <button className="btn primary">Start Writing</button>
+          <button className="btn secondary">Explore Articles</button>
         </div>
 
-        <Link to="/posts" className="view-more">View More →</Link>
       </section>
-
-      {/* Video Preview */}
-      <section className="home-preview">
-        <h2>Trending Videos</h2>
-
-        <div className="preview-cards">
-          <div className="preview-card">Video 1</div>
-          <div className="preview-card">Video 2</div>
-        </div>
-
-        <Link to="/videos" className="view-more">Watch More →</Link>
-      </section>
-
     </div>
   );
 };
