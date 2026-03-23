@@ -32,7 +32,7 @@ const Register = () => {
       // save in localstorage
       localStorage.setItem("user",JSON.stringify(response.data.data))
 
-      navigate("/login"); // redirect to login page
+      navigate("/home"); // redirect to login page
     } catch (error) {
       setErrorMsg(
         error.response?.data?.message || "Registration failed, try again"
