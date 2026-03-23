@@ -2,13 +2,14 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "./CSS/VedHome.css"; 
 import "./CSS/Hero.css"
+import "./CSS/Article.css"
 
 const VedHome = () => {
   return (
      <div className="ved_home_container">
       <section className="hero">
 
-        <h1 className="hero-title">
+        <h1 className="hero-title title">
           Write, Share & Grow
         </h1>
 
@@ -22,6 +23,12 @@ const VedHome = () => {
         </div>
 
       </section>
+
+      {/* article */}
+      <section className="article_container">
+        <h1 className="title article_title">Article</h1>
+      </section>
+      
     </div>
   );
 };
