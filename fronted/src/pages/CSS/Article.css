@@ -5,3 +5,32 @@
 .article_title{
    text-align: center;
 }
+
+.main_article{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.left-article-section img{
+    height: 200px;
+    margin: 32px;
+}
+.right-article-section {
+    /* height: 300px; */
+    margin: 100px;
+    font-size: 17px;
+}
+
+.date-container{
+    width: 200px;
+}
+
+.month{
+    font-size: 40px;
+}
+
+.date{
+    font-size: 43px;
+    font-weight: 700;
+}
