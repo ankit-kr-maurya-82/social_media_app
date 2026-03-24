@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import "./CSS/VedHome.css"; 
 import "./CSS/Hero.css"
 import "./CSS/Article.css"
+import { FaArrowRight } from "react-icons/fa6";
 
 const VedHome = () => {
   return (
@@ -32,9 +33,17 @@ const VedHome = () => {
             <p className="month">Jun</p>
             <p className="date">23</p>
           </div>
-          <div className="left-article-section"><img src="https://images.unsplash.com/photo-1733331228241-19ac0593c1dc?q=80&w=1149&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="" /></div>
-          <div className="right-article-section">Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto blanditiis tenetur ullam suscipit! Reiciendis odio consequatur ipsa pariatur voluptas corporis!0</div>
+          <div className="left-article-section"><img src="https://images.unsplash.com/photo-1733331228241-19ac0593c1dc?q=80&w=1149&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="" />
+          </div>
+          <div className="right-article-section">
+            <h2>Title of the Risen Event</h2>
+            <p>1015 California Ave, Los Angeles CA  7:00 pm - 8:00 pm</p>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto blanditiis tenetur ullam suscipit! Reiciendis odio consequatur ipsa pariatur voluptas corporis!0</p>
+            <hr />
+            <button>View Event Details <FaArrowRight/></button>
+          </div>
         </div>
+        <hr />
       </section>
       
     </div>
