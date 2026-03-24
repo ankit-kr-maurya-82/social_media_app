@@ -67,6 +67,8 @@ const Header = () => {
         <nav className="navLinks hideOnSearch">
           <NavLink to="/">Home</NavLink>
           <NavLink to="/explore">Explore</NavLink>
+          <NavLink to="/about">About</NavLink>
+          <NavLink to="/features">Features</NavLink>
           {user && <NavLink to="/profile">Profile</NavLink>}
         </nav>
 

@@ -1,5 +1,6 @@
 import React from 'react'
 import "./CSS/About.css";
+import FeatureArticle from '../components/FeatureArticle ';
  
 
 const About = () => {
@@ -44,6 +45,7 @@ const About = () => {
               scale with more features.
             </p>
           </article>
+          <FeatureArticle/>
         </div>
       </div>
     </section>
