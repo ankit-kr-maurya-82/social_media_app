@@ -14,7 +14,7 @@
 
 .left-article-section img{
     /* height: 300px; */
-    width: 500px;
+    width: 400px;
     margin: 32px;
 }
 .right-article-section {
@@ -57,7 +57,14 @@
 
 .right-article-section button{
     display: flex;
-    justify-content: center;
+    justify-content:space-evenly;
     align-items: center;
     margin-left: 12px;
+    width: 100%;
+}
+
+hr{
+    margin: -32px 0;
+    color: rgb(182, 180, 180);
+
 }
