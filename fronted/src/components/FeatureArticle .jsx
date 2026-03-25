@@ -1,42 +1,54 @@
 import { FaArrowRight } from "react-icons/fa";
 import "./CSS/FeatureArticle.css";
 
+const articles = [
+  {
+    id: 1,
+    title: "First Event",
+    location: "California · 7:00 pm",
+    desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
+    image:
+      "https://plus.unsplash.com/premium_photo-1673697240073-04416dc18ab3?q=80&w=1170",
+  },
+  {
+    id: 2,
+    title: "Second Event",
+    location: "New York · 8:00 pm",
+    desc: "Another sample description for second card.",
+    image:
+      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
+  },
+];
+
 const FeatureArticle = () => {
   return (
-    <div className="main_article">
+    <div className="article_container">
+      {articles.map((item, index) => (
+        <div
+          className={`main_article ${index % 2 !== 0 ? "reverse" : ""}`}
+          key={item.id}
+        >
+          {/* IMAGE */}
+          <div className="left_container">
+            <div className="left-article-section">
+              <img src={item.image} alt={item.title} />
+            </div>
+          </div>
 
-      <div className="left_container">
-        {/* Date Badge */}
-        {/* <div className="date-container">
-          <p className="month">Jun</p>
-          <p className="date">23</p>
-        </div> */}
+          {/* CONTENT */}
+          <div className="right-article-section">
+            <h2>{item.title}</h2>
+            <p className="meta">{item.location}</p>
+            <p className="desc">{item.desc}</p>
 
-        {/* Image */}
-        <div className="left-article-section">
-          <img
-            src="https://plus.unsplash.com/premium_photo-1673697240073-04416dc18ab3?q=80&w=1170"
-            alt="article"
-          />
+            <hr />
+
+            <button className="read_more_btn">
+              View Event Details <FaArrowRight />
+            </button>
+          </div>
         </div>
-      </div>
-
-      {/* Content */}
-      <div className="right-article-section">
-        <h2>Title of the Risen Event</h2>
-        <p className="meta">
-          1015 California Ave, Los Angeles CA · 7:00 pm - 8:00 pm
-        </p>
-        <p className="desc">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
-        </p>
-
-        <hr />
-
-        <button className="read_more_btn">
-          View Event Details <FaArrowRight />
-        </button>
-      </div>
+      ))}
     </div>
   );
 };

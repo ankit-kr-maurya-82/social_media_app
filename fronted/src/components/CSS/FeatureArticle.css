@@ -144,3 +144,23 @@
     height: 180px;
   }
 }
+
+/* container */
+.article_container {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+/* alternate layout */
+.main_article.reverse {
+  flex-direction: row-reverse;
+}
+
+/* mobile fix (disable reverse) */
+@media (max-width: 768px) {
+  .main_article,
+  .main_article.reverse {
+    flex-direction: column;
+  }
+}
