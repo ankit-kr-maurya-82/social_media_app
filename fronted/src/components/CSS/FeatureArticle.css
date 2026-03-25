@@ -8,6 +8,7 @@
   position: relative;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
   transition: 0.3s ease;
+  margin-top: 23px;
 }
 
 .main_article:hover {
@@ -25,22 +26,24 @@
   padding: 8px 12px;
   border-radius: 8px;
   text-align: center;
+  z-index: 2;
 }
 
 .month {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   text-transform: uppercase;
 }
 
 .date {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: bold;
 }
 
-/* Left Image */
+/* Image */
 .left-article-section {
   flex: 1;
   min-width: 280px;
+  max-height: 260px;
 }
 
 .left-article-section img {
@@ -49,7 +52,7 @@
   object-fit: cover;
 }
 
-/* Right Content */
+/* Content */
 .right-article-section {
   flex: 1.2;
   padding: 20px;
@@ -59,29 +62,25 @@
 }
 
 .right-article-section h2 {
-  font-size: 1.6rem;
+  font-size: 1.5rem;
   margin-bottom: 10px;
-  color: #111827;
 }
 
-/* Meta Info */
 .meta {
   font-size: 0.9rem;
   color: #6b7280;
   margin-bottom: 10px;
 }
 
-/* Description */
 .desc {
   font-size: 0.95rem;
   color: #374151;
-  margin-bottom: 15px;
   line-height: 1.5;
 }
 
 /* Button */
 .read_more_btn {
-  margin-top: 10px;
+  margin-top: 15px;
   padding: 10px 16px;
   border: none;
   background: #111827;
@@ -91,21 +90,72 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  transition: 0.2s;
 }
 
 .read_more_btn:hover {
   background: #2563eb;
 }
 
-/* Responsive */
+/* ------------------ RESPONSIVE ------------------ */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .main_article {
+    gap: 15px;
+  }
+
+  .right-article-section {
+    padding: 15px;
+  }
+
+  .right-article-section h2 {
+    font-size: 1.3rem;
+  }
+}
+
+/* Mobile */
 @media (max-width: 768px) {
   .main_article {
     flex-direction: column;
   }
 
   .left-article-section {
-    min-width: 100%;
+    width: 100%;
     height: 200px;
+    min-width: unset;
+  }
+
+  .date-container {
+    top: 10px;
+    left: 10px;
+    padding: 6px 10px;
+  }
+
+  .right-article-section {
+    padding: 15px;
+  }
+
+  .right-article-section h2 {
+    font-size: 1.2rem;
+  }
+
+  .desc {
+    font-size: 0.9rem;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+  .features_title {
+    font-size: 1.6rem;
+  }
+
+  .left-article-section {
+    height: 180px;
+  }
+
+  .read_more_btn {
+    width: 100%;
+    justify-content: center;
   }
 }
