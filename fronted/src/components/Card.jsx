@@ -41,69 +41,88 @@ const Card = () => {
   return (
     <>
     <div className="feed">
-        {posts.map((post) => (
-          <div className="post-card" key={post._id}>
-            {/* Author */}
-            <Link
-            to={`/profile/${post.username}`}
-             className="post-author">
-              {post.avatar? (
-                <img
-                src={post.avatar}
-                alt="avatar"
-                className="post-avatar"/>
-              ): (
-                <div className="avatar-fallback">
-                {post.fullName.firstName.charAt(0)}
-              </div>
-                
-              )}
-              <div>
-                <strong className="userfullname">
-                  {post.fullName.firstName} {post.fullName.lastName}
-                </strong>
-                <span className="username">@{post.username}</span>
-              </div>
-            </Link>
-
-            {/* Content */}
-            <h3 className="post-title" onClick={() => navigate(`/post/${post.username}`)} style={{cursor: 'pointer'}}>{post.title}</h3>
-            <p className="post-text">{post.content}</p>
-
-            {/* Media */}
-            {post.media && (
-              <div className="post-image-wrapper" onClick={() => setActiveMedia(post.media)}>
-                {post.media.type === "image" ? (
-                  <img src={post.media.url} alt="post media" className="post-image" />
+        {posts.map((post, index) => (
+          <div
+            className={`main_article ${index % 2 !== 0 ? "reverse" : ""}`}
+            key={post._id}
+          >
+            {/* IMAGE */}
+            <div className="left_container">
+              <div className="left-article-section">
+                {post.media ? (
+                  post.media.type === "image" ? (
+                    <img src={post.media.url} alt="post media" onClick={() => setActiveMedia(post.media)} />
+                  ) : (
+                    <video src={post.media.url} controls onClick={() => setActiveMedia(post.media)} />
+                  )
                 ) : (
-                  <video src={post.media.url} className="post-image" controls />
+                  <div className="no-media">No Media</div>
                 )}
               </div>
-            )}
+            </div>
 
-            {/* Footer */}
-            <div className="post-footer">
-              <div className="reddit-vote">
-                <button
-                  onClick={() => handleVote(post._id, 1)}
-                  className={post.userVote === 1 ? "upvoted" : ""}
-                >
-                  <FaArrowUp />
+            {/* CONTENT */}
+            <div className="right-article-section">
+              <Link to={`/profile/${post.username}`} className="post-author">
+                {post.avatar ? (
+                  <img src={post.avatar} alt="avatar" className="post-avatar-small" />
+                ) : (
+                  <div className="avatar-fallback-small">
+                    {post.fullName.firstName.charAt(0)}
+                  </div>
+                )}
+                <div>
+                  <strong className="userfullname">
+                    {post.fullName.firstName} {post.fullName.lastName}
+                  </strong>
+                  <span className="username">@{post.username}</span>
+                </div>
+              </Link>
+
+              <h2 className="post-title-link" onClick={() => navigate(`/post/${post.username}`)} style={{cursor: 'pointer'}}>
+                {post.title}
+              </h2>
+
+              {post.tags && (
+                <div className="post-tags">
+                  {post.tags.map((tag, index) => (
+                    <span key={index} className="tag">#{tag}</span>
+                  ))}
+                </div>
+              )}
+
+              <p className="desc">{post.content}</p>
+
+              {post.readTime && (
+                <div className="read-time">{post.readTime}</div>
+              )}
+
+              <hr />
+
+              {/* Footer */}
+              <div className="post-footer">
+                <div className="reddit-vote">
+                  <button
+                    onClick={() => handleVote(post._id, 1)}
+                    className={post.userVote === 1 ? "upvoted" : ""}
+                  >
+                    <FaArrowUp />
+                  </button>
+                  <span>{post.votes || 0}</span>
+                  <button
+                    onClick={() => handleVote(post._id, -1)}
+                    className={post.userVote === -1 ? "downvoted" : ""}
+                  >
+                    <FaArrowDown />
+                  </button>
+                </div>
+                <button className="action-btn">
+                  <FaRegComment /> {post.comments || 0}
                 </button>
-                <span>{post.votes || 0}</span>
-                <button
-                  onClick={() => handleVote(post._id, -1)}
-                  className={post.userVote === -1 ? "downvoted" : ""}
-                >
-                  <FaArrowDown />
+                <button className="action-btn">
+                  <FaShare />
                 </button>
               </div>
-              <button className="action-btn">
-                <FaRegComment /> {post.comments || 0}
-              </button>
-              <button className="action-btn">
-                <FaShare />
-              </button>
             </div>
           </div>
         ))}

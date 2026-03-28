@@ -14,6 +14,8 @@ import {
   FaTimes,
 } from "react-icons/fa";
 import Card from "../components/Card.jsx";
+import FeatureArticle from "../components/FeatureArticle .jsx";
+import Article from "../components/Article.jsx";
 
 const Home = () => {
   const { user } = useContext(UserContext);
@@ -42,7 +44,9 @@ const Home = () => {
   return (
     <div className="ved_home_container">
       {/* Feed */}
-      <Card />
+            <Article/>
+            {/* <Card/> */}
+
     </div>
   );
 };
