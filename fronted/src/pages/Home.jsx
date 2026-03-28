@@ -40,7 +40,10 @@ const Home = () => {
   };
 
   return (
-    <Card/>
+    <div className="ved_home_container">
+      {/* Feed */}
+      <Card />
+    </div>
   );
 };
 

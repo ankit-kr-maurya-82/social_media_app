@@ -39,8 +39,8 @@ const Card = () => {
   };
 
   return (
-    <div className="home-container">
-      <div className="feed">
+    <>
+    <div className="feed">
         {posts.map((post) => (
           <div className="post-card" key={post._id}>
             {/* Author */}
@@ -67,21 +67,65 @@ const Card = () => {
             </Link>
 
             {/* Content */}
-            <Link className="post-title"
-            to={`/post/${post.username}`}>{post.title}</Link><br />
-            <Link className="post-text">{post.content}</Link>
-            
-          
+            <h3 className="post-title" onClick={() => navigate(`/post/${post.username}`)} style={{cursor: 'pointer'}}>{post.title}</h3>
+            <p className="post-text">{post.content}</p>
 
-           
-           
+            {/* Media */}
+            {post.media && (
+              <div className="post-image-wrapper" onClick={() => setActiveMedia(post.media)}>
+                {post.media.type === "image" ? (
+                  <img src={post.media.url} alt="post media" className="post-image" />
+                ) : (
+                  <video src={post.media.url} className="post-image" controls />
+                )}
+              </div>
+            )}
+
+            {/* Footer */}
+            <div className="post-footer">
+              <div className="reddit-vote">
+                <button
+                  onClick={() => handleVote(post._id, 1)}
+                  className={post.userVote === 1 ? "upvoted" : ""}
+                >
+                  <FaArrowUp />
+                </button>
+                <span>{post.votes || 0}</span>
+                <button
+                  onClick={() => handleVote(post._id, -1)}
+                  className={post.userVote === -1 ? "downvoted" : ""}
+                >
+                  <FaArrowDown />
+                </button>
+              </div>
+              <button className="action-btn">
+                <FaRegComment /> {post.comments || 0}
+              </button>
+              <button className="action-btn">
+                <FaShare />
+              </button>
+            </div>
           </div>
         ))}
       </div>
 
-      
-    </div>
+      {/* Media Modal */}
+      {activeMedia && (
+        <div className="media-modal" onClick={() => setActiveMedia(null)}>
+          <div className="media-content">
+            <button className="close-btn" onClick={() => setActiveMedia(null)}>
+              <FaTimes />
+            </button>
+            {activeMedia.type === "image" ? (
+              <img src={activeMedia.url} alt="media" />
+            ) : (
+              <video src={activeMedia.url} controls />
+            )}
+          </div>
+        </div>
+      )}
+    </>
   );
-};
+}
 
 export default Card;

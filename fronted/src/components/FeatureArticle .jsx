@@ -4,19 +4,19 @@ import "./CSS/FeatureArticle.css";
 const articles = [
   {
     id: 1,
-    title: "First Event",
-    location: "California · 7:00 pm",
-    desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
+    title: "Tech Conference 2024",
+    location: "San Francisco · 2:00 pm",
+    desc: "Join us for an exciting day of technology talks, networking, and innovation. Meet industry leaders and discover the latest trends.",
     image:
-      "https://plus.unsplash.com/premium_photo-1673697240073-04416dc18ab3?q=80&w=1170",
+      "https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=1170",
   },
   {
     id: 2,
-    title: "Second Event",
-    location: "New York · 8:00 pm",
-    desc: "Another sample description for second card.",
+    title: "Developer Meetup",
+    location: "New York · 6:00 pm",
+    desc: "Connect with fellow developers, share your projects, and learn from community experts. Pizza and drinks provided!",
     image:
-      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
+      "https://images.unsplash.com/photo-1515187029135-18ee286d815b?q=80&w=1170",
   },
 ];
 
