@@ -1,12 +1,8 @@
-import React, { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
-import { FaImage, FaVideo } from "react-icons/fa";
-import UserContext from "../context/UserContext";
+import React, { useState } from "react";
 import "./CSS/CreatePost.css";
 
 const CreatePost = () => {
   const navigate = useNavigate();
-  const { user } = useContext(UserContext);
 
   const [content, setContent] = useState("");
   const [imagePreview, setImagePreview] = useState(null);

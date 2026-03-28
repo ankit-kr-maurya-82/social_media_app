@@ -1,6 +1,6 @@
-import React, { use } from 'react';
+import React from 'react';
 import { FaArrowRight } from "react-icons/fa";
-import "./CSS/FeatureArticle.css";
+import "./Article/CSS/Article.css";
 
 const Article = ({ articles = [] }) => {
   // Default articles data if none provided

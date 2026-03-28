@@ -1,5 +1,4 @@
-import React, { useState, useContext } from "react";
-import UserContext from "../context/UserContext";
+import React, { useState } from "react";
 import Message from "../components/Message";
 import "./CSS/Chat.css";
 
@@ -23,7 +22,6 @@ const dummyChats = [
 ];
 
 const Chat = () => {
-  const { user } = useContext(UserContext);
   const [activeChat, setActiveChat] = useState(dummyChats[0]);
   const [text, setText] = useState("");
 

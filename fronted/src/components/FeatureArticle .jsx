@@ -18,6 +18,14 @@ const articles = [
     image:
       "https://images.unsplash.com/photo-1515187029135-18ee286d815b?q=80&w=1170",
   },
+  {
+    id: 3,
+    title: "AI Workshop",
+    location: "Los Angeles · 3:00 pm",
+    desc: " Dive deep into artificial intelligence with hands-on sessions and expert guidance. Perfect for developers and researchers looking to expand their AI knowledge.",
+    image:
+      "https://images.unsplash.com/photo-1515187029135-18ee286d815b?q=80&w=1170",
+  },
 ];
 
 const FeatureArticle = () => {

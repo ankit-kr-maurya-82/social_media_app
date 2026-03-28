@@ -1,6 +1,4 @@
-import React, { useContext, useState } from "react";
-import { Link } from "react-router-dom";
-import UserContext from "../context/UserContext";
+import React, { useState } from "react";
 import "./CSS/PostPage.css";
 import dummyPosts from "./dummyPosts.js";
 import { FaRegComments, FaTimes } from "react-icons/fa";
@@ -8,8 +6,7 @@ import FollowBtn from "../components/FollowBtn.jsx";
 import Comments from "../components/Comments/Comments.jsx";
 
 const PostPage = () => {
-  const { user } = useContext(UserContext);
-  const [posts, setPosts] = useState(dummyPosts);
+  const [posts] = useState(dummyPosts);
 
   // ✅ store full post
   const [activePost, setActivePost] = useState(null);
