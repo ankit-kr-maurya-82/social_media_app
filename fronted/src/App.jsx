@@ -20,7 +20,7 @@ function App() {
     <div className='main'>
       <Routes>
       <Route path="/" element={<Layout />}>
-        <Route element={<Home />} />
+        <Route path='/home' element={<Home />} />
         <Route index element={<VedHome />} />
         <Route path="profile/:username" element={<Profile />} />
         <Route path="login" element={<Login />} />

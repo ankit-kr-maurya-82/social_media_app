@@ -189,11 +189,12 @@ body {
   text-align: center;
   cursor: pointer;
   padding: 12px;
+}
 
-  &:hover{
-    background-color: #1e293b;
-    color: white;
-  }
+.mobileMenu a:hover,
+.mobileMenu button:hover {
+  background-color: #1e293b;
+  color: white;
 }
 
 /* Mobile Styles */

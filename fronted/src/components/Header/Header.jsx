@@ -65,11 +65,11 @@ const Header = () => {
 
         {/* Desktop Nav */}
         <nav className="navLinks hideOnSearch">
-          <NavLink to="/">Home</NavLink>
+          <NavLink to={user ? "/home" : "/"}>Home</NavLink>
           <NavLink to="/explore">Explore</NavLink>
           <NavLink to="/about">About</NavLink>
           <NavLink to="/features">Features</NavLink>
-          {user && <NavLink to="/profile">Profile</NavLink>}
+          {user && <NavLink to={`/profile/${user.username}`}>Profile</NavLink>}
         </nav>
 
         {/* Button */}
@@ -84,10 +84,10 @@ const Header = () => {
 
       {/* Mobile Menu */}
       <div className={`mobileMenu ${menuOpen ? "open" : ""}`}>
-        <NavLink to="/" onClick={() => setMenuOpen(false)}>Home</NavLink>
+        <NavLink to={user ? "/home" : "/"} onClick={() => setMenuOpen(false)}>Home</NavLink>
         <NavLink to="/explore" onClick={() => setMenuOpen(false)}>Explore</NavLink>
         {user && (
-          <NavLink to="/profile" onClick={() => setMenuOpen(false)}>
+          <NavLink to={`/profile/${user.username}`} onClick={() => setMenuOpen(false)}>
             Profile
           </NavLink>
         )}
