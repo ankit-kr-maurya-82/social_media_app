@@ -6,6 +6,7 @@ import dummyPosts from "./dummyPosts.js";
 import {
   FaArrowDown,
   FaArrowUp,
+  FaArrowRight,
   FaHeart,
   FaRegComment,
   FaRegCommentDots,
@@ -14,28 +15,10 @@ import {
   FaTimes,
 } from "react-icons/fa";
 
-const Card = () => {
+const Card = ({ posts: propPosts }) => {
   const navigate = useNavigate();
-  const [posts, setPosts] = useState(dummyPosts);
-
+  const posts = propPosts || dummyPosts;
   const [activeMedia, setActiveMedia] = useState(null); // image or video
-
-  const handleVote = (id, vote) => {
-    setPosts((prev) =>
-      prev.map((post) => {
-        if (post._id !== id) return post;
-
-        const newVote = post.userVote === vote ? 0 : vote;
-        const diff = newVote - post.userVote;
-
-        return {
-          ...post,
-          // userVote: newVote,
-          userVote: post.userVote + diff,
-        };
-      })
-    );
-  };
 
   return (
     <>
@@ -98,30 +81,9 @@ const Card = () => {
 
               <hr />
 
-              {/* Footer */}
-              <div className="post-footer">
-                <div className="reddit-vote">
-                  <button
-                    onClick={() => handleVote(post._id, 1)}
-                    className={post.userVote === 1 ? "upvoted" : ""}
-                  >
-                    <FaArrowUp />
-                  </button>
-                  <span>{post.votes || 0}</span>
-                  <button
-                    onClick={() => handleVote(post._id, -1)}
-                    className={post.userVote === -1 ? "downvoted" : ""}
-                  >
-                    <FaArrowDown />
-                  </button>
-                </div>
-                <button className="action-btn">
-                  <FaRegComment /> {post.comments || 0}
-                </button>
-                <button className="action-btn">
-                  <FaShare />
-                </button>
-              </div>
+              <button className="read_more_btn" onClick={() => navigate(`/post/${post.username}`)}>
+                Read Full Post <FaArrowRight />
+              </button>
             </div>
           </div>
         ))}
