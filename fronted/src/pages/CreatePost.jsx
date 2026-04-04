@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { FaImage, FaVideo } from "react-icons/fa";
 import "./CSS/CreatePost.css";
 
 const CreatePost = () => {
