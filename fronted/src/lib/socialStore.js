@@ -6,82 +6,9 @@ const STORAGE_KEYS = {
   accessToken: "accessToken",
 };
 
-const seedUsers = [
-  {
-    id: "user_ankit",
-    fullName: "Ankit Kumar",
-    username: "ankit_kumar",
-    email: "ankit@example.com",
-    password: "123456",
-    avatar:
-      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=300&auto=format&fit=crop",
-    bio: "Full-stack builder sharing practical ideas for creators and developers.",
-    followers: 182,
-    following: 91,
-  },
-  {
-    id: "user_rahul",
-    fullName: "Rahul Shetty",
-    username: "rahul_shetty",
-    email: "rahul@example.com",
-    password: "123456",
-    avatar:
-      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=300&auto=format&fit=crop",
-    bio: "Learning in public and writing about software, systems, and momentum.",
-    followers: 98,
-    following: 64,
-  },
-];
-
-const seedPosts = [
-  {
-    id: "post_launch",
-    title: "How I Built a Creator Feed That Actually Feels Alive",
-    content:
-      "The best social products feel personal before they feel massive. I focused on small loops: posting quickly, seeing replies instantly, and keeping the feed useful even without a huge network.",
-    media: {
-      type: "image",
-      url: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=1200&auto=format&fit=crop",
-    },
-    tags: ["react", "design", "product"],
-    authorId: "user_ankit",
-    createdAt: "2026-04-06T09:30:00.000Z",
-    likesCount: 42,
-  },
-  {
-    id: "post_remote",
-    title: "Three Habits That Improved My Remote Dev Workflow",
-    content:
-      "I stopped chasing perfect routines and built a simple system: one deep-work block, one public update, and one cleanup pass before logging off. It made consistency much easier.",
-    media: {
-      type: "image",
-      url: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1200&auto=format&fit=crop",
-    },
-    tags: ["workflow", "career", "productivity"],
-    authorId: "user_rahul",
-    createdAt: "2026-04-05T14:10:00.000Z",
-    likesCount: 27,
-  },
-];
-
-const seedComments = {
-  post_launch: [
-    {
-      id: "comment_1",
-      text: "This is the kind of product thinking more apps need.",
-      userName: "Rahul Shetty",
-      createdAt: "2026-04-06T10:00:00.000Z",
-    },
-  ],
-  post_remote: [
-    {
-      id: "comment_2",
-      text: "That cleanup pass idea is underrated.",
-      userName: "Ankit Kumar",
-      createdAt: "2026-04-05T15:00:00.000Z",
-    },
-  ],
-};
+const seedUsers = [];
+const seedPosts = [];
+const seedComments = {};
 
 const safeRead = (key, fallback) => {
   if (typeof window === "undefined") return fallback;

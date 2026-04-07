@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Card from "../components/Card";
 import SkeletonCard from "../components/SkeletonCard";
 import "./post.css";
+import { getFeedPosts } from "../lib/socialStore";
 
 const Post = () => {
   const [posts, setPosts] = useState([]);
@@ -10,8 +11,7 @@ const Post = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        // TEMP dummy data (API later)
-        setPosts([]);
+        setPosts(getFeedPosts());
       } catch (err) {
         console.error(err);
       } finally {

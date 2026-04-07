@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaImage, FaVideo } from "react-icons/fa";
 import "./CSS/CreatePost.css";
+import { createLocalPost, getCurrentUser } from "../lib/socialStore";
 
 const CreatePost = () => {
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ const CreatePost = () => {
   const [error, setError] = useState("");
 
   const token = localStorage.getItem("accessToken");
+  const currentUser = getCurrentUser();
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -37,7 +39,7 @@ const CreatePost = () => {
   const handleSubmit = async () => {
     setError("");
 
-    if (!token) {
+    if (!currentUser) {
       setError("Login required");
       return;
     }
@@ -51,25 +53,51 @@ const CreatePost = () => {
     if (videoFile) formData.append("media", videoFile);
 
     try {
-      const res = await fetch("http://localhost:8000/api/v1/posts", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-      });
+      let res = null;
+      if (token) {
+        res = await fetch("http://localhost:8000/api/v1/posts", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        });
+      }
 
-      if (!res.ok) {
+      if (res && !res.ok) {
         const data = await res.json().catch(() => null);
         throw new Error(data?.message || "Post failed");
       }
 
+      createLocalPost({
+        title,
+        content,
+        media: imagePreview
+          ? { type: "image", url: imagePreview }
+          : videoPreview
+            ? { type: "video", url: videoPreview }
+            : null,
+      });
       navigate("/home");
     } catch (requestError) {
-      setError(
-        requestError.message ||
-          "Backend post create failed. Check if server and MongoDB are running."
-      );
+      try {
+        createLocalPost({
+          title,
+          content,
+          media: imagePreview
+            ? { type: "image", url: imagePreview }
+            : videoPreview
+              ? { type: "video", url: videoPreview }
+              : null,
+        });
+        navigate("/home");
+      } catch (localError) {
+        setError(
+          localError.message ||
+            requestError.message ||
+            "Unable to create post right now."
+        );
+      }
     }
   };
 

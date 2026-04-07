@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./CSS/Card.css";
 import dummyPosts from "./dummyPosts.js";
-import { FaArrowRight, FaTimes } from "react-icons/fa";
+import { FaArrowRight, FaClock, FaTimes } from "react-icons/fa";
 
 const Card = ({ posts: propPosts, post: singlePost }) => {
   const navigate = useNavigate();
@@ -16,85 +16,99 @@ const Card = ({ posts: propPosts, post: singlePost }) => {
   return (
     <>
       <div className="feed">
-        {posts.map((post, index) => (
-          <div
-            className={`main_article ${index % 2 !== 0 ? "reverse" : ""}`}
-            key={post.id || post._id}
-          >
-            <div className="left_container">
-              <div className="left-article-section">
-                {post.media ? (
-                  post.media.type === "image" ? (
+        {posts.length === 0 && (
+          <article className="feed-card empty-feed-card">
+            <span className="feed-kicker">No articles yet</span>
+            <h2 className="post-title-link static-title">Your feed is empty for now.</h2>
+            <p className="feed-excerpt">
+              Publish your first article to start building your reading feed.
+            </p>
+          </article>
+        )}
+        {posts.map((post) => {
+          const postId = post.id || post._id;
+          const estimatedReadTime =
+            post.readTime || `${Math.max(3, Math.ceil((post.content?.length || 0) / 180))} min read`;
+
+          return (
+            <article className="feed-card" key={postId}>
+              <div className="feed-card-header">
+                <div className="feed-kicker-row">
+                  <span className="feed-kicker">Feature Story</span>
+                  <span className="feed-read-time">
+                    <FaClock /> {estimatedReadTime}
+                  </span>
+                </div>
+
+                <h2
+                  className="post-title-link"
+                  onClick={() => navigate(`/post/${postId}`)}
+                >
+                  {post.title}
+                </h2>
+
+                <p className="feed-excerpt">{post.content}</p>
+              </div>
+
+              {post.media && (
+                <div className="feed-media-shell">
+                  {post.media.type === "image" ? (
                     <img
                       src={post.media.url}
                       alt="post media"
+                      className="feed-media"
                       onClick={() => setActiveMedia(post.media)}
                     />
                   ) : (
                     <video
                       src={post.media.url}
+                      className="feed-media"
                       controls
                       onClick={() => setActiveMedia(post.media)}
                     />
-                  )
-                ) : (
-                  <div className="no-media">No Media</div>
-                )}
-              </div>
-            </div>
-
-            <div className="right-article-section">
-              <Link to={`/profile/${post.username}`} className="post-author">
-                {post.avatar ? (
-                  <img
-                    src={post.avatar}
-                    alt="avatar"
-                    className="post-avatar-small"
-                  />
-                ) : (
-                  <div className="avatar-fallback-small">
-                    {post.fullName?.charAt(0)}
-                  </div>
-                )}
-                <div>
-                  <strong className="userfullname">{post.fullName}</strong>
-                  <span className="username">@{post.username}</span>
-                </div>
-              </Link>
-
-              <h2
-                className="post-title-link"
-                onClick={() => navigate(`/post/${post.id || post._id}`)}
-                style={{ cursor: "pointer" }}
-              >
-                {post.title}
-              </h2>
-
-              {post.tags && (
-                <div className="post-tags">
-                  {post.tags.map((tag, tagIndex) => (
-                    <span key={tagIndex} className="tag">
-                      #{tag}
-                    </span>
-                  ))}
+                  )}
                 </div>
               )}
 
-              <p className="desc">{post.content}</p>
+              <div className="feed-card-footer">
+                <Link to={`/profile/${post.username}`} className="post-author">
+                  {post.avatar ? (
+                    <img
+                      src={post.avatar}
+                      alt="avatar"
+                      className="post-avatar-small"
+                    />
+                  ) : (
+                    <div className="avatar-fallback-small">
+                      {post.fullName?.charAt(0)}
+                    </div>
+                  )}
+                  <div>
+                    <strong className="userfullname">{post.fullName}</strong>
+                    <span className="username">@{post.username}</span>
+                  </div>
+                </Link>
 
-              {post.readTime && <div className="read-time">{post.readTime}</div>}
+                {post.tags && post.tags.length > 0 && (
+                  <div className="post-tags">
+                    {post.tags.slice(0, 3).map((tag, tagIndex) => (
+                      <span key={tagIndex} className="tag">
+                        #{tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
 
-              <hr />
-
-              <button
-                className="read_more_btn"
-                onClick={() => navigate(`/post/${post.id || post._id}`)}
-              >
-                Read Full Post <FaArrowRight />
-              </button>
-            </div>
-          </div>
-        ))}
+                <button
+                  className="read_more_btn"
+                  onClick={() => navigate(`/post/${postId}`)}
+                >
+                  Read article <FaArrowRight />
+                </button>
+              </div>
+            </article>
+          );
+        })}
       </div>
 
       {activeMedia && (
