@@ -1,58 +1,61 @@
 .edit-profile-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(2, 6, 23, 0.85);
+  background: rgba(15, 23, 42, 0.74);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 3000;
+  padding: 20px;
 }
 
 .edit-profile-modal {
   width: 100%;
-  max-width: 420px;
-  background: #020617;
-  border-radius: 16px;
-  padding: 20px;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  max-width: 460px;
+  background: #fffdf8;
+  border-radius: 26px;
+  padding: 24px;
+  box-shadow: 0 30px 70px rgba(17, 24, 39, 0.18);
+  border: 1px solid rgba(17, 24, 39, 0.08);
 }
 
 .edit-profile-modal h2 {
-  color: white;
-  margin-bottom: 16px;
+  color: #111827;
+  margin: 0 0 18px;
   text-align: center;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 2rem;
 }
 
-/* Avatar */
 .edit-avatar {
   display: flex;
   align-items: center;
-  gap: 14px;
-  margin-bottom: 16px;
+  gap: 16px;
+  margin-bottom: 18px;
 }
 
 .edit-avatar img,
 .edit-avatar .avatar-fallback {
-  width: 72px;
-  height: 72px;
+  width: 82px;
+  height: 82px;
   border-radius: 50%;
   object-fit: cover;
-  background: #1e293b;
+  background: #111827;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: 26px;
-  font-weight: 600;
+  font-size: 28px;
+  font-weight: 700;
 }
 
 .edit-avatar label {
   cursor: pointer;
   font-size: 14px;
-  color: #60a5fa;
+  color: #7c2d12;
+  font-weight: 700;
 }
 
-/* Fields */
 .edit-fields {
   display: flex;
   flex-direction: column;
@@ -61,43 +64,43 @@
 
 .edit-fields input,
 .edit-fields textarea {
-  background: transparent;
-  border: 1px solid #1e293b;
-  border-radius: 10px;
-  padding: 10px;
-  color: white;
+  background: #fff;
+  border: 1px solid rgba(17, 24, 39, 0.12);
+  border-radius: 16px;
+  padding: 12px 14px;
+  color: #111827;
   font-size: 14px;
   outline: none;
 }
 
 .edit-fields textarea {
   resize: none;
-  height: 80px;
+  height: 96px;
 }
 
-/* Actions */
 .edit-actions {
   display: flex;
   justify-content: space-between;
-  margin-top: 18px;
+  margin-top: 20px;
+  gap: 12px;
 }
 
 .edit-actions button {
   flex: 1;
-  padding: 10px;
+  padding: 12px;
   border-radius: 999px;
   border: none;
   cursor: pointer;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .edit-actions .cancel {
   background: transparent;
-  color: #94a3b8;
+  color: #6b7280;
+  border: 1px solid rgba(17, 24, 39, 0.12);
 }
 
 .edit-actions .save {
-  background: #2563eb;
+  background: #111827;
   color: white;
-  margin-left: 10px;
 }

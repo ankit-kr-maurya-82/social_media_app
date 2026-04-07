@@ -1,15 +1,18 @@
 import React, { useContext, useState, useRef, useEffect } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { FaSearch, FaBars, FaTimes } from "react-icons/fa";
 import UserContext from "../../context/UserContext";
 import "./header.css";
+import { searchContent } from "../../api/search";
 
 const Header = () => {
   const { user, logout } = useContext(UserContext);
+  const navigate = useNavigate();
 
   const [searchOpen, setSearchOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const [results, setResults] = useState({ users: [], posts: [] });
 
   const searchRef = useRef(null);
 
@@ -38,6 +41,34 @@ const Header = () => {
     return () => document.removeEventListener("keydown", handleKey);
   }, []);
 
+  useEffect(() => {
+    let cancelled = false;
+    const normalized = query.trim();
+    if (!normalized) {
+      setResults({ users: [], posts: [] });
+      return;
+    }
+
+    const loadResults = async () => {
+      const nextResults = await searchContent(normalized);
+      if (!cancelled) {
+        setResults(nextResults);
+      }
+    };
+
+    loadResults();
+    return () => {
+      cancelled = true;
+    };
+  }, [query]);
+
+  const submitSearch = () => {
+    const normalized = query.trim();
+    if (!normalized) return;
+    navigate(`/explore?q=${encodeURIComponent(normalized)}`);
+    setSearchOpen(false);
+  };
+
   return (
     <header className="headerWrapper">
       <div className={`header ${searchOpen ? "search-active" : ""}`}>
@@ -60,7 +91,55 @@ const Header = () => {
             className="searchInput"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && submitSearch()}
           />
+          {searchOpen && query.trim() && (
+            <div className="searchDropdown">
+              {results.users.length === 0 && results.posts.length === 0 ? (
+                <button className="searchResultItem static" onClick={submitSearch}>
+                  Search for "{query}"
+                </button>
+              ) : (
+                <>
+                  {results.users.slice(0, 3).map((resultUser) => (
+                    <button
+                      key={resultUser.id}
+                      className="searchResultItem"
+                      onClick={() => {
+                        navigate(`/profile/${resultUser.username}`);
+                        setSearchOpen(false);
+                        setQuery("");
+                      }}
+                    >
+                      <span className="searchType">User</span>
+                      <strong>{resultUser.fullName || resultUser.username}</strong>
+                      <span>@{resultUser.username}</span>
+                    </button>
+                  ))}
+
+                  {results.posts.slice(0, 3).map((post) => (
+                    <button
+                      key={post.id || post._id}
+                      className="searchResultItem"
+                      onClick={() => {
+                        navigate(`/post/${post.id || post._id}`);
+                        setSearchOpen(false);
+                        setQuery("");
+                      }}
+                    >
+                      <span className="searchType">Article</span>
+                      <strong>{post.title}</strong>
+                      <span>@{post.username}</span>
+                    </button>
+                  ))}
+
+                  <button className="searchResultItem static" onClick={submitSearch}>
+                    View all results
+                  </button>
+                </>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Desktop Nav */}

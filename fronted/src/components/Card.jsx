@@ -4,6 +4,7 @@ import "./CSS/Card.css";
 import dummyPosts from "./dummyPosts.js";
 import { FaArrowRight, FaClock, FaPen, FaTimes, FaTrash } from "react-icons/fa";
 import { deleteLocalPost, getCurrentUser } from "../lib/socialStore";
+import { deletePostApi } from "../api/post";
 
 const Card = ({ posts: propPosts, post: singlePost }) => {
   const navigate = useNavigate();
@@ -122,8 +123,12 @@ const Card = ({ posts: propPosts, post: singlePost }) => {
                       </button>
                       <button
                         className="owner-action-btn danger"
-                        onClick={() => {
-                          deleteLocalPost(postId);
+                        onClick={async () => {
+                          try {
+                            await deletePostApi(postId);
+                          } catch {
+                            deleteLocalPost(postId);
+                          }
                           window.location.reload();
                         }}
                       >

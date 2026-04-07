@@ -1,51 +1,80 @@
 .profile-page {
-  display: flex;
-  justify-content: center;
-  padding: 24px 0;
+  padding: 108px 24px 48px;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(254, 240, 138, 0.24), transparent 20%),
+    linear-gradient(180deg, #f8f5ee 0%, #f7f7f6 34%, #ffffff 100%);
 }
-
-
 
 .profile-container {
-  width: 100%;
-  /* max-width: 720px; */
-  padding: 0 12px;
-  margin-top: 89px;
+  width: min(1180px, 100%);
+  margin: 0 auto;
 }
 
-/* Login warning */
 .profile-login-warning {
   text-align: center;
   padding: 40px;
-  color: #94a3b8;
+  color: #6b7280;
 }
 
-/* Top section */
-.profile-top {
+.profile-hero-card {
+  padding: 28px;
+  border-radius: 32px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  box-shadow: 0 30px 70px rgba(17, 24, 39, 0.08);
+}
+
+.profile-hero-topline {
   display: flex;
-  gap: 20px;
-  margin-bottom: 20px;
+  justify-content: space-between;
+  gap: 18px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(17, 24, 39, 0.1);
 }
 
-/* Avatar */
+.profile-kicker {
+  display: inline-block;
+  color: #92400e;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.profile-issue-note {
+  color: #6b7280;
+  font-size: 0.92rem;
+}
+
+.profile-top {
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+  padding-top: 26px;
+}
+
 .avatar-wrapper {
   position: relative;
-  width: 96px;
-  height: 96px;
+  width: 160px;
+  height: 160px;
 }
 
 .profile-avatar {
-  width: 96px;
-  height: 96px;
+  width: 160px;
+  height: 160px;
   border-radius: 50%;
   object-fit: cover;
+  border: 6px solid rgba(255, 255, 255, 0.75);
+  box-shadow: 0 20px 45px rgba(17, 24, 39, 0.14);
 }
 
 .fallback-avatar {
-  background: #1e293b;
+  background: #111827;
   color: white;
-  font-size: 32px;
-  font-weight: bold;
+  font-size: 48px;
+  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -53,121 +82,146 @@
 
 .avatar-overlay {
   position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.5);
+  inset: auto 0 10px 0;
+  margin: 0 auto;
+  width: fit-content;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(17, 24, 39, 0.88);
   color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  opacity: 0;
-  border-radius: 50%;
+  font-weight: 700;
   cursor: pointer;
 }
 
-.avatar-wrapper:hover .avatar-overlay {
-  opacity: 1;
+.profile-info {
+  max-width: 760px;
 }
 
-/* Info */
-.profile-info h2 {
+.fullName {
   margin: 0;
-  color: white;
+  color: #111827;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2.4rem, 4vw, 4rem);
+  line-height: 1.02;
 }
 
-.username {
-  color: #94a3b8;
-  font-size: 14px;
+.profile-username {
+  margin: 10px 0 0;
+  color: #6b7280;
+  font-size: 1rem;
 }
 
 .profile-bio {
-  margin-top: 6px;
-  color: #cbd5f5;
-  font-size: 14px;
+  margin-top: 18px;
+  color: #4b5563;
+  font-size: 1.04rem;
+  line-height: 1.85;
 }
 
-/* Stats */
 .profile-stats {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
-  margin-top: 10px;
+  margin-top: 24px;
 }
 
-.profile-stats button {
-  background: transparent;
-  border: none;
-  color: white;
-  cursor: pointer;
+.profile-stats article {
+  padding: 18px;
+  border-radius: 22px;
+  background: #fff;
+  border: 1px solid rgba(17, 24, 39, 0.08);
 }
 
-/* Tabs */
+.profile-stats b {
+  display: block;
+  font-size: 1.5rem;
+  color: #111827;
+}
+
+.profile-stats span {
+  color: #6b7280;
+}
+
 .profile-tabs {
   display: flex;
-  justify-content: space-around;
-  margin: 20px 0;
-  border-bottom: 1px solid #1e293b;
+  gap: 10px;
+  margin: 24px 0;
 }
 
 .profile-tabs button {
-  flex: 1;
-  padding: 10px;
-  background: transparent;
-  border: none;
-  color: #94a3b8;
+  padding: 12px 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(17, 24, 39, 0.12);
+  background: rgba(255, 255, 255, 0.75);
+  color: #6b7280;
   cursor: pointer;
+  font-weight: 700;
 }
 
 .profile-tabs button.active {
-  color: rgb(26, 26, 26);
-  border-bottom: 2px solid white;
+  background: #111827;
+  color: #fff;
 }
 
-/* Posts */
-.profile-posts {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+.profile-section-head {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(260px, 0.7fr);
+  gap: 24px;
+  align-items: end;
+  margin-bottom: 22px;
 }
 
-/* 🔥 CENTER ALIGN ALL MEDIA */
-.profile-posts img,
-.profile-posts video {
-  display: block;
-  margin: 0 auto;
-  max-width: 100%;
-  border-radius: 12px;
+.profile-section-head h2 {
+  margin: 10px 0 0;
+  color: #111827;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.8rem, 3vw, 3rem);
+  line-height: 1.06;
 }
 
-/* Media wrapper (used in Card) */
-.post-image-wrapper,
-.card-media {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  border-radius: 12px;
+.profile-section-head p {
+  margin: 0;
+  color: #6b7280;
+  line-height: 1.7;
 }
 
-.post-image-wrapper img,
-.post-image-wrapper video,
-.card-media img,
-.card-media video {
-  width: 100%;
-  max-height: 420px;
-  object-fit: cover;
-}
-
-/* Empty */
+.profile-empty-card,
 .empty-state {
-  text-align: center;
-  padding: 40px;
-  color: #94a3b8;
+  padding: 30px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  color: #6b7280;
 }
 
-.fullName{
-  color: #1e293b !important;
+.profile-empty-card h3 {
+  margin: 0 0 10px;
+  color: #111827;
 }
 
-.profile-stats button {
-  color: black;
+@media (max-width: 860px) {
+  .profile-top,
+  .profile-section-head {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-hero-topline {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .avatar-wrapper {
+    width: 132px;
+    height: 132px;
+  }
+
+  .profile-avatar {
+    width: 132px;
+    height: 132px;
+  }
+
+  .profile-stats {
+    grid-template-columns: 1fr;
+  }
 }

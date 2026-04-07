@@ -223,4 +223,30 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
   }
 });
 
-export { registerUser, loginUser, logoutUser, refreshAccessToken };
+const getPublicUserProfile = asyncHandler(async (req, res) => {
+  const { username } = req.params;
+
+  if (!username?.trim()) {
+    throw new ApiError(400, "Username is required");
+  }
+
+  const profileUser = await User.findOne({
+    username: username.trim().toLowerCase(),
+  }).select("-password -refreshToken");
+
+  if (!profileUser) {
+    throw new ApiError(404, "User profile not found");
+  }
+
+  return res.status(200).json(
+    new ApiResponse(200, profileUser, "User profile fetched successfully")
+  );
+});
+
+export {
+  registerUser,
+  loginUser,
+  logoutUser,
+  refreshAccessToken,
+  getPublicUserProfile,
+};

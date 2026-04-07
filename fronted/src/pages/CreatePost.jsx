@@ -9,6 +9,7 @@ import {
   getPostById,
   updateLocalPost,
 } from "../lib/socialStore";
+import { createPostApi, fetchPostById, updatePostApi } from "../api/post";
 
 const CreatePost = () => {
   const navigate = useNavigate();
@@ -29,21 +30,32 @@ const CreatePost = () => {
   useEffect(() => {
     if (!isEditMode) return;
 
-    const post = getPostById(postId);
-    if (!post) {
-      setError("Article not found");
-      return;
-    }
+    let cancelled = false;
 
-    if (currentUser?.id !== post.authorId) {
-      setError("You can edit only your own article");
-      return;
-    }
+    const loadPost = async () => {
+      const post = (await fetchPostById(postId)) || getPostById(postId);
+      if (!post) {
+        if (!cancelled) setError("Article not found");
+        return;
+      }
 
-    setTitle(post.title || "");
-    setContent(post.content || "");
-    if (post.media?.type === "image") setImagePreview(post.media.url);
-    if (post.media?.type === "video") setVideoPreview(post.media.url);
+      if (currentUser?.id !== post.authorId) {
+        if (!cancelled) setError("You can edit only your own article");
+        return;
+      }
+
+      if (!cancelled) {
+        setTitle(post.title || "");
+        setContent(post.content || "");
+        if (post.media?.type === "image") setImagePreview(post.media.url);
+        if (post.media?.type === "video") setVideoPreview(post.media.url);
+      }
+    };
+
+    loadPost();
+    return () => {
+      cancelled = true;
+    };
   }, [currentUser?.id, isEditMode, postId]);
 
   const handleImageChange = (e) => {
@@ -81,15 +93,37 @@ const CreatePost = () => {
         : null;
 
     if (isEditMode) {
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("content", content);
+      formData.append("mediaUrl", mediaPayload?.url || "");
+      if (imageFile) formData.append("media", imageFile);
+      if (videoFile) formData.append("media", videoFile);
+
       try {
-        updateLocalPost(postId, {
-          title,
-          content,
-          media: mediaPayload,
-        });
+        if (token) {
+          await updatePostApi(postId, formData);
+        } else {
+          updateLocalPost(postId, {
+            title,
+            content,
+            media: mediaPayload,
+          });
+        }
         navigate(`/post/${postId}`);
       } catch (updateError) {
-        setError(updateError.message || "Unable to update article.");
+        try {
+          updateLocalPost(postId, {
+            title,
+            content,
+            media: mediaPayload,
+          });
+          navigate(`/post/${postId}`);
+        } catch (localError) {
+          setError(
+            localError.message || updateError.message || "Unable to update article."
+          );
+        }
       }
       return;
     }
@@ -101,27 +135,15 @@ const CreatePost = () => {
     if (videoFile) formData.append("media", videoFile);
 
     try {
-      let res = null;
       if (token) {
-        res = await fetch("http://localhost:8000/api/v1/posts", {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          body: formData,
+        await createPostApi(formData);
+      } else {
+        createLocalPost({
+          title,
+          content,
+          media: mediaPayload,
         });
       }
-
-      if (res && !res.ok) {
-        const data = await res.json().catch(() => null);
-        throw new Error(data?.message || "Post failed");
-      }
-
-      createLocalPost({
-        title,
-        content,
-        media: mediaPayload,
-      });
       navigate("/home");
     } catch (requestError) {
       try {

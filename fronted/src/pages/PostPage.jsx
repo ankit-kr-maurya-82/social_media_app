@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import "./CSS/PostPage.css";
 import { FaArrowLeft, FaClock, FaPen, FaPlus, FaTrash } from "react-icons/fa";
@@ -6,13 +6,36 @@ import Comments from "../components/Comments/Comments.jsx";
 import {
   deleteLocalPost,
   getCurrentUser,
-  getPostById,
 } from "../lib/socialStore.js";
+import { deletePostApi, fetchPostById } from "../api/post.js";
 
 const PostPage = () => {
   const { postId } = useParams();
-  const activePost = useMemo(() => getPostById(postId), [postId]);
+  const [activePost, setActivePost] = useState(null);
+  const [loading, setLoading] = useState(true);
   const currentUser = getCurrentUser();
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadPost = async () => {
+      setLoading(true);
+      const post = await fetchPostById(postId);
+      if (!cancelled) {
+        setActivePost(post);
+        setLoading(false);
+      }
+    };
+
+    loadPost();
+    return () => {
+      cancelled = true;
+    };
+  }, [postId]);
+
+  if (loading) {
+    return <div className="article-page">Loading article...</div>;
+  }
 
   if (!activePost) {
     return <div className="article-page">Post not found.</div>;
@@ -29,7 +52,7 @@ const PostPage = () => {
         <Link to="/home" className="article-nav-link">
           <FaArrowLeft /> Back to feed
         </Link>
-          <Link to="/create" className="create-post-btn">
+        <Link to="/create" className="create-post-btn">
           <FaPlus /> Write article
         </Link>
       </div>
@@ -87,8 +110,12 @@ const PostPage = () => {
               </Link>
               <button
                 className="owner-action-btn danger"
-                onClick={() => {
-                  deleteLocalPost(activePost.id || activePost._id);
+                onClick={async () => {
+                  try {
+                    await deletePostApi(activePost.id || activePost._id);
+                  } catch {
+                    deleteLocalPost(activePost.id || activePost._id);
+                  }
                   window.location.href = "/home";
                 }}
               >

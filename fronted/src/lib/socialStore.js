@@ -102,6 +102,23 @@ export const searchPosts = (query) => {
   );
 };
 
+export const searchUsers = (query) => {
+  const normalized = query.trim().toLowerCase();
+  if (!normalized) return getUsers();
+
+  return getUsers().filter(
+    (user) =>
+      user.username?.toLowerCase().includes(normalized) ||
+      user.fullName?.toLowerCase().includes(normalized) ||
+      user.bio?.toLowerCase().includes(normalized)
+  );
+};
+
+export const searchAll = (query) => ({
+  users: searchUsers(query),
+  posts: searchPosts(query),
+});
+
 export const getUserByUsername = (username) =>
   getUsers().find((user) => user.username === username) || null;
 
@@ -299,7 +316,13 @@ export const addComment = (postId, text) => {
   const nextComment = {
     id: `comment_${Date.now()}`,
     text,
+    userId: currentUser?.id || null,
     userName: currentUser?.fullName || currentUser?.username || "Guest",
+    user: {
+      name: currentUser?.fullName || currentUser?.username || "Guest",
+      avatar: currentUser?.avatar || "",
+      username: currentUser?.username || "",
+    },
     createdAt: new Date().toISOString(),
   };
 
@@ -310,4 +333,32 @@ export const addComment = (postId, text) => {
   };
   saveCommentsMap(nextMap);
   return nextMap[postId];
+};
+
+export const deleteLocalComment = (postId, commentId) => {
+  const currentUser = getCurrentUser();
+  const commentMap = getCommentsMap();
+  const comments = commentMap[postId] || [];
+
+  const targetComment = comments.find((comment) => comment.id === commentId);
+  if (!targetComment) {
+    throw new Error("Comment not found");
+  }
+
+  if (
+    targetComment.userId &&
+    currentUser?.id &&
+    targetComment.userId !== currentUser.id
+  ) {
+    throw new Error("You can delete only your own comment");
+  }
+
+  const nextComments = comments.filter((comment) => comment.id !== commentId);
+  const nextMap = {
+    ...commentMap,
+    [postId]: nextComments,
+  };
+
+  saveCommentsMap(nextMap);
+  return nextComments;
 };
