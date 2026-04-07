@@ -22,8 +22,7 @@ import postRouter from "./routes/post.routes.js"
 
 // routes declaration
 app.get('/', (req, res)=> {
-    res.send("Social Media App")
-    res.send("Home Page")
+    res.send("Social Media App Home Page")
 })
 app.use("/api/v1/users", userRouter)
 app.use("/api/v1/posts", postRouter);

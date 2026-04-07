@@ -1,21 +1,20 @@
-import React from 'react'
+import React from "react";
 import "./CSS/About.css";
-import FeatureArticle from '../components/FeatureArticle ';
- 
+import FeatureArticle from "../components/FeatureArticle.jsx";
 
 const About = () => {
   return (
-    <section className='about'>
-      <div className='about__container'>
+    <section className="about">
+      <div className="about__container">
         <h1>About This Project</h1>
-        <p className='about__lead'>
+        <p className="about__lead">
           This project is a full-stack social media application built to support
           core community features like creating posts, exploring content,
           interacting with user profiles, and chatting in real time.
         </p>
 
-        <div className='about__grid'>
-          <article className='about__card'>
+        <div className="about__grid">
+          <article className="about__card">
             <h2>What It Includes</h2>
             <ul>
               <li>User authentication with login and registration flows</li>
@@ -27,7 +26,7 @@ const About = () => {
             </ul>
           </article>
 
-          <article className='about__card'>
+          <article className="about__card">
             <h2>Architecture</h2>
             <p>
               The frontend is built with React and React Router for a clean
@@ -37,7 +36,7 @@ const About = () => {
             </p>
           </article>
 
-          <article className='about__card'>
+          <article className="about__card">
             <h2>Project Goal</h2>
             <p>
               The main goal is to provide a practical, extensible base for a
@@ -45,11 +44,11 @@ const About = () => {
               scale with more features.
             </p>
           </article>
-          <FeatureArticle/>
+          <FeatureArticle />
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default About
+export default About;

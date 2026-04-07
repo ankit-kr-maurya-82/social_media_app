@@ -1,8 +1,9 @@
-import React, { useState, useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import UserContext from "../context/UserContext";
 import api from "../api/axios.js";
 import "./CSS/Login.css";
+import { loginLocalUser, syncUserToStore } from "../lib/socialStore";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -25,20 +26,23 @@ const Login = () => {
       });
 
       const { user, accessToken } = res.data.data;
-
-      // ✅ save token separately
+      syncUserToStore(user);
       localStorage.setItem("accessToken", accessToken);
-
-      // ✅ save user only
-      setUser(user);
       localStorage.setItem("user", JSON.stringify(user));
-
-      // ✅ correct navigation
+      setUser(user);
       navigate(`/profile/${user.username}`);
     } catch (error) {
-      setErrorMsg(
-        error.response?.data?.message || "Login failed, try again"
-      );
+      try {
+        const localUser = loginLocalUser({ email, password });
+        setUser(localUser);
+        navigate(`/profile/${localUser.username}`);
+      } catch (localError) {
+        setErrorMsg(
+          error.response?.data?.message ||
+            localError.message ||
+            "Login failed, try again"
+        );
+      }
     } finally {
       setLoading(false);
     }
@@ -72,8 +76,7 @@ const Login = () => {
         </button>
 
         <p className="login-footer">
-          Don't have an account?{" "}
-          <Link to="/register">Register</Link>
+          Don't have an account? <Link to="/register">Register</Link>
         </p>
       </form>
     </div>

@@ -1,67 +1,82 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useMemo, useState } from "react";
+import { useParams } from "react-router-dom";
 import UserContext from "../context/UserContext";
 import Card from "../components/Card";
-import dummyPosts from "../components/dummyPosts";
 import "./CSS/Profile.css";
 import EditProfile from "../components/EditProfile";
+import { getPostsByUsername, getUserByUsername } from "../lib/socialStore";
 
 const Profile = () => {
   const { user } = useContext(UserContext);
+  const { username } = useParams();
   const [activeTab, setActiveTab] = useState("posts");
   const [editOpen, setEditOpen] = useState(false);
 
-  if (!user) {
-    return (
-      <div className="profile-login-warning">
-        Please login to view your profile
-      </div>
-    );
+  const profileUser = useMemo(
+    () => getUserByUsername(username) || user,
+    [username, user]
+  );
+  const posts = useMemo(
+    () => (profileUser ? getPostsByUsername(profileUser.username) : []),
+    [profileUser]
+  );
+
+  if (!profileUser) {
+    return <div className="profile-login-warning">User profile not found</div>;
   }
 
   return (
     <div className="profile-page">
       <div className="profile-container">
-
-        {/* Top */}
         <div className="profile-top">
           <div className="avatar-wrapper">
-            {user.avatar ? (
-              <img src={user.avatar} alt="avatar" className="profile-avatar" />
+            {profileUser.avatar ? (
+              <img
+                src={profileUser.avatar}
+                alt="avatar"
+                className="profile-avatar"
+              />
             ) : (
               <div className="profile-avatar fallback-avatar">
-                {user.username?.charAt(0).toUpperCase()}
+                {profileUser.username?.charAt(0).toUpperCase()}
               </div>
             )}
-            <button 
-            className="avatar-overlay edit-profile-btn"
-            onClick={()=> setEditOpen(true)}>
-              Edit</button>
-              {editOpen && <EditProfile onClose={() => setEditOpen(false)} />}
 
+            {user?.id === profileUser.id && (
+              <button
+                className="avatar-overlay edit-profile-btn"
+                onClick={() => setEditOpen(true)}
+              >
+                Edit
+              </button>
+            )}
+
+            {editOpen && <EditProfile onClose={() => setEditOpen(false)} />}
           </div>
 
           <div className="profile-info">
-            <h2 className="fullName">{user.fullName || user.username}</h2>
-            <p className="username">@{user.username}</p>
+            <h2 className="fullName">
+              {profileUser.fullName || profileUser.username}
+            </h2>
+            <p className="username">@{profileUser.username}</p>
 
             <p className="profile-bio">
-              {user.bio || "No bio added yet."}
+              {profileUser.bio || "No bio added yet."}
             </p>
 
             <div className="profile-stats">
               <button>
-                <b>{user.followers?.length || 0}</b>
+                <b>{profileUser.followers || 0}</b>
                 <span>Followers</span>
               </button>
               <button>
-                <b>{user.following?.length || 0}</b>
+                <b>{profileUser.following || 0}</b>
                 <span>Following</span>
               </button>
             </div>
           </div>
         </div>
 
-        {/* Tabs */}
         <div className="profile-tabs">
           {["posts", "replies", "media"].map((tab) => (
             <button
@@ -74,15 +89,12 @@ const Profile = () => {
           ))}
         </div>
 
-        {/* Content */}
         {activeTab === "posts" && (
           <div className="profile-posts">
-            {dummyPosts.length === 0 ? (
+            {posts.length === 0 ? (
               <p className="no-posts">No posts yet</p>
             ) : (
-              dummyPosts.map((post) => (
-                <Card key={post._id} post={post} />
-              ))
+              <Card posts={posts} />
             )}
           </div>
         )}
@@ -90,7 +102,6 @@ const Profile = () => {
         {activeTab !== "posts" && (
           <div className="empty-state">Coming soon</div>
         )}
-
       </div>
     </div>
   );

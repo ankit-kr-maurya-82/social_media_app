@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
 import UserContext from "./UserContext";
+import {
+  getCurrentUser,
+  logoutLocalUser,
+  syncUserToStore,
+} from "../lib/socialStore";
 
 const UserContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -7,12 +12,12 @@ const UserContextProvider = ({ children }) => {
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem("user");
+    logoutLocalUser();
   };
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) setUser(JSON.parse(storedUser));
+    const storedUser = getCurrentUser();
+    if (storedUser) setUser(syncUserToStore(storedUser));
     setLoading(false);
   }, []);
 

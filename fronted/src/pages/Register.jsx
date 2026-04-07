@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import api from "../api/axios.js"; // Axios instance
-import "./CSS/Register.css"
-
+import api from "../api/axios.js";
+import "./CSS/Register.css";
+import { registerLocalUser, syncUserToStore } from "../lib/socialStore";
 
 const Register = () => {
   const [fullName, setFullName] = useState("");
@@ -27,16 +27,20 @@ const Register = () => {
         password,
       });
 
-      console.log("Registered user:", response.data.data);
-
-      // save in localstorage
-      localStorage.setItem("user",JSON.stringify(response.data.data))
-
-      navigate("/home"); // redirect to login page
+      syncUserToStore(response.data.data);
+      localStorage.setItem("user", JSON.stringify(response.data.data));
+      navigate("/home");
     } catch (error) {
-      setErrorMsg(
-        error.response?.data?.message || "Registration failed, try again"
-      );
+      try {
+        registerLocalUser({ fullName, username, email, password });
+        navigate("/login");
+      } catch (localError) {
+        setErrorMsg(
+          error.response?.data?.message ||
+            localError.message ||
+            "Registration failed, try again"
+        );
+      }
     } finally {
       setLoading(false);
     }
@@ -45,13 +49,9 @@ const Register = () => {
   return (
     <div className="register-container">
       <div className="register-card">
-        <h2 className="">
-          Create Account
-        </h2>
+        <h2>Create Account</h2>
 
-        {errorMsg && (
-          <p className="register-error">{errorMsg}</p>
-        )}
+        {errorMsg && <p className="register-error">{errorMsg}</p>}
 
         <form onSubmit={submitHandler} className="register-form">
           <input
@@ -59,7 +59,6 @@ const Register = () => {
             placeholder="Full Name"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
-            className=""
             required
           />
 
@@ -68,7 +67,6 @@ const Register = () => {
             placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className=""
             required
           />
 
@@ -77,7 +75,6 @@ const Register = () => {
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className=""
             required
           />
 
@@ -86,15 +83,10 @@ const Register = () => {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className=""
             required
           />
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="register-btn"
-          >
+          <button type="submit" disabled={loading} className="register-btn">
             {loading ? "Creating Account..." : "Create Account"}
           </button>
         </form>

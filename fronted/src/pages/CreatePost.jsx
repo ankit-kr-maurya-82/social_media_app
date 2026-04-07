@@ -2,20 +2,24 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaImage, FaVideo } from "react-icons/fa";
 import "./CSS/CreatePost.css";
+import { createLocalPost } from "../lib/socialStore";
 
 const CreatePost = () => {
   const navigate = useNavigate();
 
+  const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
   const [videoPreview, setVideoPreview] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [videoFile, setVideoFile] = useState(null);
+  const [error, setError] = useState("");
 
-const token = localStorage.getItem("accessToken");
+  const token = localStorage.getItem("accessToken");
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
+    if (!file) return;
     setImageFile(file);
     setImagePreview(URL.createObjectURL(file));
     setVideoFile(null);
@@ -24,6 +28,7 @@ const token = localStorage.getItem("accessToken");
 
   const handleVideoChange = (e) => {
     const file = e.target.files[0];
+    if (!file) return;
     setVideoFile(file);
     setVideoPreview(URL.createObjectURL(file));
     setImageFile(null);
@@ -31,8 +36,10 @@ const token = localStorage.getItem("accessToken");
   };
 
   const handleSubmit = async () => {
+    setError("");
+
     if (!token) {
-      alert("Login required");
+      setError("Login required");
       return;
     }
 
@@ -40,7 +47,6 @@ const token = localStorage.getItem("accessToken");
 
     const formData = new FormData();
     formData.append("content", content);
-
     if (imageFile) formData.append("media", imageFile);
     if (videoFile) formData.append("media", videoFile);
 
@@ -57,17 +63,28 @@ const token = localStorage.getItem("accessToken");
         throw new Error("Post failed");
       }
 
-      navigate("/");
-    } catch (err) {
-      console.error("Post failed:", err.message);
+      navigate("/home");
+    } catch {
+      try {
+        createLocalPost({
+          title,
+          content,
+          media: imagePreview
+            ? { type: "image", url: imagePreview }
+            : videoPreview
+              ? { type: "video", url: videoPreview }
+              : null,
+        });
+        navigate("/home");
+      } catch (localError) {
+        setError(localError.message);
+      }
     }
-    
   };
 
   return (
     <div className="create-wrapper">
       <div className="create-box">
-
         <div className="create-header">
           <button onClick={() => navigate(-1)}>Cancel</button>
           <span>Create Post</span>
@@ -81,13 +98,23 @@ const token = localStorage.getItem("accessToken");
         </div>
 
         <textarea
+          placeholder="Give your post a title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+
+        <textarea
           placeholder="What do you want to share?"
           value={content}
           onChange={(e) => setContent(e.target.value)}
         />
 
+        {error && <p className="error-msg">{error}</p>}
+
         {imagePreview && <img src={imagePreview} className="media-preview" />}
-        {videoPreview && <video src={videoPreview} className="media-preview" controls />}
+        {videoPreview && (
+          <video src={videoPreview} className="media-preview" controls />
+        )}
 
         <div className="create-toolbar">
           <label>
@@ -100,7 +127,6 @@ const token = localStorage.getItem("accessToken");
             <input hidden type="file" accept="video/*" onChange={handleVideoChange} />
           </label>
         </div>
-
       </div>
     </div>
   );

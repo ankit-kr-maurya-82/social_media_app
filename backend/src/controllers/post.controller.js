@@ -1,9 +1,10 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { ApiError } from "../utils/ApiError.js";
+import { Post } from "../models/post.model.js";
 
 
 export const createPost = asyncHandler(async (req, res) => {
   const { content } = req.body;
-    console.log("USER:", req.user); // MUST exist
 
 
   if (!content && !req.file) {

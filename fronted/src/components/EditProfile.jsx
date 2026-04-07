@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import UserContext from "../context/UserContext";
 import "./CSS/EditProfile.css";
+import { updateLocalUserProfile } from "../lib/socialStore";
 
 const EditProfile = ({ onClose }) => {
   const { user, setUser } = useContext(UserContext);
@@ -17,16 +18,13 @@ const EditProfile = ({ onClose }) => {
   };
 
   const handleSave = () => {
-    const updatedUser = {
-      ...user,
+    const updatedUser = updateLocalUserProfile({
       fullName,
-      username,
+      username: username.trim().toLowerCase(),
       bio,
       avatar,
-    };
-
+    });
     setUser(updatedUser);
-    localStorage.setItem("user", JSON.stringify(updatedUser));
     onClose();
   };
 
