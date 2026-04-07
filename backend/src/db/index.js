@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import dns from "dns";
 
-dns.setServers(["8.8.8.8", "1.1.1.1", "0.0.0.0"]);
+dns.setServers(["8.8.8.8", "1.1.1.1"]);
 
 let cachedConnection = null;
 let pendingConnection = null;
@@ -15,14 +15,25 @@ const connectDB = async () => {
   }
 
   pendingConnection = mongoose
-    .connect(process.env.MONGODB_URI)
+    .connect(process.env.MONGODB_URI, {
+      serverSelectionTimeoutMS: 10000,
+    })
     .then((connectionInstance) => {
       cachedConnection = connectionInstance;
-      console.log(`MongoDB connected. DB HOST: ${connectionInstance.connection.host}`);
+      console.log(
+        `MongoDB connected. DB HOST: ${connectionInstance.connection.host}`
+      );
       return connectionInstance;
     })
     .catch((error) => {
       pendingConnection = null;
+
+      if (error?.name === "MongooseServerSelectionError") {
+        console.error(
+          "MongoDB Atlas connection failed. Check Network Access IP whitelist, cluster status, and DB credentials."
+        );
+      }
+
       throw error;
     });
 

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../api/axios.js";
 import "./CSS/Register.css";
-import { registerLocalUser, syncUserToStore } from "../lib/socialStore";
+import { syncUserToStore } from "../lib/socialStore";
 
 const Register = () => {
   const [fullName, setFullName] = useState("");
@@ -27,20 +27,14 @@ const Register = () => {
         password,
       });
 
-      syncUserToStore(response.data.data);
-      localStorage.setItem("user", JSON.stringify(response.data.data));
-      navigate("/home");
+      const syncedUser = syncUserToStore(response.data.data);
+      localStorage.setItem("user", JSON.stringify(syncedUser));
+      navigate("/login");
     } catch (error) {
-      try {
-        registerLocalUser({ fullName, username, email, password });
-        navigate("/login");
-      } catch (localError) {
-        setErrorMsg(
-          error.response?.data?.message ||
-            localError.message ||
-            "Registration failed, try again"
-        );
-      }
+      setErrorMsg(
+        error.response?.data?.message ||
+          "Backend register failed. Check if server and MongoDB are running."
+      );
     } finally {
       setLoading(false);
     }

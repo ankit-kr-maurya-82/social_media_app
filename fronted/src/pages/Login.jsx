@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import UserContext from "../context/UserContext";
 import api from "../api/axios.js";
 import "./CSS/Login.css";
-import { loginLocalUser, syncUserToStore } from "../lib/socialStore";
+import { syncUserToStore } from "../lib/socialStore";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -26,23 +26,16 @@ const Login = () => {
       });
 
       const { user, accessToken } = res.data.data;
-      syncUserToStore(user);
+      const syncedUser = syncUserToStore(user);
       localStorage.setItem("accessToken", accessToken);
-      localStorage.setItem("user", JSON.stringify(user));
-      setUser(user);
-      navigate(`/profile/${user.username}`);
+      localStorage.setItem("user", JSON.stringify(syncedUser));
+      setUser(syncedUser);
+      navigate(`/profile/${syncedUser.username}`);
     } catch (error) {
-      try {
-        const localUser = loginLocalUser({ email, password });
-        setUser(localUser);
-        navigate(`/profile/${localUser.username}`);
-      } catch (localError) {
-        setErrorMsg(
-          error.response?.data?.message ||
-            localError.message ||
-            "Login failed, try again"
-        );
-      }
+      setErrorMsg(
+        error.response?.data?.message ||
+          "Backend login failed. Check if server and MongoDB are running."
+      );
     } finally {
       setLoading(false);
     }

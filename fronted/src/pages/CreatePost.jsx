@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaImage, FaVideo } from "react-icons/fa";
 import "./CSS/CreatePost.css";
-import { createLocalPost } from "../lib/socialStore";
 
 const CreatePost = () => {
   const navigate = useNavigate();
@@ -46,6 +45,7 @@ const CreatePost = () => {
     if (!content.trim() && !imageFile && !videoFile) return;
 
     const formData = new FormData();
+    formData.append("title", title);
     formData.append("content", content);
     if (imageFile) formData.append("media", imageFile);
     if (videoFile) formData.append("media", videoFile);
@@ -60,25 +60,16 @@ const CreatePost = () => {
       });
 
       if (!res.ok) {
-        throw new Error("Post failed");
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.message || "Post failed");
       }
 
       navigate("/home");
-    } catch {
-      try {
-        createLocalPost({
-          title,
-          content,
-          media: imagePreview
-            ? { type: "image", url: imagePreview }
-            : videoPreview
-              ? { type: "video", url: videoPreview }
-              : null,
-        });
-        navigate("/home");
-      } catch (localError) {
-        setError(localError.message);
-      }
+    } catch (requestError) {
+      setError(
+        requestError.message ||
+          "Backend post create failed. Check if server and MongoDB are running."
+      );
     }
   };
 
