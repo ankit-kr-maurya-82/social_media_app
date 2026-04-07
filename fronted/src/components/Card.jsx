@@ -3,8 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import "./CSS/Card.css";
 import dummyPosts from "./dummyPosts.js";
 import { FaArrowRight, FaClock, FaPen, FaTimes, FaTrash } from "react-icons/fa";
-import { deleteLocalPost, getCurrentUser } from "../lib/socialStore";
+import { getCurrentUser } from "../lib/socialStore";
 import { deletePostApi } from "../api/post";
+import { formatArticleDate } from "../utils/formatArticleDate";
 
 const Card = ({ posts: propPosts, post: singlePost }) => {
   const navigate = useNavigate();
@@ -32,6 +33,7 @@ const Card = ({ posts: propPosts, post: singlePost }) => {
           const postId = post.id || post._id;
           const estimatedReadTime =
             post.readTime || `${Math.max(3, Math.ceil((post.content?.length || 0) / 180))} min read`;
+          const publishedAt = formatArticleDate(post.createdAt || post.updatedAt);
           const isOwner = currentUser?.id === post.authorId;
 
           return (
@@ -52,6 +54,11 @@ const Card = ({ posts: propPosts, post: singlePost }) => {
                 </h2>
 
                 <p className="feed-excerpt">{post.content}</p>
+                <div className="feed-publish-meta" aria-label={publishedAt.full}>
+                  <span>{publishedAt.day}</span>
+                  <span>{publishedAt.date}</span>
+                  {publishedAt.time && <span>{publishedAt.time}</span>}
+                </div>
               </div>
 
               {post.media && (
@@ -126,10 +133,10 @@ const Card = ({ posts: propPosts, post: singlePost }) => {
                         onClick={async () => {
                           try {
                             await deletePostApi(postId);
+                            window.location.reload();
                           } catch {
-                            deleteLocalPost(postId);
+                            window.alert("Database delete failed. Check backend/MongoDB.");
                           }
-                          window.location.reload();
                         }}
                       >
                         <FaTrash /> Delete

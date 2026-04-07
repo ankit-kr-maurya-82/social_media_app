@@ -3,11 +3,9 @@ import { Link, useParams } from "react-router-dom";
 import "./CSS/PostPage.css";
 import { FaArrowLeft, FaClock, FaPen, FaPlus, FaTrash } from "react-icons/fa";
 import Comments from "../components/Comments/Comments.jsx";
-import {
-  deleteLocalPost,
-  getCurrentUser,
-} from "../lib/socialStore.js";
+import { getCurrentUser } from "../lib/socialStore.js";
 import { deletePostApi, fetchPostById } from "../api/post.js";
+import { formatArticleDate } from "../utils/formatArticleDate.js";
 
 const PostPage = () => {
   const { postId } = useParams();
@@ -20,10 +18,17 @@ const PostPage = () => {
 
     const loadPost = async () => {
       setLoading(true);
-      const post = await fetchPostById(postId);
-      if (!cancelled) {
-        setActivePost(post);
-        setLoading(false);
+      try {
+        const post = await fetchPostById(postId);
+        if (!cancelled) {
+          setActivePost(post);
+          setLoading(false);
+        }
+      } catch {
+        if (!cancelled) {
+          setActivePost(null);
+          setLoading(false);
+        }
       }
     };
 
@@ -44,6 +49,7 @@ const PostPage = () => {
   const estimatedReadTime =
     activePost.readTime ||
     `${Math.max(3, Math.ceil((activePost.content?.length || 0) / 180))} min read`;
+  const publishedAt = formatArticleDate(activePost.createdAt || activePost.updatedAt);
   const isOwner = currentUser?.id === activePost.authorId;
 
   return (
@@ -81,6 +87,12 @@ const PostPage = () => {
             </div>
           </Link>
 
+          <div className="article-publish-meta" aria-label={publishedAt.full}>
+            <span className="article-publish-day">{publishedAt.day}</span>
+            <span>{publishedAt.date}</span>
+            {publishedAt.time && <span>{publishedAt.time}</span>}
+          </div>
+
           {activePost.media && (
             <div className="article-media-frame">
               {activePost.media.type === "image" ? (
@@ -113,10 +125,10 @@ const PostPage = () => {
                 onClick={async () => {
                   try {
                     await deletePostApi(activePost.id || activePost._id);
+                    window.location.href = "/home";
                   } catch {
-                    deleteLocalPost(activePost.id || activePost._id);
+                    window.alert("Database delete failed. Check backend/MongoDB.");
                   }
-                  window.location.href = "/home";
                 }}
               >
                 <FaTrash /> Delete article

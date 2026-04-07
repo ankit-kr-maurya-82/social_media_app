@@ -81,7 +81,7 @@
 }
 
 .article-author-row {
-  margin-bottom: 22px;
+  margin-bottom: 14px;
 }
 
 .article-author-copy strong {
@@ -91,6 +91,28 @@
 
 .article-author-copy span {
   color: #6b7280;
+}
+
+.article-publish-meta {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+  color: #6b7280;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.article-publish-meta span {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: #f8f5ef;
+}
+
+.article-publish-day {
+  color: #92400e;
 }
 
 .article-media-frame {

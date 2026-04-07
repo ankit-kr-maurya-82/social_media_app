@@ -3,12 +3,7 @@ import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { FaImage, FaVideo } from "react-icons/fa";
 import "./CSS/CreatePost.css";
-import {
-  createLocalPost,
-  getCurrentUser,
-  getPostById,
-  updateLocalPost,
-} from "../lib/socialStore";
+import { getCurrentUser } from "../lib/socialStore";
 import { createPostApi, fetchPostById, updatePostApi } from "../api/post";
 
 const CreatePost = () => {
@@ -33,22 +28,28 @@ const CreatePost = () => {
     let cancelled = false;
 
     const loadPost = async () => {
-      const post = (await fetchPostById(postId)) || getPostById(postId);
-      if (!post) {
-        if (!cancelled) setError("Article not found");
-        return;
-      }
+      try {
+        const post = await fetchPostById(postId);
+        if (!post) {
+          if (!cancelled) setError("Article not found");
+          return;
+        }
 
-      if (currentUser?.id !== post.authorId) {
-        if (!cancelled) setError("You can edit only your own article");
-        return;
-      }
+        if (currentUser?.id !== post.authorId) {
+          if (!cancelled) setError("You can edit only your own article");
+          return;
+        }
 
-      if (!cancelled) {
-        setTitle(post.title || "");
-        setContent(post.content || "");
-        if (post.media?.type === "image") setImagePreview(post.media.url);
-        if (post.media?.type === "video") setVideoPreview(post.media.url);
+        if (!cancelled) {
+          setTitle(post.title || "");
+          setContent(post.content || "");
+          if (post.media?.type === "image") setImagePreview(post.media.url);
+          if (post.media?.type === "video") setVideoPreview(post.media.url);
+        }
+      } catch (loadError) {
+        if (!cancelled) {
+          setError(loadError.response?.data?.message || "Unable to load article.");
+        }
       }
     };
 
@@ -101,29 +102,17 @@ const CreatePost = () => {
       if (videoFile) formData.append("media", videoFile);
 
       try {
-        if (token) {
-          await updatePostApi(postId, formData);
-        } else {
-          updateLocalPost(postId, {
-            title,
-            content,
-            media: mediaPayload,
-          });
+        if (!token) {
+          throw new Error("Login required for database update");
         }
+        await updatePostApi(postId, formData);
         navigate(`/post/${postId}`);
       } catch (updateError) {
-        try {
-          updateLocalPost(postId, {
-            title,
-            content,
-            media: mediaPayload,
-          });
-          navigate(`/post/${postId}`);
-        } catch (localError) {
-          setError(
-            localError.message || updateError.message || "Unable to update article."
-          );
-        }
+        setError(
+          updateError.response?.data?.message ||
+            updateError.message ||
+            "Unable to update article."
+        );
       }
       return;
     }
@@ -135,31 +124,17 @@ const CreatePost = () => {
     if (videoFile) formData.append("media", videoFile);
 
     try {
-      if (token) {
-        await createPostApi(formData);
-      } else {
-        createLocalPost({
-          title,
-          content,
-          media: mediaPayload,
-        });
+      if (!token) {
+        throw new Error("Login required for database create");
       }
+      await createPostApi(formData);
       navigate("/home");
     } catch (requestError) {
-      try {
-        createLocalPost({
-          title,
-          content,
-          media: mediaPayload,
-        });
-        navigate("/home");
-      } catch (localError) {
-        setError(
-          localError.message ||
-            requestError.message ||
-            "Unable to create post right now."
-        );
-      }
+      setError(
+        requestError.response?.data?.message ||
+          requestError.message ||
+          "Unable to create post right now."
+      );
     }
   };
 

@@ -1,13 +1,8 @@
 import api from "./axios";
-import { getPostById as getLocalPostById } from "../lib/socialStore";
 
 export const fetchPostById = async (postId) => {
-  try {
-    const response = await api.get(`/posts/${postId}`);
-    return response.data?.post || null;
-  } catch {
-    return getLocalPostById(postId);
-  }
+  const response = await api.get(`/posts/${postId}`);
+  return response.data?.post || null;
 };
 
 export const createPostApi = async (formData) => {
