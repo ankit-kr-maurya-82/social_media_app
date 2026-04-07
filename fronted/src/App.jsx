@@ -26,6 +26,7 @@ function App() {
           <Route path="register" element={<Register />} />
           <Route path="explore" element={<Explore />} />
           <Route path="create" element={<CreatePost />} />
+          <Route path="edit/:postId" element={<CreatePost />} />
           <Route path="chat" element={<Chat />} />
           <Route path="post/:postId" element={<PostPage />} />
           <Route path="about" element={<About />} />

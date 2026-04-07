@@ -105,6 +105,20 @@
   border-top: 1px solid rgba(17, 24, 39, 0.08);
 }
 
+.feed-footer-main {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.feed-footer-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
 .post-author {
   display: flex;
   align-items: center;
@@ -175,6 +189,31 @@
 
 .read_more_btn:hover {
   color: #92400e;
+}
+
+.owner-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.owner-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(17, 24, 39, 0.12);
+  background: #fff;
+  color: #111827;
+  text-decoration: none;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.owner-action-btn.danger {
+  color: #991b1b;
+  border-color: rgba(153, 27, 27, 0.18);
 }
 
 .media-modal {

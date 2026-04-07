@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./CSS/Card.css";
 import dummyPosts from "./dummyPosts.js";
-import { FaArrowRight, FaClock, FaTimes } from "react-icons/fa";
+import { FaArrowRight, FaClock, FaPen, FaTimes, FaTrash } from "react-icons/fa";
+import { deleteLocalPost, getCurrentUser } from "../lib/socialStore";
 
 const Card = ({ posts: propPosts, post: singlePost }) => {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ const Card = ({ posts: propPosts, post: singlePost }) => {
       ? [singlePost]
       : dummyPosts;
   const [activeMedia, setActiveMedia] = useState(null);
+  const currentUser = getCurrentUser();
 
   return (
     <>
@@ -29,6 +31,7 @@ const Card = ({ posts: propPosts, post: singlePost }) => {
           const postId = post.id || post._id;
           const estimatedReadTime =
             post.readTime || `${Math.max(3, Math.ceil((post.content?.length || 0) / 180))} min read`;
+          const isOwner = currentUser?.id === post.authorId;
 
           return (
             <article className="feed-card" key={postId}>
@@ -71,40 +74,64 @@ const Card = ({ posts: propPosts, post: singlePost }) => {
               )}
 
               <div className="feed-card-footer">
-                <Link to={`/profile/${post.username}`} className="post-author">
-                  {post.avatar ? (
-                    <img
-                      src={post.avatar}
-                      alt="avatar"
-                      className="post-avatar-small"
-                    />
-                  ) : (
-                    <div className="avatar-fallback-small">
-                      {post.fullName?.charAt(0)}
+                <div className="feed-footer-main">
+                  <Link to={`/profile/${post.username}`} className="post-author">
+                    {post.avatar ? (
+                      <img
+                        src={post.avatar}
+                        alt="avatar"
+                        className="post-avatar-small"
+                      />
+                    ) : (
+                      <div className="avatar-fallback-small">
+                        {post.fullName?.charAt(0)}
+                      </div>
+                    )}
+                    <div>
+                      <strong className="userfullname">{post.fullName}</strong>
+                      <span className="username">@{post.username}</span>
+                    </div>
+                  </Link>
+
+                  {post.tags && post.tags.length > 0 && (
+                    <div className="post-tags">
+                      {post.tags.slice(0, 3).map((tag, tagIndex) => (
+                        <span key={tagIndex} className="tag">
+                          #{tag}
+                        </span>
+                      ))}
                     </div>
                   )}
-                  <div>
-                    <strong className="userfullname">{post.fullName}</strong>
-                    <span className="username">@{post.username}</span>
-                  </div>
-                </Link>
+                </div>
 
-                {post.tags && post.tags.length > 0 && (
-                  <div className="post-tags">
-                    {post.tags.slice(0, 3).map((tag, tagIndex) => (
-                      <span key={tagIndex} className="tag">
-                        #{tag}
-                      </span>
-                    ))}
-                  </div>
-                )}
+                <div className="feed-footer-actions">
+                  <button
+                    className="read_more_btn"
+                    onClick={() => navigate(`/post/${postId}`)}
+                  >
+                    Read article <FaArrowRight />
+                  </button>
 
-                <button
-                  className="read_more_btn"
-                  onClick={() => navigate(`/post/${postId}`)}
-                >
-                  Read article <FaArrowRight />
-                </button>
+                  {isOwner && (
+                    <div className="owner-actions">
+                      <button
+                        className="owner-action-btn"
+                        onClick={() => navigate(`/edit/${postId}`)}
+                      >
+                        <FaPen /> Edit
+                      </button>
+                      <button
+                        className="owner-action-btn danger"
+                        onClick={() => {
+                          deleteLocalPost(postId);
+                          window.location.reload();
+                        }}
+                      >
+                        <FaTrash /> Delete
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             </article>
           );

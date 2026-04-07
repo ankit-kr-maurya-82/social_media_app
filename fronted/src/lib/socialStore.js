@@ -230,6 +230,65 @@ export const createLocalPost = ({ title, content, media }) => {
   return toPostViewModel(post);
 };
 
+export const updateLocalPost = (postId, updates) => {
+  const currentUser = getCurrentUser();
+  if (!currentUser) {
+    throw new Error("Login required");
+  }
+
+  const posts = getPosts();
+  const post = posts.find((item) => item.id === postId);
+
+  if (!post) {
+    throw new Error("Article not found");
+  }
+
+  if (post.authorId !== currentUser.id) {
+    throw new Error("You can edit only your own article");
+  }
+
+  const nextPosts = posts.map((item) =>
+    item.id === postId
+      ? {
+          ...item,
+          ...updates,
+          title: updates.title?.trim() || item.title,
+          content: updates.content?.trim() || item.content,
+          updatedAt: new Date().toISOString(),
+        }
+      : item
+  );
+
+  savePosts(nextPosts);
+  return toPostViewModel(nextPosts.find((item) => item.id === postId));
+};
+
+export const deleteLocalPost = (postId) => {
+  const currentUser = getCurrentUser();
+  if (!currentUser) {
+    throw new Error("Login required");
+  }
+
+  const posts = getPosts();
+  const post = posts.find((item) => item.id === postId);
+
+  if (!post) {
+    throw new Error("Article not found");
+  }
+
+  if (post.authorId !== currentUser.id) {
+    throw new Error("You can delete only your own article");
+  }
+
+  savePosts(posts.filter((item) => item.id !== postId));
+
+  const commentMap = getCommentsMap();
+  if (commentMap[postId]) {
+    const { [postId]: _removed, ...rest } = commentMap;
+    saveCommentsMap(rest);
+  }
+};
+
 export const getComments = (postId) => {
   const commentMap = getCommentsMap();
   return commentMap[postId] || [];

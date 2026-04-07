@@ -1,13 +1,18 @@
 import React, { useMemo } from "react";
 import { Link, useParams } from "react-router-dom";
 import "./CSS/PostPage.css";
-import { FaArrowLeft, FaClock, FaPlus } from "react-icons/fa";
+import { FaArrowLeft, FaClock, FaPen, FaPlus, FaTrash } from "react-icons/fa";
 import Comments from "../components/Comments/Comments.jsx";
-import { getPostById } from "../lib/socialStore.js";
+import {
+  deleteLocalPost,
+  getCurrentUser,
+  getPostById,
+} from "../lib/socialStore.js";
 
 const PostPage = () => {
   const { postId } = useParams();
   const activePost = useMemo(() => getPostById(postId), [postId]);
+  const currentUser = getCurrentUser();
 
   if (!activePost) {
     return <div className="article-page">Post not found.</div>;
@@ -16,6 +21,7 @@ const PostPage = () => {
   const estimatedReadTime =
     activePost.readTime ||
     `${Math.max(3, Math.ceil((activePost.content?.length || 0) / 180))} min read`;
+  const isOwner = currentUser?.id === activePost.authorId;
 
   return (
     <div className="article-page">
@@ -23,7 +29,7 @@ const PostPage = () => {
         <Link to="/home" className="article-nav-link">
           <FaArrowLeft /> Back to feed
         </Link>
-        <Link to="/create" className="create-post-btn">
+          <Link to="/create" className="create-post-btn">
           <FaPlus /> Write article
         </Link>
       </div>
@@ -73,6 +79,23 @@ const PostPage = () => {
           <div className="article-body">
             <p>{activePost.content}</p>
           </div>
+
+          {isOwner && (
+            <div className="article-owner-actions">
+              <Link to={`/edit/${activePost.id || activePost._id}`} className="owner-action-btn">
+                <FaPen /> Edit article
+              </Link>
+              <button
+                className="owner-action-btn danger"
+                onClick={() => {
+                  deleteLocalPost(activePost.id || activePost._id);
+                  window.location.href = "/home";
+                }}
+              >
+                <FaTrash /> Delete article
+              </button>
+            </div>
+          )}
         </article>
 
         <aside className="comments-panel">

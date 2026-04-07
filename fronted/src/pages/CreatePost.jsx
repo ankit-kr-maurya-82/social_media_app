@@ -1,11 +1,19 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { FaImage, FaVideo } from "react-icons/fa";
 import "./CSS/CreatePost.css";
-import { createLocalPost, getCurrentUser } from "../lib/socialStore";
+import {
+  createLocalPost,
+  getCurrentUser,
+  getPostById,
+  updateLocalPost,
+} from "../lib/socialStore";
 
 const CreatePost = () => {
   const navigate = useNavigate();
+  const { postId } = useParams();
+  const isEditMode = Boolean(postId);
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -17,6 +25,26 @@ const CreatePost = () => {
 
   const token = localStorage.getItem("accessToken");
   const currentUser = getCurrentUser();
+
+  useEffect(() => {
+    if (!isEditMode) return;
+
+    const post = getPostById(postId);
+    if (!post) {
+      setError("Article not found");
+      return;
+    }
+
+    if (currentUser?.id !== post.authorId) {
+      setError("You can edit only your own article");
+      return;
+    }
+
+    setTitle(post.title || "");
+    setContent(post.content || "");
+    if (post.media?.type === "image") setImagePreview(post.media.url);
+    if (post.media?.type === "video") setVideoPreview(post.media.url);
+  }, [currentUser?.id, isEditMode, postId]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -46,6 +74,26 @@ const CreatePost = () => {
 
     if (!content.trim() && !imageFile && !videoFile) return;
 
+    const mediaPayload = imagePreview
+      ? { type: "image", url: imagePreview }
+      : videoPreview
+        ? { type: "video", url: videoPreview }
+        : null;
+
+    if (isEditMode) {
+      try {
+        updateLocalPost(postId, {
+          title,
+          content,
+          media: mediaPayload,
+        });
+        navigate(`/post/${postId}`);
+      } catch (updateError) {
+        setError(updateError.message || "Unable to update article.");
+      }
+      return;
+    }
+
     const formData = new FormData();
     formData.append("title", title);
     formData.append("content", content);
@@ -72,11 +120,7 @@ const CreatePost = () => {
       createLocalPost({
         title,
         content,
-        media: imagePreview
-          ? { type: "image", url: imagePreview }
-          : videoPreview
-            ? { type: "video", url: videoPreview }
-            : null,
+        media: mediaPayload,
       });
       navigate("/home");
     } catch (requestError) {
@@ -84,11 +128,7 @@ const CreatePost = () => {
         createLocalPost({
           title,
           content,
-          media: imagePreview
-            ? { type: "image", url: imagePreview }
-            : videoPreview
-              ? { type: "video", url: videoPreview }
-              : null,
+          media: mediaPayload,
         });
         navigate("/home");
       } catch (localError) {
@@ -106,13 +146,13 @@ const CreatePost = () => {
       <div className="create-box">
         <div className="create-header">
           <button onClick={() => navigate(-1)}>Cancel</button>
-          <span>Create Post</span>
+          <span>{isEditMode ? "Edit Article" : "Create Post"}</span>
           <button
             className="post-btn"
             disabled={!content.trim() && !imageFile && !videoFile}
             onClick={handleSubmit}
           >
-            Post
+            {isEditMode ? "Update" : "Post"}
           </button>
         </div>
 
