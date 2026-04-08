@@ -152,10 +152,22 @@ const Header = () => {
           {user && <NavLink to={`/profile/${user.username}`}>Profile</NavLink>}
         </nav>
 
-        {/* Button */}
-        <div className="hideOnSearch">
+        {/* Right Side */}
+        <div className="headerActions hideOnSearch">
           {user ? (
-            <button className="btn" onClick={logout}>Logout</button>
+            <>
+              <NavLink to={`/profile/${user.username}`} className="headerUserChip">
+                {user.avatar ? (
+                  <img src={user.avatar} alt={user.username} className="headerAvatar" />
+                ) : (
+                  <div className="headerAvatar headerAvatarFallback">
+                    {(user.fullName || user.username)?.charAt(0)?.toUpperCase()}
+                  </div>
+                )}
+                <span className="headerUserName">@{user.username}</span>
+              </NavLink>
+              <button className="btn" onClick={logout}>Logout</button>
+            </>
           ) : (
             <NavLink to="/login" className="btn">Login</NavLink>
           )}

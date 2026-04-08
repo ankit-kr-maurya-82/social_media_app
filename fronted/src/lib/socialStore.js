@@ -132,15 +132,21 @@ export const syncUserToStore = (user) => {
   const normalizedFollowing = Array.isArray(user.following)
     ? user.following.length
     : user.following ?? 0;
+  const followerList = Array.isArray(user.followerList) ? user.followerList : [];
+  const followingList = Array.isArray(user.followingList) ? user.followingList : [];
 
   const normalizedUser = {
     followers: normalizedFollowers,
     following: normalizedFollowing,
+    followerList,
+    followingList,
     bio: "",
     avatar: "",
     ...user,
     followers: normalizedFollowers,
     following: normalizedFollowing,
+    followerList,
+    followingList,
     id: user.id || user._id,
   };
 

@@ -3,7 +3,7 @@
   appearance: none;
   -webkit-appearance: none;
   padding: 10px 24px;
-  border-radius: 999px;
+  border-radius: 0;
   border: 1px solid rgba(15, 23, 42, 0.08);
   overflow: hidden;
   min-height: 44px;
@@ -14,7 +14,7 @@
   font-weight: 700;
   letter-spacing: 0.01em;
   margin: 10px 1px;
-  box-shadow: var(--shadow-soft);
+  box-shadow: none;
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease;
 }
 
@@ -27,7 +27,7 @@
 /* Hover effect */
 .follow:hover {
   transform: translateY(-1px);
-  box-shadow: var(--shadow-medium);
+  box-shadow: none;
 }
 
 /* When following */
@@ -39,7 +39,7 @@
 /* Hover when following */
 .following:hover {
   transform: translateY(-1px);
-  box-shadow: var(--shadow-medium);
+  box-shadow: none;
 }
 
 .follow:disabled,
@@ -47,5 +47,5 @@
   opacity: 0.7;
   cursor: wait;
   transform: none;
-  box-shadow: var(--shadow-soft);
+  box-shadow: none;
 }

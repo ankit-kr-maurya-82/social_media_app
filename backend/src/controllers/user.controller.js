@@ -5,6 +5,15 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
 
+const toRelationshipList = (items = []) =>
+  items.map((item) => ({
+    id: item._id,
+    _id: item._id,
+    username: item.username,
+    fullName: item.fullName,
+    avatar: item.avatar || "",
+  }));
+
 const buildPublicProfile = (profileUser, currentUserId = null) => {
   const followers = profileUser.followers || [];
   const following = profileUser.following || [];
@@ -14,8 +23,10 @@ const buildPublicProfile = (profileUser, currentUserId = null) => {
     ...profileUser.toObject(),
     followers: followers.length,
     following: following.length,
+    followerList: toRelationshipList(followers),
+    followingList: toRelationshipList(following),
     isFollowing: viewerId
-      ? followers.some((followerId) => String(followerId) === viewerId)
+      ? followers.some((follower) => String(follower._id || follower) === viewerId)
       : false,
   };
 };
@@ -246,7 +257,10 @@ const getPublicUserProfile = asyncHandler(async (req, res) => {
 
   const profileUser = await User.findOne({
     username: username.trim().toLowerCase(),
-  }).select("-password -refreshToken");
+  })
+    .select("-password -refreshToken")
+    .populate("followers", "username fullName avatar")
+    .populate("following", "username fullName avatar");
 
   if (!profileUser) {
     throw new ApiError(404, "User profile not found");
@@ -271,7 +285,7 @@ const toggleFollowUser = asyncHandler(async (req, res) => {
 
   const targetUser = await User.findOne({
     username: username.trim().toLowerCase(),
-  });
+  }).populate("followers", "username fullName avatar");
 
   if (!targetUser) {
     throw new ApiError(404, "User profile not found");
@@ -282,7 +296,7 @@ const toggleFollowUser = asyncHandler(async (req, res) => {
   }
 
   const isFollowing = (targetUser.followers || []).some(
-    (followerId) => String(followerId) === currentUserId
+    (follower) => String(follower._id || follower) === currentUserId
   );
 
   const update = isFollowing
@@ -315,8 +329,14 @@ const toggleFollowUser = asyncHandler(async (req, res) => {
   ]);
 
   const [updatedTargetUser, updatedCurrentUser] = await Promise.all([
-    User.findById(targetUser._id).select("-password -refreshToken"),
-    User.findById(req.user._id).select("-password -refreshToken"),
+    User.findById(targetUser._id)
+      .select("-password -refreshToken")
+      .populate("followers", "username fullName avatar")
+      .populate("following", "username fullName avatar"),
+    User.findById(req.user._id)
+      .select("-password -refreshToken")
+      .populate("followers", "username fullName avatar")
+      .populate("following", "username fullName avatar"),
   ]);
 
   return res.status(200).json(
