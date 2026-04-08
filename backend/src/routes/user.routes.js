@@ -4,10 +4,11 @@ import {
     loginUser,
     logoutUser,
     refreshAccessToken,
-    registerUser
+    registerUser,
+    toggleFollowUser
 } from "../controllers/user.controller.js"
 import {upload} from "../middlewares/multer.middleware.js"
-import { verifyJWT } from "../middlewares/auth.middleware.js"
+import { optionalVerifyJWT, verifyJWT } from "../middlewares/auth.middleware.js"
 
 const router = Router()
 
@@ -25,7 +26,8 @@ router.route("/register").post(
     registerUser)
 
 router.route("/login").post(loginUser)
-router.route("/profile/:username").get(getPublicUserProfile)
+router.route("/profile/:username").get(optionalVerifyJWT, getPublicUserProfile)
+router.route("/profile/:username/follow").post(verifyJWT, toggleFollowUser)
 
 
 // secure routes

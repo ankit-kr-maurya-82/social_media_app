@@ -51,7 +51,19 @@ const userSchema = new Schema(
         },
         lastSeen: {
             type: Date,
-        }
+        },
+        followers: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: "User"
+            }
+        ],
+        following: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: "User"
+            }
+        ]
     },
     {
         timestamps: true

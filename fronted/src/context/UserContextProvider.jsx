@@ -17,7 +17,14 @@ const UserContextProvider = ({ children }) => {
 
   useEffect(() => {
     const storedUser = getCurrentUser();
-    if (storedUser) setUser(syncUserToStore(storedUser));
+    const accessToken = window.localStorage.getItem("accessToken");
+
+    if (storedUser && accessToken) {
+      setUser(syncUserToStore(storedUser));
+    } else if (storedUser && !accessToken) {
+      logoutLocalUser();
+    }
+
     setLoading(false);
   }, []);
 

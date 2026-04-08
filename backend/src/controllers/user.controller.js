@@ -5,6 +5,20 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
 
+const buildPublicProfile = (profileUser, currentUserId = null) => {
+  const followers = profileUser.followers || [];
+  const following = profileUser.following || [];
+  const viewerId = currentUserId ? String(currentUserId) : null;
+
+  return {
+    ...profileUser.toObject(),
+    followers: followers.length,
+    following: following.length,
+    isFollowing: viewerId
+      ? followers.some((followerId) => String(followerId) === viewerId)
+      : false,
+  };
+};
 
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
@@ -239,7 +253,81 @@ const getPublicUserProfile = asyncHandler(async (req, res) => {
   }
 
   return res.status(200).json(
-    new ApiResponse(200, profileUser, "User profile fetched successfully")
+    new ApiResponse(
+      200,
+      buildPublicProfile(profileUser, req.user?._id),
+      "User profile fetched successfully"
+    )
+  );
+});
+
+const toggleFollowUser = asyncHandler(async (req, res) => {
+  const { username } = req.params;
+  const currentUserId = String(req.user._id);
+
+  if (!username?.trim()) {
+    throw new ApiError(400, "Username is required");
+  }
+
+  const targetUser = await User.findOne({
+    username: username.trim().toLowerCase(),
+  });
+
+  if (!targetUser) {
+    throw new ApiError(404, "User profile not found");
+  }
+
+  if (String(targetUser._id) === currentUserId) {
+    throw new ApiError(400, "You cannot follow yourself");
+  }
+
+  const isFollowing = (targetUser.followers || []).some(
+    (followerId) => String(followerId) === currentUserId
+  );
+
+  const update = isFollowing
+    ? {
+        $pull: {
+          followers: req.user._id,
+        },
+      }
+    : {
+        $addToSet: {
+          followers: req.user._id,
+        },
+      };
+
+  const currentUserUpdate = isFollowing
+    ? {
+        $pull: {
+          following: targetUser._id,
+        },
+      }
+    : {
+        $addToSet: {
+          following: targetUser._id,
+        },
+      };
+
+  await Promise.all([
+    User.findByIdAndUpdate(targetUser._id, update),
+    User.findByIdAndUpdate(req.user._id, currentUserUpdate),
+  ]);
+
+  const [updatedTargetUser, updatedCurrentUser] = await Promise.all([
+    User.findById(targetUser._id).select("-password -refreshToken"),
+    User.findById(req.user._id).select("-password -refreshToken"),
+  ]);
+
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        profile: buildPublicProfile(updatedTargetUser, req.user._id),
+        currentUser: buildPublicProfile(updatedCurrentUser, req.user._id),
+      },
+      isFollowing ? "User unfollowed successfully" : "User followed successfully"
+    )
   );
 });
 
@@ -249,4 +337,5 @@ export {
   logoutUser,
   refreshAccessToken,
   getPublicUserProfile,
+  toggleFollowUser,
 };

@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../api/axios.js";
 import "./CSS/Register.css";
-import { syncUserToStore } from "../lib/socialStore";
 
 const Register = () => {
   const [fullName, setFullName] = useState("");
@@ -20,15 +19,13 @@ const Register = () => {
     setErrorMsg("");
 
     try {
-      const response = await api.post("/users/register", {
+      await api.post("/users/register", {
         fullName,
         username,
         email,
         password,
       });
 
-      const syncedUser = syncUserToStore(response.data.data);
-      localStorage.setItem("user", JSON.stringify(syncedUser));
       navigate("/login");
     } catch (error) {
       setErrorMsg(

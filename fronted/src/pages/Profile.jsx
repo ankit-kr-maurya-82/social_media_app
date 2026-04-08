@@ -2,18 +2,21 @@ import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import UserContext from "../context/UserContext";
 import Card from "../components/Card";
+import FollowBtn from "../components/FollowBtn";
 import "./CSS/Profile.css";
 import EditProfile from "../components/EditProfile";
-import { fetchProfileBundle } from "../api/profile";
+import { fetchProfileBundle, toggleFollowProfile } from "../api/profile";
+import { syncUserToStore } from "../lib/socialStore";
 
 const Profile = () => {
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const { username } = useParams();
   const [activeTab, setActiveTab] = useState("posts");
   const [editOpen, setEditOpen] = useState(false);
   const [profileUser, setProfileUser] = useState(null);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [followLoading, setFollowLoading] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -38,6 +41,48 @@ const Profile = () => {
     () => user?.id && profileUser?.id && user.id === profileUser.id,
     [user, profileUser]
   );
+
+  const handleFollowToggle = async () => {
+    if (!user || !profileUser?.username || followLoading) {
+      return;
+    }
+
+    setFollowLoading(true);
+
+    const wasFollowing = Boolean(profileUser.isFollowing);
+    const previousFollowers = profileUser.followers || 0;
+    const optimisticProfile = syncUserToStore({
+      ...profileUser,
+      isFollowing: !wasFollowing,
+      followers: Math.max(
+        0,
+        previousFollowers + (wasFollowing ? -1 : 1)
+      ),
+    });
+
+    setProfileUser(optimisticProfile);
+
+    try {
+      const result = await toggleFollowProfile(profileUser.username);
+      setProfileUser(result.profile);
+      if (result.currentUser) {
+        setUser(result.currentUser);
+      }
+    } catch (error) {
+      setProfileUser(
+        syncUserToStore({
+          ...profileUser,
+          isFollowing: wasFollowing,
+          followers: previousFollowers,
+        })
+      );
+      window.alert(
+        error.response?.data?.message || error.message || "Unable to update follow status"
+      );
+    } finally {
+      setFollowLoading(false);
+    }
+  };
 
   if (loading) {
     return <div className="profile-login-warning">Loading profile...</div>;
@@ -83,10 +128,22 @@ const Profile = () => {
             </div>
 
             <div className="profile-info">
-              <h1 className="fullName">
-                {profileUser.fullName || profileUser.username}
-              </h1>
-              <p className="profile-username">@{profileUser.username}</p>
+              <div className="profile-heading-row">
+                <div>
+                  <h1 className="fullName">
+                    {profileUser.fullName || profileUser.username}
+                  </h1>
+                  <p className="profile-username">@{profileUser.username}</p>
+                </div>
+
+                {!isOwnProfile && user && (
+                  <FollowBtn
+                    isFollowing={Boolean(profileUser.isFollowing)}
+                    onClick={handleFollowToggle}
+                    disabled={followLoading}
+                  />
+                )}
+              </div>
 
               <p className="profile-bio">
                 {profileUser.bio || "No bio added yet."}

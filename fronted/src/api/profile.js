@@ -29,3 +29,20 @@ export const fetchProfileBundle = async (username) => {
     };
   }
 };
+
+export const toggleFollowProfile = async (username) => {
+  const normalized = username?.trim();
+  if (!normalized) {
+    throw new Error("Username is required");
+  }
+
+  const response = await api.post(`/users/profile/${normalized}/follow`);
+  const profile = syncUserToStore(response.data?.data?.profile);
+  const currentUser = syncUserToStore(response.data?.data?.currentUser);
+
+  return {
+    profile,
+    currentUser,
+    message: response.data?.message || "",
+  };
+};

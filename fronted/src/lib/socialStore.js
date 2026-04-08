@@ -55,6 +55,7 @@ const getCommentsMap = () => {
 };
 
 const saveCommentsMap = (comments) => safeWrite(STORAGE_KEYS.comments, comments);
+const saveCurrentUser = (user) => safeWrite(STORAGE_KEYS.currentUser, user);
 
 function sanitizeUser(user) {
   const { password, ...safeUser } = user;
@@ -125,12 +126,21 @@ export const getUserByUsername = (username) =>
 export const syncUserToStore = (user) => {
   if (!user?.id && !user?._id) return user;
 
+  const normalizedFollowers = Array.isArray(user.followers)
+    ? user.followers.length
+    : user.followers ?? 0;
+  const normalizedFollowing = Array.isArray(user.following)
+    ? user.following.length
+    : user.following ?? 0;
+
   const normalizedUser = {
-    followers: 0,
-    following: 0,
+    followers: normalizedFollowers,
+    following: normalizedFollowing,
     bio: "",
     avatar: "",
     ...user,
+    followers: normalizedFollowers,
+    following: normalizedFollowing,
     id: user.id || user._id,
   };
 
@@ -143,6 +153,10 @@ export const syncUserToStore = (user) => {
     : [...users, normalizedUser];
 
   saveUsers(nextUsers);
+  const currentUser = getCurrentUser();
+  if (currentUser?.id === normalizedUser.id) {
+    saveCurrentUser({ ...currentUser, ...normalizedUser });
+  }
   return normalizedUser;
 };
 

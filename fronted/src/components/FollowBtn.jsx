@@ -1,19 +1,15 @@
-import React, { useState } from 'react';
-import "./CSS/FollowBtn.css"
+import React from "react";
+import "./CSS/FollowBtn.css";
 
-const FollowBtn = () => {
-  const [isFollowing, setIsFollowing] = useState(false);
-
-  const handleFollow = () => {
-    setIsFollowing(!isFollowing);
-  };
-
+const FollowBtn = ({ isFollowing = false, onClick, disabled = false }) => {
   return (
     <button
-          className={isFollowing ? 'following' : 'follow'}
-      onClick={handleFollow}
+      type="button"
+      className={isFollowing ? "following" : "follow"}
+      onClick={onClick}
+      disabled={disabled}
     >
-      {isFollowing ? 'Following' : 'Follow'}
+      {disabled ? "Working..." : isFollowing ? "Following" : "Follow"}
     </button>
   );
 };

@@ -13,8 +13,9 @@
   width: 100%;
   /* max-width: 1200px; */
   padding: 20px 28px;
-  background: #fcfdfe;
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+  background: rgba(252, 253, 254, 0.92);
+  backdrop-filter: blur(14px);
+  box-shadow: var(--shadow-soft);
 
   position: fixed;
   top: 0;
@@ -52,7 +53,8 @@ body {
 
   border-radius: 999px;
   border: 1px solid #1e293b;
-  background: #fafafe;
+  background: var(--surface-1);
+  box-shadow: var(--shadow-soft);
 
   cursor: pointer;
   overflow: hidden;
@@ -67,7 +69,7 @@ body {
 
   transform: scale(1.02);
   border-color: #3b82f6;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.16), var(--shadow-medium);
 }
 
 .searchIcon {
@@ -122,18 +124,28 @@ body {
 
 /* Button */
 .btn {
+  appearance: none;
+  -webkit-appearance: none;
   padding: 6px 14px;
   border-radius: 999px;
   border: 1px solid #334155;
-  background: transparent;
+  overflow: hidden;
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
   color: #100f0f;
   cursor: pointer;
-  transition: 0.2s;
+  box-shadow: var(--shadow-soft);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease;
 }
 
 .btn:hover {
   background: #1e293b;
   color: white;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-medium);
 }
 
 /* Mobile */
@@ -165,7 +177,8 @@ body {
   top: 50px;
   left: 0;
   width: 100%;
-  background: white;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: var(--shadow-medium);
   display: flex;
   flex-direction: column;
   gap: 16px;
