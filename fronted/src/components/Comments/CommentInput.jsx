@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 
-const CommentInput = ({ onAdd, disabled = false }) => {
+const CommentInput = ({ onAdd, disabled = false, loading = false }) => {
   const [text, setText] = useState("");
 
-  const handleSubmit = () => {
-    if (!text.trim() || disabled) return;
+  const handleSubmit = async () => {
+    if (!text.trim() || disabled || loading) return;
 
-    onAdd(text);
-    setText("");
+    const shouldClear = await onAdd(text);
+    if (shouldClear !== false) {
+      setText("");
+    }
   };
 
   return (
@@ -17,15 +19,21 @@ const CommentInput = ({ onAdd, disabled = false }) => {
         placeholder={disabled ? "Login to add a comment..." : "Add a comment..."}
         value={text}
         onChange={(e) => setText(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            handleSubmit();
+          }
+        }}
         className="flex-1 border p-2 rounded"
-        disabled={disabled}
+        disabled={disabled || loading}
       />
       <button
         onClick={handleSubmit}
         className="bg-slate-900 text-white px-4 rounded"
-        disabled={disabled}
+        disabled={disabled || loading}
       >
-        Post
+        {loading ? "Posting..." : "Post"}
       </button>
     </div>
   );

@@ -115,6 +115,27 @@
   color: #92400e;
 }
 
+.article-engagement-strip {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.article-engagement-pill,
+.comments-count-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: #fff7ed;
+  border: 1px solid rgba(146, 64, 14, 0.12);
+  color: #9a3412;
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
 .article-media-frame {
   margin-bottom: 24px;
   overflow: hidden;
@@ -162,6 +183,10 @@
   color: #111827;
   font-family: Georgia, "Times New Roman", serif;
   font-size: 1.8rem;
+}
+
+.comments-count-pill {
+  margin-bottom: 12px;
 }
 
 .comments-header p {

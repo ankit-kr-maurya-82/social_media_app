@@ -11,6 +11,7 @@ const PostPage = () => {
   const { postId } = useParams();
   const [activePost, setActivePost] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [commentCount, setCommentCount] = useState(0);
   const currentUser = getCurrentUser();
 
   useEffect(() => {
@@ -22,6 +23,7 @@ const PostPage = () => {
         const post = await fetchPostById(postId);
         if (!cancelled) {
           setActivePost(post);
+          setCommentCount(post?.commentsCount || 0);
           setLoading(false);
         }
       } catch {
@@ -93,6 +95,12 @@ const PostPage = () => {
             {publishedAt.time && <span>{publishedAt.time}</span>}
           </div>
 
+          <div className="article-engagement-strip">
+            <span className="article-engagement-pill">
+              {commentCount} comment{commentCount === 1 ? "" : "s"}
+            </span>
+          </div>
+
           {activePost.media && (
             <div className="article-media-frame">
               {activePost.media.type === "image" ? (
@@ -141,9 +149,15 @@ const PostPage = () => {
           <div className="comments-header">
             <span className="comments-kicker">Discussion</span>
             <h2>Reader notes</h2>
+            <span className="comments-count-pill">
+              {commentCount} comment{commentCount === 1 ? "" : "s"}
+            </span>
             <p>Responses, reactions, and follow-up thoughts on this article.</p>
           </div>
-          <Comments postId={activePost.id || activePost._id} />
+          <Comments
+            postId={activePost.id || activePost._id}
+            onCountChange={setCommentCount}
+          />
         </aside>
       </div>
     </div>

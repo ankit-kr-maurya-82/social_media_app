@@ -2,16 +2,34 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { Post } from "../models/post.model.js";
 import { User } from "../models/user.model.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
+
+const resolveMediaUrl = (mediaPath) => {
+  if (!mediaPath) {
+    return null;
+  }
+
+  if (/^https?:\/\//i.test(mediaPath)) {
+    return mediaPath;
+  }
+
+  const normalizedPath = String(mediaPath)
+    .replace(/\\/g, "/")
+    .replace(/^public\//i, "")
+    .replace(/^\/+/, "");
+
+  return `http://localhost:8000/${normalizedPath}`;
+};
 
 const normalizePost = (post) => ({
   id: String(post._id),
   _id: String(post._id),
   title: post.title || "Untitled Post",
   content: post.content,
-  media: post.media
+  media: resolveMediaUrl(post.media)
     ? {
         type: /\.(mp4|webm|ogg)$/i.test(post.media) ? "video" : "image",
-        url: post.media,
+        url: resolveMediaUrl(post.media),
       }
     : null,
   tags: [],
@@ -27,15 +45,23 @@ const normalizePost = (post) => ({
 export const createPost = asyncHandler(async (req, res) => {
   const { title, content } = req.body;
 
-
   if (!content && !req.file) {
     throw new ApiError(400, "Post cannot be empty");
+  }
+
+  let mediaUrl = null;
+  if (req.file?.path) {
+    const uploadedMedia = await uploadOnCloudinary(req.file.path);
+    if (!uploadedMedia?.url) {
+      throw new ApiError(500, "Post media upload failed");
+    }
+    mediaUrl = uploadedMedia.url;
   }
 
   const post = await Post.create({
     title: title?.trim() || "Untitled Post",
     content: content?.trim() || "",
-    media: req.file?.path || null,
+    media: mediaUrl,
     owner: req.user._id,
   });
 
@@ -117,7 +143,11 @@ export const updatePost = asyncHandler(async (req, res) => {
   }
 
   if (req.file?.path) {
-    post.media = req.file.path;
+    const uploadedMedia = await uploadOnCloudinary(req.file.path);
+    if (!uploadedMedia?.url) {
+      throw new ApiError(500, "Post media upload failed");
+    }
+    post.media = uploadedMedia.url;
   } else if (typeof mediaUrl === "string") {
     post.media = mediaUrl || null;
   }
