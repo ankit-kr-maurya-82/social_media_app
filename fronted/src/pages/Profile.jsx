@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import UserContext from "../context/UserContext";
 import Card from "../components/Card";
 import FollowBtn from "../components/FollowBtn";
@@ -11,6 +11,7 @@ import { syncUserToStore } from "../lib/socialStore";
 const Profile = () => {
   const { user, setUser } = useContext(UserContext);
   const { username } = useParams();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("posts");
   const [editOpen, setEditOpen] = useState(false);
   const [profileUser, setProfileUser] = useState(null);
@@ -86,6 +87,13 @@ const Profile = () => {
     }
   };
 
+  const handleProfileUpdated = (updatedUser) => {
+    setProfileUser(syncUserToStore(updatedUser));
+    if (updatedUser?.username && updatedUser.username !== username) {
+      navigate(`/profile/${updatedUser.username}`, { replace: true });
+    }
+  };
+
   if (loading) {
     return <div className="profile-login-warning">Loading profile...</div>;
   }
@@ -132,7 +140,12 @@ const Profile = () => {
                 </button>
               )}
 
-              {editOpen && <EditProfile onClose={() => setEditOpen(false)} />}
+              {editOpen && (
+                <EditProfile
+                  onClose={() => setEditOpen(false)}
+                  onProfileUpdated={handleProfileUpdated}
+                />
+              )}
             </div>
 
             <div className="profile-info">

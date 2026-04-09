@@ -46,3 +46,34 @@ export const toggleFollowProfile = async (username) => {
     message: response.data?.message || "",
   };
 };
+
+export const updateProfile = async ({ fullName, username, bio, avatarFile }) => {
+  const formData = new FormData();
+
+  if (typeof fullName === "string") {
+    formData.append("fullName", fullName);
+  }
+
+  if (typeof username === "string") {
+    formData.append("username", username);
+  }
+
+  if (typeof bio === "string") {
+    formData.append("bio", bio);
+  }
+
+  if (avatarFile) {
+    formData.append("avatar", avatarFile);
+  }
+
+  const response = await api.patch("/users/profile", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+
+  return {
+    user: syncUserToStore(response.data?.data),
+    message: response.data?.message || "",
+  };
+};

@@ -275,6 +275,92 @@ const getPublicUserProfile = asyncHandler(async (req, res) => {
   );
 });
 
+const updateUserProfile = asyncHandler(async (req, res) => {
+  const { fullName, username, bio } = req.body;
+  const updates = {};
+
+  if (typeof fullName === "string") {
+    const trimmedFullName = fullName.trim();
+    if (!trimmedFullName) {
+      throw new ApiError(400, "Full name cannot be empty");
+    }
+    updates.fullName = trimmedFullName;
+  }
+
+  if (typeof username === "string") {
+    const normalizedUsername = username.trim().toLowerCase();
+    if (!normalizedUsername) {
+      throw new ApiError(400, "Username cannot be empty");
+    }
+
+    const existingUser = await User.findOne({
+      username: normalizedUsername,
+      _id: { $ne: req.user._id },
+    });
+
+    if (existingUser) {
+      throw new ApiError(409, "Username already taken");
+    }
+
+    updates.username = normalizedUsername;
+  }
+
+  if (typeof bio === "string") {
+    updates.bio = bio.trim();
+  }
+
+  const avatarLocalPath =
+    req.file?.path ||
+    (req.files &&
+    Array.isArray(req.files.avatar) &&
+    req.files.avatar.length > 0
+      ? req.files.avatar[0].path
+      : undefined);
+
+  if (avatarLocalPath) {
+    let avatar;
+    try {
+      avatar = await uploadOnCloudinary(avatarLocalPath);
+    } catch (error) {
+      throw new ApiError(
+        500,
+        error?.message || "Avatar upload failed"
+      );
+    }
+
+    if (!avatar?.url) {
+      throw new ApiError(500, "Avatar upload failed");
+    }
+    updates.avatar = avatar.url;
+  }
+
+  if (Object.keys(updates).length === 0) {
+    throw new ApiError(400, "No profile changes provided");
+  }
+
+  const updatedUser = await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      $set: updates,
+    },
+    {
+      new: true,
+      runValidators: true,
+    }
+  )
+    .select("-password -refreshToken")
+    .populate("followers", "username fullName avatar")
+    .populate("following", "username fullName avatar");
+
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      buildPublicProfile(updatedUser, updatedUser._id),
+      "Profile updated successfully"
+    )
+  );
+});
+
 const toggleFollowUser = asyncHandler(async (req, res) => {
   const { username } = req.params;
   const currentUserId = String(req.user._id);
@@ -357,5 +443,6 @@ export {
   logoutUser,
   refreshAccessToken,
   getPublicUserProfile,
+  updateUserProfile,
   toggleFollowUser,
 };

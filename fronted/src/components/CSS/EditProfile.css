@@ -50,10 +50,18 @@
 }
 
 .edit-avatar label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 16px;
   cursor: pointer;
   font-size: 14px;
   color: #7c2d12;
   font-weight: 700;
+  border: 1px solid rgba(124, 45, 18, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 247, 237, 0.9);
 }
 
 .edit-fields {
@@ -94,6 +102,11 @@
   font-weight: 700;
 }
 
+.edit-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
 .edit-actions .cancel {
   background: transparent;
   color: #6b7280;
@@ -103,4 +116,10 @@
 .edit-actions .save {
   background: #111827;
   color: white;
+}
+
+.edit-profile-error {
+  margin: 14px 0 0;
+  color: #b91c1c;
+  font-size: 0.92rem;
 }
