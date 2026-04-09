@@ -107,7 +107,7 @@
 .profile-avatar {
   width: 180px;
   height: 180px;
-  border-radius: 0;
+  border-radius: 50%;
   object-fit: cover;
   border: 6px solid rgba(255, 255, 255, 0.75);
   box-shadow: 0 20px 45px rgba(17, 24, 39, 0.14);
@@ -135,6 +135,8 @@
   color: white;
   font-weight: 700;
   cursor: pointer;
+      bottom: 21px;
+    border-radius: 12%;
 }
 
 .profile-info {
