@@ -7,7 +7,7 @@ import { getCurrentUser } from "../lib/socialStore";
 import { deletePostApi } from "../api/post";
 import { formatArticleDate } from "../utils/formatArticleDate";
 
-const Card = ({ posts: propPosts, post: singlePost }) => {
+const Card = ({ posts: propPosts, post: singlePost, emptyState }) => {
   const navigate = useNavigate();
   const posts = Array.isArray(propPosts)
     ? propPosts
@@ -20,13 +20,11 @@ const Card = ({ posts: propPosts, post: singlePost }) => {
   return (
     <>
       <div className="feed">
-        {posts.length === 0 && (
+        {posts.length === 0 && emptyState && (
           <article className="feed-card empty-feed-card">
-            <span className="feed-kicker">No articles yet</span>
-            <h2 className="post-title-link static-title">Your feed is empty for now.</h2>
-            <p className="feed-excerpt">
-              Publish your first article to start building your reading feed.
-            </p>
+            <span className="feed-kicker">{emptyState.kicker}</span>
+            <h2 className="post-title-link static-title">{emptyState.title}</h2>
+            <p className="feed-excerpt">{emptyState.description}</p>
           </article>
         )}
         {posts.map((post) => {

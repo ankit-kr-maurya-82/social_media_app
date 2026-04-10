@@ -32,12 +32,14 @@ const Layout = () => {
   return (
     <ThemeProvider value={{ themeMode, toggleTheme }}>
       <UserContextProvider>
-        {!hideHeader && <Header />}
-        {/* {!hideHeader && <Sidebar />} */}
+        <div className={`app-shell ${hideHeader ? "auth-shell" : ""}`}>
+          {!hideHeader && <Header />}
+          {!hideHeader && <Sidebar />}
 
-        <main>
-          <Outlet />
-        </main>
+          <main className={!hideHeader ? "app-main with-sidebar" : "app-main"}>
+            <Outlet />
+          </main>
+        </div>
       </UserContextProvider>
     </ThemeProvider>
   );

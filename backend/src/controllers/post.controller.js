@@ -103,6 +103,17 @@ export const getPostsByUsername = asyncHandler(async (req, res) => {
   });
 });
 
+export const getAllPosts = asyncHandler(async (_req, res) => {
+  const posts = await Post.find({})
+    .sort({ createdAt: -1 })
+    .populate("owner", "fullName username avatar");
+
+  res.status(200).json({
+    success: true,
+    posts: posts.map(normalizePost),
+  });
+});
+
 export const getPostById = asyncHandler(async (req, res) => {
   const { postId } = req.params;
 

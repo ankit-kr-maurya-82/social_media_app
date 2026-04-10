@@ -3,17 +3,14 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { FaBars, FaPlus, FaHome, FaUser, FaCompass, FaSignOutAlt } from "react-icons/fa";
 import UserContext from "../context/UserContext";
 import "./CSS/Sidebar.css";
-import { IoMdSettings } from "react-icons/io";
-
 
 const Sidebar = () => {
-  const { user, setUser } = useContext(UserContext);
+  const { user, logout } = useContext(UserContext);
   const navigate = useNavigate();
   const [open, setOpen] = useState(true);
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    setUser(null);
+    logout();
     navigate("/login");
   };
 
@@ -27,7 +24,7 @@ const Sidebar = () => {
 
       {/* Menu */}
       <nav className="sidebarMenu">
-        <NavLink to="/" className="sidebarItem">
+        <NavLink to={user ? "/home" : "/"} className="sidebarItem">
           <FaHome />
           <span>Home</span>
         </NavLink>
@@ -53,16 +50,11 @@ const Sidebar = () => {
         )}
 
         {user && (
-          <NavLink to={`/create/${user.username}`} className="sidebarItem">
-          <FaPlus />
-          <span>Create</span>
-        </NavLink>
+          <NavLink to="/create" className="sidebarItem">
+            <FaPlus />
+            <span>Create</span>
+          </NavLink>
         )}
-
-        {/* <NavLink to="/setting" className="sidebarItem">
-          <IoMdSettings />
-          <span>Setting</span>
-        </NavLink> */}
       </nav>
 
       {/* Footer */}

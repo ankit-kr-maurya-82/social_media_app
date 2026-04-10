@@ -343,7 +343,11 @@ const Profile = () => {
             {posts.length === 0 ? (
               <div className="profile-empty-card">
                 <h3>No articles yet</h3>
-                <p>This writer has not published anything yet.</p>
+                <p>
+                  {isOwnProfile
+                    ? "Publish your first article to start building your reading feed."
+                    : "This writer has not published any articles yet."}
+                </p>
               </div>
             ) : (
               <div className="profile-posts-shell">

@@ -54,3 +54,21 @@ html, body {
   }
 }
 
+.app-shell {
+  min-height: 100vh;
+}
+
+.app-main {
+  min-height: 100vh;
+}
+
+.app-main.with-sidebar {
+  padding-left: 112px;
+}
+
+@media (max-width: 768px) {
+  .app-main.with-sidebar {
+    padding-left: 0;
+  }
+}
+

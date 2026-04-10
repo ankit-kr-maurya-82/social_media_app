@@ -3,6 +3,7 @@ import { verifyJWT } from "../middlewares/auth.middleware.js";
 import {
   createPost,
   deletePost,
+  getAllPosts,
   getPostById,
   getPostsByUsername,
   updatePost,
@@ -11,6 +12,7 @@ import { upload } from "../middlewares/multer.middleware.js";
 
 const router = Router();
 
+router.get("/", getAllPosts);
 router.get("/:postId", getPostById);
 router.get("/user/:username", getPostsByUsername);
 
