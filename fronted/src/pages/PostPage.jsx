@@ -1,18 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import "./CSS/PostPage.css";
-import { FaArrowLeft, FaClock, FaPen, FaPlus, FaTrash } from "react-icons/fa";
+import "./CSS/PostPage-part2.css";
+import { FaArrowLeft, FaClock, FaCommentDots, FaPen, FaPlus, FaTrash } from "react-icons/fa";
 import Comments from "../components/Comments/Comments.jsx";
-import { getCurrentUser } from "../lib/socialStore.js";
+import UserContext from "../context/UserContext";
+import FollowBtn from "../components/FollowBtn";
 import { deletePostApi, fetchPostById } from "../api/post.js";
+import { fetchProfileBundle, toggleFollowProfile } from "../api/profile";
 import { formatArticleDate } from "../utils/formatArticleDate.js";
 
 const PostPage = () => {
   const { postId } = useParams();
+  const { user, setUser } = useContext(UserContext);
   const [activePost, setActivePost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [commentCount, setCommentCount] = useState(0);
-  const currentUser = getCurrentUser();
+  const [authorProfile, setAuthorProfile] = useState(null);
+  const [followLoading, setFollowLoading] = useState(false);
+  const [commentsOpen, setCommentsOpen] = useState(true);
+  const commentsPanelRef = useRef(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -40,6 +47,27 @@ const PostPage = () => {
     };
   }, [postId]);
 
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadAuthorProfile = async () => {
+      if (!activePost?.username) {
+        setAuthorProfile(null);
+        return;
+      }
+
+      const bundle = await fetchProfileBundle(activePost.username);
+      if (!cancelled) {
+        setAuthorProfile(bundle.user || null);
+      }
+    };
+
+    loadAuthorProfile();
+    return () => {
+      cancelled = true;
+    };
+  }, [activePost?.username]);
+
   if (loading) {
     return <div className="article-page">Loading article...</div>;
   }
@@ -52,7 +80,56 @@ const PostPage = () => {
     activePost.readTime ||
     `${Math.max(3, Math.ceil((activePost.content?.length || 0) / 180))} min read`;
   const publishedAt = formatArticleDate(activePost.createdAt || activePost.updatedAt);
-  const isOwner = currentUser?.id === activePost.authorId;
+  const isOwner = user?.id === activePost.authorId;
+  const canFollowAuthor = Boolean(user && !isOwner && authorProfile?.username);
+
+  const handleFollowToggle = async () => {
+    if (!authorProfile?.username || !user || followLoading) {
+      return;
+    }
+
+    setFollowLoading(true);
+
+    const wasFollowing = Boolean(authorProfile.isFollowing);
+    setAuthorProfile((current) =>
+      current
+        ? {
+            ...current,
+            isFollowing: !wasFollowing,
+          }
+        : current
+    );
+
+    try {
+      const result = await toggleFollowProfile(authorProfile.username);
+      setAuthorProfile(result.profile || null);
+      if (result.currentUser) {
+        setUser(result.currentUser);
+      }
+    } catch (error) {
+      setAuthorProfile((current) =>
+        current
+          ? {
+              ...current,
+              isFollowing: wasFollowing,
+            }
+          : current
+      );
+      window.alert(
+        error.response?.data?.message || error.message || "Unable to update follow status"
+      );
+    } finally {
+      setFollowLoading(false);
+    }
+  };
+
+  const handleOpenComments = () => {
+    setCommentsOpen(true);
+    commentsPanelRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
 
   return (
     <div className="article-page">
@@ -76,18 +153,28 @@ const PostPage = () => {
 
           <h1 className="article-title">{activePost.title}</h1>
 
-          <Link to={`/profile/${activePost.username}`} className="post-author article-author-row">
-            {activePost.avatar ? (
-              <img src={activePost.avatar} alt="avatar" className="post-avatar" />
-            ) : (
-              <div className="avatar-fallback">{activePost.fullName.charAt(0)}</div>
-            )}
+          <div className="article-author-shell">
+            <Link to={`/profile/${activePost.username}`} className="post-author article-author-row">
+              {activePost.avatar ? (
+                <img src={activePost.avatar} alt="avatar" className="post-avatar" />
+              ) : (
+                <div className="avatar-fallback">{activePost.fullName.charAt(0)}</div>
+              )}
 
-            <div className="article-author-copy">
-              <strong>{activePost.fullName}</strong>
-              <span>@{activePost.username}</span>
-            </div>
-          </Link>
+              <div className="article-author-copy">
+                <strong>{activePost.fullName}</strong>
+                <span>@{activePost.username}</span>
+              </div>
+            </Link>
+
+            {canFollowAuthor && (
+              <FollowBtn
+                isFollowing={Boolean(authorProfile?.isFollowing)}
+                onClick={handleFollowToggle}
+                disabled={followLoading}
+              />
+            )}
+          </div>
 
           <div className="article-publish-meta" aria-label={publishedAt.full}>
             <span className="article-publish-day">{publishedAt.day}</span>
@@ -96,9 +183,16 @@ const PostPage = () => {
           </div>
 
           <div className="article-engagement-strip">
-            <span className="article-engagement-pill">
-              {commentCount} comment{commentCount === 1 ? "" : "s"}
-            </span>
+            <button
+              type="button"
+              className="article-engagement-pill article-comment-trigger"
+              onClick={handleOpenComments}
+            >
+              <FaCommentDots />
+              <span>
+                {commentCount} comment{commentCount === 1 ? "" : "s"}
+              </span>
+            </button>
           </div>
 
           {activePost.media && (
@@ -145,7 +239,10 @@ const PostPage = () => {
           )}
         </article>
 
-        <aside className="comments-panel">
+        <div
+          ref={commentsPanelRef}
+          className="comments-panel"
+        >
           <div className="comments-header">
             <span className="comments-kicker">Discussion</span>
             <h2>Reader notes</h2>
@@ -153,12 +250,23 @@ const PostPage = () => {
               {commentCount} comment{commentCount === 1 ? "" : "s"}
             </span>
             <p>Responses, reactions, and follow-up thoughts on this article.</p>
+            <button
+              type="button"
+              className="comments-toggle-btn"
+              onClick={() => setCommentsOpen((current) => !current)}
+            >
+              {commentsOpen ? "Hide comments" : "Open comments"}
+            </button>
           </div>
-          <Comments
-            postId={activePost.id || activePost._id}
-            onCountChange={setCommentCount}
-          />
-        </aside>
+          <div className={`comments-body ${commentsOpen ? "open" : "closed"}`}>
+            {commentsOpen && (
+              <Comments
+                postId={activePost.id || activePost._id}
+                onCountChange={setCommentCount}
+              />
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

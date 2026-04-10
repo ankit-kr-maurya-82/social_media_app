@@ -4,6 +4,7 @@ import UserContext from "../context/UserContext";
 import Card from "../components/Card";
 import FollowBtn from "../components/FollowBtn";
 import "./CSS/Profile.css";
+import "./CSS/Profile_part2.css";
 import EditProfile from "../components/EditProfile";
 import { fetchProfileBundle, toggleFollowProfile } from "../api/profile";
 import { syncUserToStore } from "../lib/socialStore";
