@@ -5,6 +5,7 @@ import {
     logoutUser,
     refreshAccessToken,
     registerUser,
+    socialLoginUser,
     updateUserProfile,
     toggleFollowUser
 } from "../controllers/user.controller.js"
@@ -27,6 +28,7 @@ router.route("/register").post(
     registerUser)
 
 router.route("/login").post(loginUser)
+router.route("/social-login").post(socialLoginUser)
 router.route("/profile/:username").get(optionalVerifyJWT, getPublicUserProfile)
 router.route("/profile/:username/follow").post(verifyJWT, toggleFollowUser)
 router.route("/profile").patch(

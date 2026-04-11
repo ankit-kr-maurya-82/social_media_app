@@ -4,6 +4,7 @@ import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
 
 const toRelationshipList = (items = []) =>
   items.map((item) => ({
@@ -47,6 +48,42 @@ const generateAccessAndRefreshTokens = async (userId) => {
       "Something went wrong while generating refresh and access token"
     );
   }
+};
+
+const slugifyUsername = (value = "") =>
+  value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "")
+    .slice(0, 20);
+
+const buildCandidateUsernames = ({ username, email, fullName }) => {
+  const fromUsername = slugifyUsername(username || "");
+  const fromEmail = slugifyUsername(email?.split("@")[0] || "");
+  const fromName = slugifyUsername(fullName || "");
+
+  return [fromUsername, fromEmail, fromName, "user"].filter(Boolean);
+};
+
+const resolveUniqueUsername = async (input) => {
+  const candidates = buildCandidateUsernames(input);
+
+  for (const candidate of candidates) {
+    const exists = await User.findOne({ username: candidate });
+    if (!exists) {
+      return candidate;
+    }
+  }
+
+  let username;
+  let exists = true;
+
+  while (exists) {
+    username = `user_${Math.random().toString(36).slice(2, 8)}`;
+    exists = await User.findOne({ username });
+  }
+
+  return username;
 };
 
 const registerUser = asyncHandler(async (req, res) => {
@@ -171,6 +208,97 @@ const loginUser = asyncHandler(async (req, res) => {
         200,
         { user: loggedInUser, accessToken, refreshToken },
         "User logged in successfully"
+      )
+    );
+});
+
+const socialLoginUser = asyncHandler(async (req, res) => {
+  const {
+    email,
+    fullName,
+    username,
+    avatar = "",
+    authProvider = "google",
+    authProviderId = "",
+  } = req.body;
+
+  if (!email?.trim() || !fullName?.trim()) {
+    throw new ApiError(400, "Email and full name are required");
+  }
+
+  const normalizedEmail = email.trim().toLowerCase();
+  let user = await User.findOne({
+    $or: [{ email: normalizedEmail }, ...(authProviderId ? [{ authProviderId }] : [])],
+  });
+
+  if (!user) {
+    const uniqueUsername = await resolveUniqueUsername({
+      username,
+      email: normalizedEmail,
+      fullName,
+    });
+
+    user = await User.create({
+      fullName: fullName.trim(),
+      email: normalizedEmail,
+      username: uniqueUsername,
+      avatar,
+      authProvider,
+      authProviderId,
+      password: crypto.randomBytes(24).toString("hex"),
+    });
+  } else {
+    const updates = {};
+
+    if (authProvider && user.authProvider !== authProvider) {
+      updates.authProvider = authProvider;
+    }
+    if (authProviderId && user.authProviderId !== authProviderId) {
+      updates.authProviderId = authProviderId;
+    }
+    if (avatar && !user.avatar) {
+      updates.avatar = avatar;
+    }
+    if (fullName?.trim() && user.fullName !== fullName.trim()) {
+      updates.fullName = fullName.trim();
+    }
+
+    if (Object.keys(updates).length > 0) {
+      user = await User.findByIdAndUpdate(
+        user._id,
+        { $set: updates },
+        { new: true, runValidators: true }
+      );
+    }
+  }
+
+  const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
+    user._id
+  );
+
+  const loggedInUser = await User.findById(user._id)
+    .select("-password -refreshToken")
+    .populate("followers", "username fullName avatar")
+    .populate("following", "username fullName avatar");
+
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+
+  return res
+    .status(200)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(
+      new ApiResponse(
+        200,
+        {
+          user: buildPublicProfile(loggedInUser, loggedInUser._id),
+          accessToken,
+          refreshToken,
+        },
+        "Social login successful"
       )
     );
 });
@@ -440,6 +568,7 @@ const toggleFollowUser = asyncHandler(async (req, res) => {
 export {
   registerUser,
   loginUser,
+  socialLoginUser,
   logoutUser,
   refreshAccessToken,
   getPublicUserProfile,

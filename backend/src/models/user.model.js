@@ -36,6 +36,16 @@ const userSchema = new Schema(
         coverImage: {
             type: String, // cloudinary url
         },
+        authProvider: {
+            type: String,
+            trim: true,
+            default: "local"
+        },
+        authProviderId: {
+            type: String,
+            trim: true,
+            default: ""
+        },
         watchHistory: [
             {
                 type: Schema.Types.ObjectId,

@@ -18,9 +18,12 @@ const Login = () => {
 
   const handleGoogleLogin = () =>
     loginWithRedirect({
+      appState: {
+        returnTo: "/home",
+      },
       authorizationParams: {
-        connection: import.meta.env.VITE_AUTH0_GOOGLE_CONNECTION
-
+        connection:
+          import.meta.env.VITE_AUTH0_GOOGLE_CONNECTION || "google-oauth2",
       },
     });
 
