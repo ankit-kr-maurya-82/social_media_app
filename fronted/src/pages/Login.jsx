@@ -1,4 +1,5 @@
 import React, { useContext, useState } from "react";
+import { useAuth0 } from "@auth0/auth0-react";
 import { Link, useNavigate } from "react-router-dom";
 import UserContext from "../context/UserContext";
 import api from "../api/axios.js";
@@ -13,6 +14,15 @@ const Login = () => {
 
   const { setUser } = useContext(UserContext);
   const navigate = useNavigate();
+  const { loginWithRedirect } = useAuth0();
+
+  const handleGoogleLogin = () =>
+    loginWithRedirect({
+      authorizationParams: {
+        connection: import.meta.env.VITE_AUTH0_GOOGLE_CONNECTION
+
+      },
+    });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -66,6 +76,19 @@ const Login = () => {
 
         <button type="submit" disabled={loading} className="login-btn">
           {loading ? "Logging in..." : "Login"}
+        </button>
+
+        <div className="auth-divider">
+          <span>or</span>
+        </div>
+
+        <button
+          type="button"
+          onClick={handleGoogleLogin}
+          className="google-auth-btn"
+        >
+          <span className="google-auth-icon">G</span>
+          <span>Sign in with Google</span>
         </button>
 
         <p className="login-footer">

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useAuth0 } from "@auth0/auth0-react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../api/axios.js";
 import "./CSS/Register.css";
@@ -12,6 +13,15 @@ const Register = () => {
   const [errorMsg, setErrorMsg] = useState("");
 
   const navigate = useNavigate();
+  const { loginWithRedirect } = useAuth0();
+
+  const handleGoogleSignup = () =>
+    loginWithRedirect({
+      authorizationParams: {
+        connection: import.meta.env.VITE_AUTH0_GOOGLE_CONNECTION,
+        screen_hint: "signup",
+      },
+    });
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -81,6 +91,19 @@ const Register = () => {
             {loading ? "Creating Account..." : "Create Account"}
           </button>
         </form>
+
+        <div className="auth-divider">
+          <span>or</span>
+        </div>
+
+        <button
+          type="button"
+          onClick={handleGoogleSignup}
+          className="google-auth-btn"
+        >
+          <span className="google-auth-icon">G</span>
+          <span>Sign up with Google</span>
+        </button>
 
         <p className="register-footer">
           Already have an account?{" "}
