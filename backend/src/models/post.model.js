@@ -5,13 +5,11 @@ const postSchema = new mongoose.Schema(
     title: {
       type: String,
       trim: true,
-      maxlength: 200,
       default: "Untitled Post",
     },
     content: {
       type: String,
       trim: true,
-      maxlength: 1000,
     },
 
     media: {

@@ -37,3 +37,15 @@
   border-radius: 8px;
   margin: 1rem 0;
 }
+
+/* Reset styles for content pasted from external sources like Medium */
+.article-content-rendered article, 
+.article-content-rendered section {
+  all: inherit;
+  display: block;
+}
+
+.article-content-rendered * {
+  max-width: 100%;
+  box-sizing: border-box;
+}

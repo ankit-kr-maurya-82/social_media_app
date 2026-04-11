@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState, useMemo } from "react";
 import { Link, useParams } from "react-router-dom";
 import "./CSS/PostPage.css";
 import "./CSS/PostPage-part2.css";
@@ -10,6 +10,12 @@ import FollowBtn from "../components/FollowBtn";
 import { deletePostApi, fetchPostById } from "../api/post.js";
 import { fetchProfileBundle, toggleFollowProfile } from "../api/profile";
 import { formatArticleDate } from "../utils/formatArticleDate.js";
+
+// Helper to convert &lt;p&gt; back to <p>
+const unescapeHTML = (html) => {
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  return doc.documentElement.textContent;
+};
 
 const PostPage = () => {
   const { postId } = useParams();
@@ -68,6 +74,16 @@ const PostPage = () => {
       cancelled = true;
     };
   }, [activePost?.username]);
+
+  // Process content: check if it's escaped and unescape if necessary
+  const processedContent = useMemo(() => {
+    if (!activePost?.content) return "";
+    // Detect if the string contains encoded HTML entities
+    if (activePost.content.includes("&lt;") || activePost.content.includes("&gt;")) {
+      return unescapeHTML(activePost.content);
+    }
+    return activePost.content;
+  }, [activePost?.content]);
 
   if (loading) {
     return <div className="article-page">Loading article...</div>;
@@ -217,7 +233,7 @@ const PostPage = () => {
           <div className="article-body">
             <div 
               className="article-content-rendered"
-              dangerouslySetInnerHTML={{ __html: activePost.content }} 
+              dangerouslySetInnerHTML={{ __html: processedContent }} 
             />
           </div>
 
