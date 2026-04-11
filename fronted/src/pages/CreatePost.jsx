@@ -1,7 +1,6 @@
-import React, { useState } from "react";
-import { useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { FaImage, FaVideo } from "react-icons/fa";
+import { FaImage, FaVideo, FaBold, FaItalic, FaUnderline, FaAlignLeft, FaAlignCenter, FaAlignRight } from "react-icons/fa";
 import "./CSS/CreatePost.css";
 import { getCurrentUser } from "../lib/socialStore";
 import { createPostApi, fetchPostById, updatePostApi } from "../api/post";
@@ -19,8 +18,24 @@ const CreatePost = () => {
   const [videoFile, setVideoFile] = useState(null);
   const [error, setError] = useState("");
 
+  const editorRef = useRef(null);
   const token = localStorage.getItem("accessToken");
   const currentUser = getCurrentUser();
+
+  // Sync content state to the editor once when loading in edit mode
+  useEffect(() => {
+    if (isEditMode && editorRef.current && content && !editorRef.current.innerHTML) {
+      editorRef.current.innerHTML = content;
+    }
+  }, [isEditMode, content]);
+
+  const handleFormat = (command, value = null) => {
+    document.execCommand(command, false, value);
+    // Manually trigger state update because execCommand doesn't fire onInput automatically in all browsers
+    if (editorRef.current) {
+      setContent(editorRef.current.innerHTML);
+    }
+  };
 
   useEffect(() => {
     if (!isEditMode) return;
@@ -159,11 +174,26 @@ const CreatePost = () => {
           onChange={(e) => setTitle(e.target.value)}
         />
 
-        <textarea
-          placeholder="What do you want to share?"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-        />
+        <div className="rich-text-container">
+          <div className="format-toolbar">
+            <button type="button" onClick={() => handleFormat("bold")} title="Bold"><FaBold /></button>
+            <button type="button" onClick={() => handleFormat("italic")} title="Italic"><FaItalic /></button>
+            <button type="button" onClick={() => handleFormat("underline")} title="Underline"><FaUnderline /></button>
+            <span className="toolbar-divider"></span>
+            <button type="button" onClick={() => handleFormat("justifyLeft")} title="Align Left"><FaAlignLeft /></button>
+            <button type="button" onClick={() => handleFormat("justifyCenter")} title="Align Center"><FaAlignCenter /></button>
+            <button type="button" onClick={() => handleFormat("justifyRight")} title="Align Right"><FaAlignRight /></button>
+          </div>
+
+          <div
+            ref={editorRef}
+            className="content-editable-editor"
+            contentEditable
+            onInput={(e) => setContent(e.currentTarget.innerHTML)}
+            onBlur={(e) => setContent(e.currentTarget.innerHTML)}
+            data-placeholder="What do you want to share?"
+          />
+        </div>
 
         {error && <p className="error-msg">{error}</p>}
 

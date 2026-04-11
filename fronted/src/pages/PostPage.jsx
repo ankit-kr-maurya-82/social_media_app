@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import "./CSS/PostPage.css";
 import "./CSS/PostPage-part2.css";
+import "./CSS/ArticleContent.css";
 import { FaArrowLeft, FaClock, FaCommentDots, FaPen, FaPlus, FaTrash } from "react-icons/fa";
 import Comments from "../components/Comments/Comments.jsx";
 import UserContext from "../context/UserContext";
@@ -145,7 +146,7 @@ const PostPage = () => {
       <div className="article-layout">
         <article className="article-main">
           <div className="article-meta-strip">
-            <span className="article-kicker">Featured article</span>
+            <span className="article-kicker">post</span>
             <span className="article-read-time">
               <FaClock /> {estimatedReadTime}
             </span>
@@ -214,7 +215,10 @@ const PostPage = () => {
           )}
 
           <div className="article-body">
-            <p>{activePost.content}</p>
+            <div 
+              className="article-content-rendered"
+              dangerouslySetInnerHTML={{ __html: activePost.content }} 
+            />
           </div>
 
           {isOwner && (
