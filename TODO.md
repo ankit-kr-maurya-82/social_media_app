@@ -7,4 +7,7 @@
 - [x] Step 5: UI refresh fix - Profile.jsx force re-fetch ✅
 - [x] Step 6: Article image upload fixed (buffer vs path) ✅
 
-**Avatar + Article images COMPLETE!** 🎉
+**Avatar + Article images LOCAL ✅**
+**- Vercel CORS fix for login/register ✅**
+
+**Deploy backend → login/register works on Vercel!** 🚀
