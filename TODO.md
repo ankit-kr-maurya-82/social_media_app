@@ -1,15 +1,11 @@
-# Admin View User Details
+# TODO: Add Admin Access Key
 
-## Previous Tasks Complete:
-- [x] Footer fix
-- [x] Admin delete protection  
-- [x] Admin UI improvements
+## Steps:
+- [ ] Step 1: Backend - Add ADMIN_ACCESS_KEY = 'ADMIN2024' in constants.js
+- [ ] Step 2: Backend - New loginAdmin/registerAdmin in user.controller.js & user.routes.js
+- [ ] Step 3: Frontend - Add optional "Admin Access Key" field to Login.jsx Register.jsx
+- [ ] Step 4: Frontend - Update submit handlers to use admin endpoints if key provided
+- [ ] Step 5: Test both regular/admin flows
+- [ ] Step 6: Complete
 
-## New Task: Admin View User Details
-- [ ] Step 1: Add "View" button in AdminDashboard users table linking to /admin/user/:id
-- [ ] Step 2: Create AdminUserDetail.jsx page showing full user info (posts count, followers, etc.)
-- [ ] Step 3: Backend API endpoint /admin/users/:id for admin-only full user details
-- [ ] Step 4: Add to App.jsx routes
-- [ ] Step 5: Test flow
-
-All steps complete - Admin can view user details!
+Current progress: Completed
