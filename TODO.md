@@ -1,11 +1,13 @@
-# TODO: Add Admin Access Key
+# Add Like and Share Feature - Progress Tracker
 
-## Steps:
-- [ ] Step 1: Backend - Add ADMIN_ACCESS_KEY = 'ADMIN2024' in constants.js
-- [ ] Step 2: Backend - New loginAdmin/registerAdmin in user.controller.js & user.routes.js
-- [ ] Step 3: Frontend - Add optional "Admin Access Key" field to Login.jsx Register.jsx
-- [ ] Step 4: Frontend - Update submit handlers to use admin endpoints if key provided
-- [ ] Step 5: Test both regular/admin flows
-- [ ] Step 6: Complete
+## Steps to Complete:
 
-Current progress: Completed
+- [x] 1. Update backend/src/controllers/post.controller.js: Add toggleLikePost function and update normalizePost to include likesCount.
+- [x] 2. Update backend/src/routes/post.routes.js: Add POST /:postId/like route with verifyJWT.
+- [x] 3. Update fronted/src/components/Card.jsx: Add likes state, like/share handlers, and render buttons in feed-card-footer.
+- [x] 4. Update fronted/src/pages/PostPage.jsx: Add like/share buttons in article-engagement-strip.
+- [x] 5. Test: Backend routes fixed (import toggleLikePost). Ready.
+- [x] 6. attempt_completion once all tested.
+
+**Current Status:** Ready for step-by-step implementation.
+
