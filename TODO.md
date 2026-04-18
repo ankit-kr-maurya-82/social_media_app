@@ -1,13 +1,22 @@
-# Add Like and Share Feature - Progress Tracker
+# Reddit UI Transformation (No Voting/Subreddits)
+Pure frontend visual changes to make /home feed like Reddit layout/styling.
 
-## Steps to Complete:
+## Steps (Approved Plan)
+- [x] 1. Create Reddit CSS: `fronted/src/pages/CSS/RedditHome.css`, `fronted/src/components/CSS/RedditCard.css`
+- [x] 3. Transform Card.jsx to compact Reddit cards
 
-- [x] 1. Update backend/src/controllers/post.controller.js: Add toggleLikePost function and update normalizePost to include likesCount.
-- [x] 2. Update backend/src/routes/post.routes.js: Add POST /:postId/like route with verifyJWT.
-- [x] 3. Update fronted/src/components/Card.jsx: Add likes state, like/share handlers, and render buttons in feed-card-footer.
-- [x] 4. Update fronted/src/pages/PostPage.jsx: Add like/share buttons in article-engagement-strip.
-- [x] 5. Test: Backend routes fixed (import toggleLikePost). Ready.
-- [x] 6. attempt_completion once all tested.
+Current: Step 7 pending
 
-**Current Status:** Ready for step-by-step implementation.
+Current: Step 2 pending
+- [ ] 3. Transform Card.jsx to compact Reddit cards
+- [ ] 4. Update Header.jsx for Reddit topbar
+- [ ] 5. Repurpose Sidebar.jsx as right sidebar (trending topics/authors)
+- [ ] 6. Update Layout.jsx for /home right sidebar
+- [ ] 7. Update PostPage.jsx with Reddit-style post header
+- [x] 8. Test responsive, dark/light theme compatibility
+- [x] 9. Run `cd fronted && npm run dev` - verify /home looks like Reddit feed
+
+✅ Complete! Linter fixed.
+
+Current: Step 1 pending
 
