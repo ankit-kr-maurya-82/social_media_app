@@ -1,19 +1,15 @@
-# Fix CORS/413 + Feed Card UX ✅
+# ✅ COMPLETE: CORS/413 + ALL Feed Truncation
 
-## Backend Fixes COMPLETE ✅
-### [✅] vercel.json: 25MB payload limit
-### [✅] app.js: Secure CORS  
-### [✅] multer.js: 10MB files
+**Backend:** Payload limits fixed, CORS secure
+**Frontend:** 
+- PostCard.jsx: 45 char truncate
+- Card.jsx (Home/Profile): 120 char HTML truncate  
+- CSS: line-clamp everywhere
 
-## New: Feed Card Content Truncation ✅
-### [✅] PostCard.jsx: content.slice(0,100) + "..."
-
-## DEPLOY
+**Deploy:**
 ```
-cd backend && vercel --prod
+cd backend & vercel --prod
+cd fronted & npm run dev -- --force
 ```
-**Windows CMD:** `cd backend & vercel --prod`
 
-## Test
-1. Redeploy backend (fixes CORS/413)
-2. Check Home/Feed - long content truncated
+**Test:** Home page shows short "abcder......" content now!
