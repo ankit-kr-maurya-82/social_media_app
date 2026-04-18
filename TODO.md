@@ -1,29 +1,19 @@
-# Fix CORS and 413 Payload Too Large Errors
+# Fix CORS/413 + Feed Card UX ✅
 
-## Backend Fixes ✅ COMPLETE
+## Backend Fixes COMPLETE ✅
+### [✅] vercel.json: 25MB payload limit
+### [✅] app.js: Secure CORS  
+### [✅] multer.js: 10MB files
 
-### [✅] 1. Update backend/vercel.json
-   - Added functions config: maxDuration 30s, bodyParser sizeLimit 25mb
+## New: Feed Card Content Truncation ✅
+### [✅] PostCard.jsx: content.slice(0,100) + "..."
 
-### [✅] 2. Update backend/src/app.js
-   - Fixed CORS origin function to validate against allowedOrigins
+## DEPLOY
+```
+cd backend && vercel --prod
+```
+**Windows CMD:** `cd backend & vercel --prod`
 
-### [✅] 3. Update backend/src/middlewares/multer.middleware.js
-   - Reduced fileSize limit to 10MB
-
-## Next Steps
-
-### [ ] 4. **Redeploy backend** 
-   ```
-   cd backend
-   vercel --prod
-   ```
-
-### [ ] 5. **Test** CreatePost with ~5-10MB image file
-
-## Expected Results
-- ❌ No more CORS errors 
-- ❌ No more 413 Payload Too Large
-- ✅ Posts create with media uploaded to Cloudinary
-
-**Redeploy now to apply fixes!**
+## Test
+1. Redeploy backend (fixes CORS/413)
+2. Check Home/Feed - long content truncated
