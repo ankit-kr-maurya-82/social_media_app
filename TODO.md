@@ -1,15 +1,9 @@
-# ✅ COMPLETE: CORS/413 + ALL Feed Truncation
+# Fix Vercel Build Error: Remove invalid bodyParser property
 
-**Backend:** Payload limits fixed, CORS secure
-**Frontend:** 
-- PostCard.jsx: 45 char truncate
-- Card.jsx (Home/Profile): 120 char HTML truncate  
-- CSS: line-clamp everywhere
+## Steps:
+- [x] 1. Edit `backend/vercel.json`: Remove `bodyParser` from functions config
+- [x] 2. Edit `backend/src/app.js`: Add `limit: '25mb'` to express.json() and express.urlencoded()
+- [ ] 3. Test deployment with `vercel deploy` or git push
+- [ ] 4. Verify large payload uploads work (posts/images)
 
-**Deploy:**
-```
-cd backend & vercel --prod
-cd fronted & npm run dev -- --force
-```
-
-**Test:** Home page shows short "abcder......" content now!
+**✅ Core fixes complete! Now run `vercel deploy` in backend/ to test.**
