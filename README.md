@@ -12,7 +12,6 @@ Redirection messages (300 – 399)<br>
 Client error responses (400 – 499)<br>
 Server error responses (500 – 599)<br>
 
-
 ## Most common Headers
 Accept: application / json<br>
 User-Agent<br>
