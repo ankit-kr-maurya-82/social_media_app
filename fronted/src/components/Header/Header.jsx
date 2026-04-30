@@ -182,6 +182,7 @@ const Header = () => {
         <nav className="navLinks hideOnSearch">
           <NavLink to={user ? "/home" : "/"}>Home</NavLink>
           <NavLink to="/explore">Explore</NavLink>
+          {user && <NavLink to="/chat">Chat</NavLink>}
           {user && <NavLink to="/create">Create</NavLink>}
           <NavLink to="/about">About</NavLink>
           <NavLink to="/features">Features</NavLink>
@@ -215,6 +216,11 @@ const Header = () => {
       <div className={`mobileMenu ${menuOpen ? "open" : ""}`}>
         <NavLink to={user ? "/home" : "/"} onClick={() => setMenuOpen(false)}>Home</NavLink>
         <NavLink to="/explore" onClick={() => setMenuOpen(false)}>Explore</NavLink>
+        {user && (
+          <NavLink to="/chat" onClick={() => setMenuOpen(false)}>
+            Chat
+          </NavLink>
+        )}
         {user && (
           <NavLink to="/create" onClick={() => setMenuOpen(false)}>
             Create

@@ -1,6 +1,14 @@
 import React, { useContext, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { FaBars, FaPlus, FaHome, FaUser, FaCompass, FaSignOutAlt } from "react-icons/fa";
+import {
+  FaBars,
+  FaPlus,
+  FaHome,
+  FaUser,
+  FaCompass,
+  FaSignOutAlt,
+  FaComments,
+} from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
 import { Shield } from "lucide-react";
 import UserContext from "../context/UserContext";
@@ -56,6 +64,13 @@ const Sidebar = () => {
           <NavLink to={`/profile/${user.username}`} className="sidebarItem">
             <FaUser />
             <span>Profile</span>
+          </NavLink>
+        )}
+
+        {user && (
+          <NavLink to="/chat" className="sidebarItem">
+            <FaComments />
+            <span>Chat</span>
           </NavLink>
         )}
 
