@@ -3,6 +3,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { FaSearch, FaBars, FaTimes, FaUser } from "react-icons/fa";
 import { Shield } from "lucide-react";
 import UserContext from "../../context/UserContext";
+import ThemeBtn from "../ThemeBtn";
 import "./header.css";
 import "./header2.css";
 import { searchContent } from "../../api/search";
@@ -145,6 +146,7 @@ const Header = () => {
         </div>
 
         <div className={`mobileHeaderProfile ${searchOpen ? "hidden" : ""}`}>
+          <ThemeBtn />
           {user ? (
             <NavLink
               to={`/profile/${user.username}`}
@@ -188,6 +190,7 @@ const Header = () => {
 
         {/* Right Side */}
         <div className="headerActions hideOnSearch">
+          <ThemeBtn />
           {user ? (
             <>
               <NavLink to={`/profile/${user.username}`} className="headerUserChip">

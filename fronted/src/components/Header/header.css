@@ -132,6 +132,10 @@ body {
   display: none;
 }
 
+.mobileHeaderProfile .theme-fab {
+  flex-shrink: 0;
+}
+
 .mobileProfileLink {
   width: 40px;
   height: 40px;
@@ -250,6 +254,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 10px;
     margin-left: auto;
     transition: opacity 0.2s ease, transform 0.2s ease;
   }
