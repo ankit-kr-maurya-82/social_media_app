@@ -4,7 +4,6 @@ import Message from "../components/Message";
 import ChatContext from "../context/ChatContext";
 import UserContext from "../context/UserContext";
 import {
-  fetchChatConversations,
   fetchChatMessages,
   sendChatMessage,
 } from "../api/chat";
@@ -55,6 +54,130 @@ const normalizeConversation = (conversation) => ({
   ...conversation,
   messages: sortMessagesByTime(conversation?.messages || []),
 });
+
+const mergeConversationMessages = (
+  messages = [],
+  nextMessage,
+  currentUserId
+) => {
+  if (!nextMessage?.id && !nextMessage?.text) {
+    return sortMessagesByTime(messages);
+  }
+
+  const nextMessages = [...messages];
+  const existingIndex = nextMessages.findIndex(
+    (message) => message.id === nextMessage.id
+  );
+
+  if (existingIndex >= 0) {
+    nextMessages.splice(existingIndex, 1, {
+      ...nextMessages[existingIndex],
+      ...nextMessage,
+      pending: false,
+    });
+
+    return sortMessagesByTime(nextMessages);
+  }
+
+  const pendingMatchIndex =
+    nextMessage.senderId === currentUserId
+      ? nextMessages.findIndex(
+          (message) =>
+            message.pending &&
+            message.senderId === currentUserId &&
+            message.text === nextMessage.text
+        )
+      : -1;
+
+  if (pendingMatchIndex >= 0) {
+    nextMessages.splice(pendingMatchIndex, 1, {
+      ...nextMessages[pendingMatchIndex],
+      ...nextMessage,
+      pending: false,
+    });
+
+    return sortMessagesByTime(nextMessages);
+  }
+
+  return sortMessagesByTime([...nextMessages, nextMessage]);
+};
+
+const mergeConversationState = (
+  conversation,
+  contact,
+  nextMessage,
+  currentUserId
+) =>
+  normalizeConversation({
+    contact: conversation?.contact
+      ? {
+          ...conversation.contact,
+          ...contact,
+        }
+      : contact,
+    messages: mergeConversationMessages(
+      conversation?.messages || [],
+      nextMessage,
+      currentUserId
+    ),
+  });
+
+const upsertThreadFromMessage = (
+  threads = [],
+  eventPayload,
+  currentUserId,
+  options = {}
+) => {
+  if (!eventPayload?.contact?.username || !eventPayload?.message) {
+    return threads;
+  }
+
+  const { resetUnread = false } = options;
+  const nextThreads = [...threads];
+  const targetIndex = nextThreads.findIndex(
+    (thread) =>
+      thread.contact.username.toLowerCase() ===
+      eventPayload.contact.username.toLowerCase()
+  );
+
+  const nextThread = {
+    id:
+      nextThreads[targetIndex]?.id ||
+      `direct:${currentUserId}:${eventPayload.contact.id || eventPayload.contact._id}`,
+    contact: {
+      ...(nextThreads[targetIndex]?.contact || {}),
+      ...eventPayload.contact,
+    },
+    lastMessage: eventPayload.message,
+    updatedAt: eventPayload.message.createdAt || eventPayload.message.updatedAt,
+    unreadCount:
+      resetUnread || eventPayload.message.senderId === currentUserId
+        ? 0
+        : (nextThreads[targetIndex]?.unreadCount || 0) + 1,
+  };
+
+  if (targetIndex >= 0) {
+    nextThreads.splice(targetIndex, 1);
+  }
+
+  return [nextThread, ...nextThreads];
+};
+
+const createOptimisticMessage = (currentUser, text) => {
+  const createdAt = new Date().toISOString();
+
+  return {
+    id: `temp:${Date.now()}:${Math.random().toString(36).slice(2, 8)}`,
+    text,
+    content: text,
+    senderId: currentUser.id,
+    senderUsername: currentUser.username,
+    createdAt,
+    updatedAt: createdAt,
+    isOwn: true,
+    pending: true,
+  };
+};
 
 const Chat = () => {
   const { user, loading } = useContext(UserContext);
@@ -121,7 +244,7 @@ const Chat = () => {
       cancelled = true;
       window.removeEventListener("storage", syncThreads);
     };
-  }, [user]);
+  }, [refreshChatState, user]);
 
   const selectedUsername = searchParams.get("user")?.trim().toLowerCase() || "";
 
@@ -206,6 +329,14 @@ const Chat = () => {
 
       if (!cancelled) {
         setActiveConversation(normalizeConversation(nextConversation));
+        setThreads((previousThreads) =>
+          previousThreads.map((thread) =>
+            thread.contact.username.toLowerCase() ===
+            activeThread.contact.username.toLowerCase()
+              ? { ...thread, unreadCount: 0 }
+              : thread
+          )
+        );
         setConversationLoading(false);
       }
     };
@@ -226,36 +357,27 @@ const Chat = () => {
       return;
     }
 
-    let cancelled = false;
+    const isViewingActiveThread =
+      activeThread?.contact?.username?.toLowerCase() ===
+      lastEvent.contact.username.toLowerCase();
 
-    const syncRealtimeState = async () => {
-      const refreshedThreads = await refreshChatState();
+    setThreads((previousThreads) =>
+      upsertThreadFromMessage(previousThreads, lastEvent, user.id, {
+        resetUnread: isViewingActiveThread,
+      })
+    );
 
-      if (!cancelled) {
-        setThreads(refreshedThreads);
-      }
-
-      if (
-        activeThread?.contact?.username?.toLowerCase() ===
-        lastEvent.contact.username.toLowerCase()
-      ) {
-        const refreshedConversation = await fetchChatMessages(
-          user,
-          lastEvent.contact.username
+    if (isViewingActiveThread) {
+      setActiveConversation((previousConversation) => {
+        return mergeConversationState(
+          previousConversation,
+          lastEvent.contact,
+          lastEvent.message,
+          user.id
         );
-
-        if (!cancelled) {
-          setActiveConversation(normalizeConversation(refreshedConversation));
-        }
-      }
-    };
-
-    syncRealtimeState();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [activeThread?.contact?.username, lastEvent, refreshChatState, user]);
+      });
+    }
+  }, [activeThread?.contact?.username, lastEvent, user]);
 
   const handleSelectThread = (username) => {
     setSearchParams({ user: username });
@@ -272,8 +394,30 @@ const Chat = () => {
 
     setSending(true);
 
+    const nextDraft = draft.trim();
+    const optimisticMessage = createOptimisticMessage(user, nextDraft);
+    setDraft("");
+    setThreads((previousThreads) =>
+      upsertThreadFromMessage(
+        previousThreads,
+        {
+          contact: activeThread.contact,
+          message: optimisticMessage,
+        },
+        user.id,
+        { resetUnread: true }
+      )
+    );
+    setActiveConversation((previousConversation) =>
+      mergeConversationState(
+        previousConversation,
+        activeThread.contact,
+        optimisticMessage,
+        user.id
+      )
+    );
+
     try {
-      const nextDraft = draft.trim();
       const result = await sendChatMessage({
         currentUser: user,
         username: activeThread.contact.username,
@@ -281,23 +425,30 @@ const Chat = () => {
         content: nextDraft,
       });
 
-      setDraft("");
-
-      const refreshedThreads = await refreshChatState();
-      setThreads(refreshedThreads);
-
-      if (result?.thread?.messages) {
-        setActiveConversation(normalizeConversation({
+      if (result?.message) {
+        const payload = {
           contact: result.contact || activeThread.contact,
-          messages: result.thread.messages,
-        }));
-      } else {
-        const refreshedConversation = await fetchChatMessages(
-          user,
-          activeThread.contact.username
+          message: result.message,
+        };
+
+        setThreads((previousThreads) =>
+          upsertThreadFromMessage(previousThreads, payload, user.id, {
+            resetUnread: true,
+          })
         );
-        setActiveConversation(normalizeConversation(refreshedConversation));
+        setActiveConversation((previousConversation) =>
+          mergeConversationState(
+            previousConversation,
+            payload.contact,
+            payload.message,
+            user.id
+          )
+        );
       }
+
+      refreshChatState()
+        .then((refreshedThreads) => setThreads(refreshedThreads))
+        .catch(() => {});
     } finally {
       setSending(false);
     }
