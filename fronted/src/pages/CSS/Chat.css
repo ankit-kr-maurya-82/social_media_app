@@ -107,3 +107,18 @@
   color: #fff;
   border-radius: 999px;
 }
+
+
+.chat-messages{
+  margin-top: 62px;
+  margin-right: 56px;
+}
+
+
+.chat-input{
+  margin-right: 56px;
+}
+
+.dark .message.own{
+  background-color: #242424;
+}
