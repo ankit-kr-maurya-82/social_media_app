@@ -53,6 +53,7 @@ import searchRouter from "./routes/search.routes.js";
 import adminRouter from "./routes/admin.routes.js";
 import adminSignupRouter from "./routes/adminSignup.routes.js";
 import chatRouter from "./routes/chat.routes.js";
+import notificationRouter from "./routes/notification.routes.js";
 
 app.get("/", (req, res) => {
   res.send("Social Media App Home Page 🚀");
@@ -65,6 +66,7 @@ app.use("/api/v1/comments", commentRouter);
 app.use("/api/v1/search", searchRouter);
 app.use("/api/v1/admin", adminRouter);
 app.use("/api/v1/chats", chatRouter);
+app.use("/api/v1/notifications", notificationRouter);
 
 /* =========================
    ❌ ERROR HANDLER

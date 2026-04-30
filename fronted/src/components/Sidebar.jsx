@@ -11,11 +11,13 @@ import {
 } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
 import { Shield } from "lucide-react";
+import ChatContext from "../context/ChatContext";
 import UserContext from "../context/UserContext";
 import "./CSS/Sidebar.css";
 
 const Sidebar = () => {
   const { user, logout } = useContext(UserContext);
+  const { unreadCount } = useContext(ChatContext);
   const navigate = useNavigate();
   const [open, setOpen] = useState(true);
 
@@ -71,6 +73,9 @@ const Sidebar = () => {
           <NavLink to="/chat" className="sidebarItem">
             <FaComments />
             <span>Chat</span>
+            {unreadCount > 0 ? (
+              <span className="chat-badge">{unreadCount}</span>
+            ) : null}
           </NavLink>
         )}
 

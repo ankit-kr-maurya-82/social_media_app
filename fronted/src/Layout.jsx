@@ -3,6 +3,7 @@ import { Outlet, useLocation } from "react-router-dom";
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
 import Sidebar from "./components/Sidebar";
+import ChatContextProvider from "./context/ChatContextProvider";
 import UserContext from "./context/UserContext";
 import UserContextProvider from "./context/UserContextProvider";
 import { ThemeProvider } from "./context/theme";
@@ -95,7 +96,9 @@ const Layout = () => {
   return (
     <ThemeProvider value={{ themeMode, toggleTheme }}>
       <UserContextProvider>
-        <LayoutContent showLayout={showLayout} themeMode={themeMode} />
+        <ChatContextProvider>
+          <LayoutContent showLayout={showLayout} themeMode={themeMode} />
+        </ChatContextProvider>
       </UserContextProvider>
     </ThemeProvider>
   );

@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import Message from "../components/Message";
+import ChatContext from "../context/ChatContext";
 import UserContext from "../context/UserContext";
 import {
   fetchChatConversations,
@@ -43,6 +44,8 @@ const getInitial = (thread) =>
 
 const Chat = () => {
   const { user, loading } = useContext(UserContext);
+  const { lastEvent, isRealtimeConnected, refreshChatState } =
+    useContext(ChatContext);
   const [searchParams, setSearchParams] = useSearchParams();
   const [threads, setThreads] = useState([]);
   const [activeConversation, setActiveConversation] = useState(null);
@@ -68,7 +71,7 @@ const Chat = () => {
         setThreadLoading(true);
       }
 
-      const nextThreads = await fetchChatConversations(user);
+      const nextThreads = await refreshChatState();
 
       if (!cancelled) {
         setThreads(nextThreads);
@@ -88,7 +91,7 @@ const Chat = () => {
         return;
       }
 
-      const nextThreads = await fetchChatConversations(user);
+      const nextThreads = await refreshChatState();
       if (!cancelled) {
         setThreads(nextThreads);
       }
@@ -178,6 +181,42 @@ const Chat = () => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [activeConversation?.contact?.username, activeConversation?.messages?.length]);
 
+  useEffect(() => {
+    if (!user?.id || !lastEvent?.contact?.username) {
+      return;
+    }
+
+    let cancelled = false;
+
+    const syncRealtimeState = async () => {
+      const refreshedThreads = await refreshChatState();
+
+      if (!cancelled) {
+        setThreads(refreshedThreads);
+      }
+
+      if (
+        activeThread?.contact?.username?.toLowerCase() ===
+        lastEvent.contact.username.toLowerCase()
+      ) {
+        const refreshedConversation = await fetchChatMessages(
+          user,
+          lastEvent.contact.username
+        );
+
+        if (!cancelled) {
+          setActiveConversation(refreshedConversation);
+        }
+      }
+    };
+
+    syncRealtimeState();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [activeThread?.contact?.username, lastEvent, refreshChatState, user]);
+
   const handleSelectThread = (username) => {
     setSearchParams({ user: username });
   };
@@ -200,7 +239,7 @@ const Chat = () => {
 
       setDraft("");
 
-      const refreshedThreads = await fetchChatConversations(user);
+      const refreshedThreads = await refreshChatState();
       setThreads(refreshedThreads);
 
       if (result?.thread?.messages) {
@@ -245,6 +284,9 @@ const Chat = () => {
           <div>
             <p className="chat-eyebrow">Direct messages</p>
             <h1>Chats</h1>
+            <span className={`chat-live-status ${isRealtimeConnected ? "online" : ""}`}>
+              {isRealtimeConnected ? "Live updates on" : "Realtime reconnecting"}
+            </span>
           </div>
 
           <span className="chat-count">
@@ -303,7 +345,12 @@ const Chat = () => {
                   <div className="chat-item-copy">
                     <div className="chat-item-head">
                       <strong>{thread.contact.fullName || thread.contact.username}</strong>
-                      <span>{formatConversationTime(thread.updatedAt)}</span>
+                      <div className="chat-item-meta">
+                        {thread.unreadCount > 0 ? (
+                          <span className="chat-unread-dot">{thread.unreadCount}</span>
+                        ) : null}
+                        <span>{formatConversationTime(thread.updatedAt)}</span>
+                      </div>
                     </div>
                     <span className="chat-item-username">
                       @{thread.contact.username}

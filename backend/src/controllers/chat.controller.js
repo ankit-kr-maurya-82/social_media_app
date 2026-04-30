@@ -1,5 +1,7 @@
 import { DirectMessage } from "../models/DirectMessage.model.js";
+import { Notification } from "../models/Notification.model.js";
 import { User } from "../models/user.model.js";
+import { addChatStream, emitChatEvent } from "../utils/chatEvents.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
@@ -158,6 +160,39 @@ const getChatConversations = asyncHandler(async (req, res) => {
   );
 });
 
+const streamChatEvents = (req, res) => {
+  res.writeHead(200, {
+    "Content-Type": "text/event-stream",
+    "Cache-Control": "no-cache, no-transform",
+    Connection: "keep-alive",
+    "X-Accel-Buffering": "no",
+  });
+
+  const userId = String(req.user._id);
+  const removeStream = addChatStream(userId, res);
+
+  res.write(
+    `event: connected\ndata: ${JSON.stringify({
+      userId,
+      connectedAt: new Date().toISOString(),
+    })}\n\n`
+  );
+
+  const heartbeat = setInterval(() => {
+    res.write(
+      `event: heartbeat\ndata: ${JSON.stringify({
+        at: new Date().toISOString(),
+      })}\n\n`
+    );
+  }, 20000);
+
+  req.on("close", () => {
+    clearInterval(heartbeat);
+    removeStream();
+    res.end();
+  });
+};
+
 const getConversationMessages = asyncHandler(async (req, res) => {
   const username = String(req.params.username || "").trim().toLowerCase();
   const currentUserId = String(req.user._id);
@@ -202,6 +237,19 @@ const getConversationMessages = asyncHandler(async (req, res) => {
         readAt: new Date(),
       },
     }),
+    Notification.updateMany(
+      {
+        userId: req.user._id,
+        type: "MESSAGE",
+        link: `/chat?user=${contact.username}`,
+        isRead: false,
+      },
+      {
+        $set: {
+          isRead: true,
+        },
+      }
+    ),
   ]);
 
   const serializedMessages = messages.map((message) => {
@@ -264,12 +312,36 @@ const sendConversationMessage = asyncHandler(async (req, res) => {
     .populate("senderId", "username fullName avatar bio")
     .populate("receiverId", "username fullName avatar bio");
 
+  await Notification.create({
+    userId: contact._id,
+    type: "MESSAGE",
+    content: `${req.user.fullName || req.user.username} sent you a message`,
+    link: `/chat?user=${req.user.username}`,
+  });
+
+  const serializedMessage = serializeMessage(populatedMessage, currentUserId);
+  const receiverPayload = {
+    type: "chat:message",
+    contact: serializeContact(req.user, contact),
+    message: serializedMessage,
+    unread: true,
+  };
+  const senderPayload = {
+    type: "chat:message",
+    contact: serializeContact(contact, req.user),
+    message: serializedMessage,
+    unread: false,
+  };
+
+  emitChatEvent(contact._id, "chat-message", receiverPayload);
+  emitChatEvent(req.user._id, "chat-message", senderPayload);
+
   return res.status(201).json(
     new ApiResponse(
       201,
       {
         contact: serializeContact(contact, req.user),
-        message: serializeMessage(populatedMessage, currentUserId),
+        message: serializedMessage,
       },
       "Message sent successfully"
     )
@@ -278,6 +350,7 @@ const sendConversationMessage = asyncHandler(async (req, res) => {
 
 export {
   getChatConversations,
+  streamChatEvents,
   getConversationMessages,
   sendConversationMessage,
 };

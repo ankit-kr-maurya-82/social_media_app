@@ -1,4 +1,4 @@
-import api from "./axios";
+import api, { apiBaseUrl } from "./axios";
 import {
   getDirectMessageThreads,
   sendDirectMessage as sendLocalDirectMessage,
@@ -80,4 +80,18 @@ export const sendChatMessage = async ({
       thread,
     };
   }
+};
+
+export const buildChatStreamUrl = () => {
+  const token =
+    typeof window !== "undefined"
+      ? window.localStorage.getItem("accessToken")
+      : "";
+  const streamUrl = new URL(`${apiBaseUrl}/chats/stream`);
+
+  if (token) {
+    streamUrl.searchParams.set("accessToken", token);
+  }
+
+  return streamUrl.toString();
 };
