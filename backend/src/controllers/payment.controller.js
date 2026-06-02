@@ -5,23 +5,31 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 
-// Initialize Razorpay lazily
-const getRazorpayInstance = () => {
+// Validate Razorpay credentials helper
+const validateRazorpayCredentials = () => {
   const keyId = process.env.RAZORPAY_KEY_ID;
   const keySecret = process.env.RAZORPAY_KEY_SECRET;
+  const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET;
 
   // Check if credentials are configured (not placeholder values)
   if (
     !keyId ||
     !keySecret ||
-    keyId === "your_razorpay_key_id" ||
-    keySecret === "your_razorpay_key_secret"
+    keyId === RAZORPAY_KEY_ID ||
+    keySecret === RAZORPAY_KEY_SECRET
   ) {
     throw new ApiError(
       503,
       "Payment service not configured. Please set valid RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET in .env"
     );
   }
+
+  return { keyId, keySecret, webhookSecret };
+};
+
+// Initialize Razorpay lazily
+const getRazorpayInstance = () => {
+  const { keyId, keySecret } = validateRazorpayCredentials();
 
   return new Razorpay({
     key_id: keyId,
@@ -50,7 +58,7 @@ const createPaymentOrder = asyncHandler(async (req, res) => {
   }
 
   const options = {
-    amount: 9900, // ₹99 in paise
+    amount: 100, // ₹99 in paise
     currency: "INR",
     receipt: `premium_${userId}_${Date.now()}`,
     notes: {
@@ -76,12 +84,19 @@ const createPaymentOrder = asyncHandler(async (req, res) => {
 
 // Verify payment
 const verifyPayment = asyncHandler(async (req, res) => {
+  const { keySecret } = validateRazorpayCredentials();
+  
   const {
     razorpay_order_id,
     razorpay_payment_id,
     razorpay_signature,
     userId,
   } = req.body;
+
+  console.log("🔐 Payment Verification:", {
+    razorpay_order_id: razorpay_order_id?.substring(0, 10),
+    userId: userId?.substring(0, 10),
+  });
 
   if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature || !userId) {
     throw new ApiError(
@@ -92,31 +107,44 @@ const verifyPayment = asyncHandler(async (req, res) => {
 
   // Verify signature
   const expectedSignature = crypto
-    .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+    .createHmac("sha256", keySecret)
     .update(`${razorpay_order_id}|${razorpay_payment_id}`)
     .digest("hex");
 
   if (expectedSignature !== razorpay_signature) {
+    console.error("❌ Signature mismatch");
     throw new ApiError(400, "Payment signature verification failed");
   }
 
-  // Update user subscription
-  const user = await User.findById(userId);
-  if (!user) {
-    throw new ApiError(404, "User not found");
-  }
+  console.log("✅ Signature verified");
 
+  // Update user subscription
   const now = new Date();
   const renewalDate = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000); // 30 days from now
 
-  user.subscription = {
-    plan: "premium",
-    startDate: now,
-    renewalDate: renewalDate,
-    isActive: true,
-  };
+  const updatedUser = await User.findByIdAndUpdate(
+    userId,
+    {
+      $set: {
+        "subscription.plan": "premium",
+        "subscription.startDate": now,
+        "subscription.renewalDate": renewalDate,
+        "subscription.isActive": true,
+      },
+    },
+    { new: true, runValidators: true }
+  ).select("-password -refreshToken");
 
-  await user.save();
+  if (!updatedUser) {
+    console.error("❌ User not found or update failed:", userId);
+    throw new ApiError(404, "User not found or update failed");
+  }
+
+  console.log("✅ User subscription updated:", {
+    userId: updatedUser._id.toString().substring(0, 10),
+    plan: updatedUser.subscription?.plan,
+    isActive: updatedUser.subscription?.isActive,
+  });
 
   return res
     .status(200)
@@ -124,7 +152,7 @@ const verifyPayment = asyncHandler(async (req, res) => {
       new ApiResponse(
         200,
         {
-          user,
+          user: updatedUser,
           message: "Payment verified successfully. Premium subscription activated!",
         },
         "Payment verified and subscription updated"
@@ -134,15 +162,21 @@ const verifyPayment = asyncHandler(async (req, res) => {
 
 // Webhook handler for Razorpay events
 const handlePaymentWebhook = asyncHandler(async (req, res) => {
+  const { webhookSecret } = validateRazorpayCredentials();
   const signature = req.headers["x-razorpay-signature"];
 
+  if (!signature) {
+    throw new ApiError(400, "Webhook signature header missing");
+  }
+
   // Create HMAC hash of the request body
-  const shasum = crypto.createHmac("sha256", process.env.RAZORPAY_WEBHOOK_SECRET);
+  const shasum = crypto.createHmac("sha256", webhookSecret);
   shasum.update(JSON.stringify(req.body));
   const digest = shasum.digest("hex");
 
   // Verify signature
   if (digest !== signature) {
+    console.error("❌ Webhook signature verification failed");
     throw new ApiError(400, "Invalid webhook signature");
   }
 
@@ -151,6 +185,8 @@ const handlePaymentWebhook = asyncHandler(async (req, res) => {
 
   if (event === "payment.authorized" || event === "payment.captured") {
     const userId = payload.notes.userId;
+    console.log("✅ Webhook event processed:", event, "UserId:", userId?.substring(0, 10));
+    
     const user = await User.findById(userId);
 
     if (user) {
@@ -165,6 +201,7 @@ const handlePaymentWebhook = asyncHandler(async (req, res) => {
       };
 
       await user.save();
+      console.log("✅ User subscription updated via webhook");
     }
   }
 
@@ -173,18 +210,14 @@ const handlePaymentWebhook = asyncHandler(async (req, res) => {
 
 // Get Razorpay key for frontend
 const getRazorpayKey = asyncHandler(async (req, res) => {
-  const key = process.env.RAZORPAY_KEY_ID;
-
-  if (!key) {
-    throw new ApiError(500, "Razorpay key not configured");
-  }
+  const { keyId } = validateRazorpayCredentials();
 
   return res
     .status(200)
     .json(
       new ApiResponse(
         200,
-        { key },
+        { key: keyId },
         "Razorpay key fetched successfully"
       )
     );
